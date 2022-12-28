@@ -5,6 +5,8 @@ import {
   writeJson,
   outputFile,
   remove,
+  ensureDir,
+  copyFile,
 } from 'fs-extra';
 import * as recursiveReaddir from 'recursive-readdir';
 
@@ -15,8 +17,16 @@ export class FileService {
     return pathExists(path);
   }
 
+  createDir(path: string) {
+    return ensureDir(path);
+  }
+
   readText(filePath: string) {
     return readFile(filePath, 'utf8');
+  }
+
+  copyFile(src: string, dest: string) {
+    return copyFile(src, dest);
   }
 
   createFile(filePath: string, content: string) {

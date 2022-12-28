@@ -31,9 +31,17 @@ export class Cli {
     ['-g, --skip-git', 'Do not initialize a git repository.'],
   ];
 
-  devCommandDef: CommandDef = [['dev', 'serve'], 'Start the dev server.'];
+  devCommandDef: CommandDef = [
+    ['dev', 'serve'],
+    'Start the dev server.',
+    ['-w, --watch', 'Watch mode only.'],
+  ];
 
-  buildCommandDef: CommandDef = ['build', 'Build the app.'];
+  buildCommandDef: CommandDef = [
+    'build',
+    'Build the app.',
+    ['-t, --target [value]', 'Target: production (default), qa1, any, ...'],
+  ];
 
   previewCommandDef: CommandDef = [
     'preview',
@@ -52,8 +60,14 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.downloadService
     );
-    this.devCommand = new DevCommand();
-    this.buildCommand = new BuildCommand(this.tiniModule.terminalService);
+    this.devCommand = new DevCommand(
+      this.tiniModule.terminalService,
+      this.tiniModule.processorService
+    );
+    this.buildCommand = new BuildCommand(
+      this.tiniModule.terminalService,
+      this.tiniModule.processorService
+    );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
   }
@@ -97,21 +111,23 @@ export class Cli {
 
     // dev
     (() => {
-      const [[command, ...aliases], description] = this.devCommandDef;
+      const [[command, ...aliases], description, watchOpt] = this.devCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
-        .action(() => this.devCommand.run());
+        .option(...watchOpt)
+        .action(options => this.devCommand.run(options));
     })();
 
     // build
     (() => {
-      const [command, description] = this.buildCommandDef;
+      const [command, description, targetOpt] = this.buildCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .action(() => this.buildCommand.run());
+        .option(...targetOpt)
+        .action(options => this.buildCommand.run(options));
     })();
 
     // preview

@@ -16,8 +16,8 @@ export class PreviewCommand {
   async run(options: Options) {
     const {out: cwd} = await this.projectService.getOptions();
     // launch server
-    const host = options.host || 'localhost';
-    const port = options.port || 7000;
+    const host = options.host || '0.0.0.0';
+    const port = options.port || 8080;
     const config = {
       cleanUrls: true,
       rewrites: [{source: '**', destination: '/index.html'}],

@@ -5,14 +5,13 @@ import {FileService} from './file.service';
 interface Options {
   source?: string;
   out?: string;
-  public?: string;
 }
 
 interface PackageJson {
   tinirc?: Options;
 }
 
-type ProjectOptions = {
+export type ProjectOptions = {
   [P in keyof Options]-?: Options[P];
 };
 
@@ -21,9 +20,8 @@ export class ProjectService {
   private packagePath = resolve('package.json');
 
   private defaultOptions: ProjectOptions = {
-    source: '.tinijs',
+    source: 'src',
     out: 'dist',
-    public: 'public',
   };
 
   constructor(private fileService: FileService) {}
