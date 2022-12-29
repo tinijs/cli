@@ -34,7 +34,7 @@ export class Cli {
   devCommandDef: CommandDef = [
     ['dev', 'serve'],
     'Start the dev server.',
-    ['-w, --watch', 'Watch mode only.'],
+    ['-x, --headless', 'Run the headless mode.'],
   ];
 
   buildCommandDef: CommandDef = [
@@ -111,12 +111,13 @@ export class Cli {
 
     // dev
     (() => {
-      const [[command, ...aliases], description, watchOpt] = this.devCommandDef;
+      const [[command, ...aliases], description, headlessOpt] =
+        this.devCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
-        .option(...watchOpt)
+        .option(...headlessOpt)
         .action(options => this.devCommand.run(options));
     })();
 

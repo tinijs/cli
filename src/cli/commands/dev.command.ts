@@ -2,7 +2,7 @@ import {TerminalService} from '../../lib/services/terminal.service';
 import {ProcessorService} from '../../lib/services/processor.service';
 
 interface Options {
-  watch?: boolean;
+  headless?: boolean;
 }
 
 export class DevCommand {
@@ -14,19 +14,22 @@ export class DevCommand {
   ) {}
 
   async run(options: Options) {
-    if (options.watch) {
+    if (!options.headless) {
+      // reset the out dir
+      await this.processorService.resetOut();
       // clean the stage dir
       await this.processorService.resetStage();
       // process all
       await this.processorService.processAll(this.target);
-      // watch for change
-      await this.processorService.watch(this.target);
-    } else {
+      // run commands
       this.terminalService.exec(
-        'npx concurrently "tini serve -w" "parcel serve -p 3000"',
+        'npx concurrently "tini serve --headless" "parcel serve -p 3000"',
         '.',
         'inherit'
       );
+    } else {
+      // watch for change
+      await this.processorService.watch(this.target);
     }
   }
 }

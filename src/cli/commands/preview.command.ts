@@ -31,7 +31,7 @@ export class PreviewCommand {
         port,
         cwd,
         config,
-        debug: true,
+        debug: false,
       })
       .listen(() =>
         console.log(INFO + 'Preview your app at: ' + blue(`${host}:${port}`))

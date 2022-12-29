@@ -1,6 +1,7 @@
 import {resolve} from 'path';
 import {watch} from 'chokidar';
 import {green} from 'chalk';
+import {compileStringAsync} from 'sass';
 
 import {FileService} from './file.service';
 import {ProjectService, ProjectOptions} from './project.service';
@@ -26,7 +27,7 @@ export class ProcessorService {
   async watch(target: string) {
     const options = await this.projectService.getOptions();
     watch('src', {ignoreInitial: true}).on('all', (event, path) => {
-      console.log('[Change] ' + green(path));
+      console.log(`[${event}] ` + green(path));
       path = resolve(path);
       this.process(path, target, options);
     });
@@ -60,14 +61,32 @@ export class ProcessorService {
     }
   }
 
-  private transformApp(srcPath: string, destPath: string, target: string) {
-    // TODO: process me
-    return this.copyItem(srcPath, destPath);
+  private async transformApp(
+    srcPath: string,
+    destPath: string,
+    target: string
+  ) {
+    if (target === 'development') {
+      return this.copyItem(srcPath, destPath);
+    }
+    let content = await this.fileService.readText(srcPath);
+    content = content.replace(
+      "import configs from './configs/development'",
+      `import configs from './configs/${target}'`
+    );
+    return await this.fileService.createFile(destPath, content);
   }
 
-  private transformElement(srcPath: string, destPath: string) {
-    // TODO: process me
-    return this.copyItem(srcPath, destPath);
+  private async transformElement(srcPath: string, destPath: string) {
+    let content = await this.fileService.readText(srcPath);
+    const matchArr = content.match(/(static styles = css`)([\s\S]*?)(`;)/);
+    if (!matchArr) {
+      return this.copyItem(srcPath, destPath);
+    }
+    const originalStyles = matchArr[2];
+    const {css: compiledStyles} = await compileStringAsync(originalStyles);
+    content = content.replace(originalStyles, compiledStyles);
+    return await this.fileService.createFile(destPath, content);
   }
 
   private async copyItem(srcPath: string, destPath: string) {
