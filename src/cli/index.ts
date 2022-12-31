@@ -62,11 +62,11 @@ export class Cli {
     );
     this.devCommand = new DevCommand(
       this.tiniModule.terminalService,
-      this.tiniModule.processorService
+      this.tiniModule.builderService
     );
     this.buildCommand = new BuildCommand(
       this.tiniModule.terminalService,
-      this.tiniModule.processorService
+      this.tiniModule.builderService
     );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);

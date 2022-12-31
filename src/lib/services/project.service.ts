@@ -20,7 +20,7 @@ export class ProjectService {
   private packagePath = resolve('package.json');
 
   private defaultOptions: ProjectOptions = {
-    source: 'src',
+    source: '.',
     out: 'dist',
   };
 

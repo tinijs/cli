@@ -7,7 +7,7 @@ export * from './lib/services/file.service';
 export * from './lib/services/download.service';
 export * from './lib/services/terminal.service';
 export * from './lib/services/project.service';
-export * from './lib/services/processor.service';
+export * from './lib/services/builder.service';
 
 export * from './cli/commands/docs.command';
 export * from './cli/commands/new.command';

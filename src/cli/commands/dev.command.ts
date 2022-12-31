@@ -1,5 +1,5 @@
 import {TerminalService} from '../../lib/services/terminal.service';
-import {ProcessorService} from '../../lib/services/processor.service';
+import {BuilderService} from '../../lib/services/builder.service';
 
 interface Options {
   headless?: boolean;
@@ -10,17 +10,17 @@ export class DevCommand {
 
   constructor(
     private terminalService: TerminalService,
-    private processorService: ProcessorService
+    private builderService: BuilderService
   ) {}
 
   async run(options: Options) {
     if (!options.headless) {
       // reset the out dir
-      await this.processorService.resetOut();
+      await this.builderService.resetOut();
       // clean the stage dir
-      await this.processorService.resetStage();
+      await this.builderService.resetStage();
       // process all
-      await this.processorService.processAll(this.target);
+      await this.builderService.processAll(this.target);
       // run commands
       this.terminalService.exec(
         'npx concurrently "tini serve --headless" "parcel serve -p 3000"',
@@ -29,7 +29,7 @@ export class DevCommand {
       );
     } else {
       // watch for change
-      await this.processorService.watch(this.target);
+      await this.builderService.watch(this.target);
     }
   }
 }

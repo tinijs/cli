@@ -4,7 +4,7 @@ import {FileService} from './services/file.service';
 import {DownloadService} from './services/download.service';
 import {TerminalService} from './services/terminal.service';
 import {ProjectService} from './services/project.service';
-import {ProcessorService} from './services/processor.service';
+import {BuilderService} from './services/builder.service';
 
 export class Lib {
   public readonly helperService: HelperService;
@@ -13,7 +13,7 @@ export class Lib {
   public readonly downloadService: DownloadService;
   public readonly terminalService: TerminalService;
   public readonly projectService: ProjectService;
-  public readonly processorService: ProcessorService;
+  public readonly builderService: BuilderService;
 
   constructor() {
     this.helperService = new HelperService();
@@ -22,7 +22,7 @@ export class Lib {
     this.downloadService = new DownloadService(this.fileService);
     this.terminalService = new TerminalService();
     this.projectService = new ProjectService(this.fileService);
-    this.processorService = new ProcessorService(
+    this.builderService = new BuilderService(
       this.fileService,
       this.projectService
     );

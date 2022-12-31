@@ -2,12 +2,30 @@ import {resolve} from 'path';
 import {watch} from 'chokidar';
 import {green} from 'chalk';
 import {compileStringAsync} from 'sass';
+import * as picomatch from 'picomatch';
 
 import {FileService} from './file.service';
 import {ProjectService, ProjectOptions} from './project.service';
 
-export class ProcessorService {
+export class BuilderService {
   private stageDir = resolve('.tinijs');
+
+  private ignoredPaths = [
+    'node_modules', // modules
+    'public', // handle by: parcel-reporter-static-files-copy
+    '.*', // dot files/folders
+    'public-api.*', // lib api
+    // defaults
+    'package.json',
+    'package-lock.json',
+    'LICENSE',
+    'README.md',
+    'tsconfig.json',
+  ];
+
+  private processablePattern =
+    '!**/?(app|configs|layouts|pages|components|services)/*.@(d.ts|js|map)';
+  private processableMatch = picomatch(this.processablePattern);
 
   constructor(
     private fileService: FileService,
@@ -26,18 +44,26 @@ export class ProcessorService {
 
   async watch(target: string) {
     const options = await this.projectService.getOptions();
-    watch('src', {ignoreInitial: true}).on('all', (event, path) => {
+    watch(options.source, {
+      ignored: this.ignoredPaths,
+      ignoreInitial: true,
+    }).on('all', (event, path) => {
+      if (!this.processableMatch(path)) return;
       console.log(`[${event}] ` + green(path));
-      path = resolve(path);
-      this.process(path, target, options);
+      this.process(resolve(path), target, options);
     });
   }
 
   async processAll(target: string) {
     const options = await this.projectService.getOptions();
-    const files = await this.fileService.listDir(resolve(options.source));
+    const files = await this.fileService.listDir(
+      resolve(options.source),
+      this.ignoredPaths
+    );
     for (let i = 0; i < files.length; i++) {
-      await this.process(files[i], target, options);
+      const path = files[i];
+      if (!this.processableMatch(path)) continue;
+      await this.process(path, target, options);
     }
   }
 
@@ -45,7 +71,6 @@ export class ProcessorService {
     options = options || (await this.projectService.getOptions());
     const srcPath = path.replace(/\\/g, '/');
     const destPath = srcPath.replace(resolve(options.source), this.stageDir);
-    if (srcPath.indexOf(`${options.source}/public`) !== -1) return;
     // create the folder
     const destSegments = destPath.split('/');
     destSegments.pop();
@@ -71,8 +96,8 @@ export class ProcessorService {
     }
     let content = await this.fileService.readText(srcPath);
     content = content.replace(
-      "import configs from './configs/development'",
-      `import configs from './configs/${target}'`
+      "import configs from '../configs/development'",
+      `import configs from '../configs/${target}'`
     );
     return await this.fileService.createFile(destPath, content);
   }
