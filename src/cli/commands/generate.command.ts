@@ -56,7 +56,9 @@ export class GenerateCommand {
   private async modify(exportName: string, exportPath: string) {
     await this.fileService.changeContent(
       resolve('public-api.ts'),
-      content => content + `\nexport {${exportName}} from '${exportPath}';`
+      content =>
+        content +
+        `\nexport {${exportName}} from '${exportPath.replace('.ts', '')}';\n`
     );
   }
 }

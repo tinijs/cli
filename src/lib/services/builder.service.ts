@@ -12,8 +12,10 @@ export class BuilderService {
 
   private ignoredPaths = [
     'node_modules', // modules
+    '.*', // dot files
+    '.*/**', // dot folders
+    'dist', // output folder
     'public', // handle by: parcel-reporter-static-files-copy
-    '.*', // dot files/folders
     'public-api.*', // lib api
     // defaults
     'package.json',
@@ -112,7 +114,7 @@ export class BuilderService {
 
   private async transformElement(srcPath: string, destPath: string) {
     let content = await this.fileService.readText(srcPath);
-    const matchArr = content.match(/(static styles = css`)([\s\S]*?)(`;)/);
+    const matchArr = content.match(/(css`)([\s\S]*?)(`)/);
     if (!matchArr) {
       return this.copyItem(srcPath, destPath);
     }

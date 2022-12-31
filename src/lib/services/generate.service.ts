@@ -128,21 +128,17 @@ export class GenerateService {
 export class ${className} {
   name = '${className}';
 }
-    `;
+`;
   }
 
   private contentForLayout(className: string, tagName: string) {
     return `
-import {TiniComponent, Layout, html} from '@tinijs/core';
+import {TiniComponent, Layout, html, css} from '@tinijs/core';
 
 @Layout('${tagName}')
 export class ${className} extends TiniComponent {
   protected render() {
-    return html\`
-      <div class="${tagName}">
-        <div class="page"><slot></slot></div>
-      </div>
-    \`;
+    return html\`<div class="page"><slot></slot></div>\`;
   }
 
   static styles = css\`
@@ -157,12 +153,12 @@ declare global {
     '${tagName}': ${className};
   }
 }
-    `;
+`;
   }
 
   private contentForPage(className: string, tagName: string) {
     return `
-import {TiniComponent, Page, State, html, css} from '@tinijs/core';
+import {TiniComponent, Page, Ref, html, css} from '@tinijs/core';
 import {SubscribeStore, StoreSubscription} from '@tinijs/store';
 
 import {States} from '../app/states';
@@ -171,18 +167,17 @@ import {States} from '../app/states';
 export class ${className} extends TiniComponent {
   @SubscribeStore() storeSubscription!: StoreSubscription<States>;
 
-  @State() name!: string;
+  @Ref() name!: string;
 
   onInit() {
     this.storeSubscription.subscribe(states => {
-      this.name = states.name;
+      // do something with the states
+      // this.name = states.name;
     });
   }
 
   protected render() {
-    return html\`
-      <div class="${tagName}">${className}</div>
-    \`;
+    return html\`<p>${className}</p>\`;
   }
 
   static styles = css\`
@@ -197,28 +192,36 @@ declare global {
     '${tagName}': ${className};
   }
 }
-    `;
+`;
   }
 
   private contentForComponent(className: string, tagName: string) {
     return `
-import {TiniComponent, Component, Property, html} from '@tinijs/core';
-import {SubscribeStore, StoreSubscription} from '@tinijs/store';
-
-import {States} from '../app/states';
+import {
+  TiniComponent,
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  html,
+  css,
+} from '@tinijs/core';
 
 @Component('${tagName}')
 export class ${className} extends TiniComponent {
-  @Property({ type: String }) attr: string;
+  @Input() attr?: string;
+  @Output() customEvent!: EventEmitter<string>;
 
   onCreate() {
-    
+    // element connected
+  }
+
+  dispatchCustomEvent() {
+    this.customEvent.emit('any payload');
   }
 
   protected render() {
-    return html\`
-      <div class="${tagName}">${className}</div>
-    \`;
+    return html\`<p @click=\${this.dispatchCustomEvent}>${className}</p>\`;
   }
 
   static styles = css\`
@@ -233,6 +236,6 @@ declare global {
     '${tagName}': ${className};
   }
 }
-    `;
+`;
   }
 }
