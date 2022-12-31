@@ -3,6 +3,7 @@ import {Command} from 'commander';
 import {Lib as TiniModule} from '../lib/index';
 import {DocsCommand} from './commands/docs.command';
 import {NewCommand} from './commands/new.command';
+import {GenerateCommand} from './commands/generate.command';
 import {BuildCommand} from './commands/build.command';
 import {PreviewCommand} from './commands/preview.command';
 import {TestCommand} from './commands/test.command';
@@ -13,6 +14,7 @@ export class Cli {
   private tiniModule: TiniModule;
   docsCommand: DocsCommand;
   newCommand: NewCommand;
+  generateCommand: GenerateCommand;
   buildCommand: BuildCommand;
   previewCommand: PreviewCommand;
   testCommand: TestCommand;
@@ -31,6 +33,16 @@ export class Cli {
     'Create a new project.',
     ['-i, --skip-install', 'Do not install dependency packages.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
+  ];
+
+  /**
+   * @param type - The resource type
+   * @param dest - The resource destination
+   */
+  generateCommandDef: CommandDef = [
+    ['generate <type> <dest>', 'create', 'g'],
+    'Generate a resource.',
+    ['-n, --nested', 'Nested under a folder.'],
   ];
 
   devCommandDef: CommandDef = [
@@ -68,6 +80,10 @@ export class Cli {
     this.newCommand = new NewCommand(
       this.tiniModule.fileService,
       this.tiniModule.downloadService
+    );
+    this.generateCommand = new GenerateCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.generateService
     );
     this.devCommand = new DevCommand(
       this.tiniModule.terminalService,
@@ -119,6 +135,20 @@ export class Cli {
         .description(description)
         .action((projectName, options) =>
           this.newCommand.run(projectName, options)
+        );
+    })();
+
+    // generate
+    (() => {
+      const [[command, ...aliases], description, nestedOpt] =
+        this.generateCommandDef;
+      commander
+        .command(command)
+        .aliases(aliases)
+        .description(description)
+        .option(...nestedOpt)
+        .action((type, dest, options) =>
+          this.generateCommand.run(type, dest, options)
         );
     })();
 

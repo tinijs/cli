@@ -5,6 +5,7 @@ import {FileService} from './file.service';
 interface Options {
   source?: string;
   out?: string;
+  componentPrefix?: string;
 }
 
 interface PackageJson {
@@ -22,6 +23,7 @@ export class ProjectService {
   private defaultOptions: ProjectOptions = {
     source: '.',
     out: 'dist',
+    componentPrefix: 'app',
   };
 
   constructor(private fileService: FileService) {}
