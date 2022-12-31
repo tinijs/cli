@@ -7,6 +7,7 @@ import {BuildCommand} from './commands/build.command';
 import {PreviewCommand} from './commands/preview.command';
 import {TestCommand} from './commands/test.command';
 import {DevCommand} from './commands/dev.command';
+import {CleanCommand} from './commands/clean.command';
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -16,6 +17,7 @@ export class Cli {
   previewCommand: PreviewCommand;
   testCommand: TestCommand;
   devCommand: DevCommand;
+  cleanCommand: CleanCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -53,6 +55,13 @@ export class Cli {
 
   testCommandDef: CommandDef = ['test', 'Unit test the app.'];
 
+  cleanCommandDef: CommandDef = [
+    ['clean', 'c'],
+    'Clean Typescript output files.',
+    ['-i, --includes [value]', 'Including files, separated by "|".'],
+    ['-e, --excludes [value]', 'Excluding files, separated by "|".'],
+  ];
+
   constructor() {
     this.tiniModule = new TiniModule();
     this.docsCommand = new DocsCommand();
@@ -70,6 +79,10 @@ export class Cli {
     );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
+    this.cleanCommand = new CleanCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.builderService
+    );
   }
 
   getApp() {
@@ -151,6 +164,19 @@ export class Cli {
         .command(command as string)
         .description(description)
         .action(() => this.testCommand.run());
+    })();
+
+    // clean
+    (() => {
+      const [[command, ...aliases], description, includesOpt, excludesOpt] =
+        this.cleanCommandDef;
+      commander
+        .command(command)
+        .aliases(aliases)
+        .description(description)
+        .option(...includesOpt)
+        .option(...excludesOpt)
+        .action(options => this.cleanCommand.run(options));
     })();
 
     // help

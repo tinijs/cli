@@ -15,3 +15,4 @@ export * from './cli/commands/dev.command';
 export * from './cli/commands/build.command';
 export * from './cli/commands/preview.command';
 export * from './cli/commands/test.command';
+export * from './cli/commands/clean.command';

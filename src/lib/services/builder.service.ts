@@ -23,9 +23,9 @@ export class BuilderService {
     'tsconfig.json',
   ];
 
-  private processablePattern =
+  PROCESSABLE_PATTERN =
     '!**/?(app|configs|layouts|pages|components|services)/*.@(d.ts|js|map)';
-  private processableMatch = picomatch(this.processablePattern);
+  private processableMatch = picomatch(this.PROCESSABLE_PATTERN);
 
   constructor(
     private fileService: FileService,
@@ -40,6 +40,14 @@ export class BuilderService {
   async resetStage() {
     await this.fileService.removeFiles([this.stageDir]);
     return this.fileService.createDir(this.stageDir);
+  }
+
+  async listFiles() {
+    const options = await this.projectService.getOptions();
+    return await this.fileService.listDir(
+      resolve(options.source),
+      this.ignoredPaths
+    );
   }
 
   async watch(target: string) {
