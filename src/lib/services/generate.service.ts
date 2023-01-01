@@ -137,9 +137,7 @@ import {TiniComponent, Layout, html, css} from '@tinijs/core';
 
 @Layout('${tagName}')
 export class ${className} extends TiniComponent {
-  protected render() {
-    return html\`<div class="page"><slot></slot></div>\`;
-  }
+  protected template = html\`<div class="page"><slot></slot></div>\`;
 
   static styles = css\`
     :host {
@@ -158,7 +156,7 @@ declare global {
 
   private contentForPage(className: string, tagName: string) {
     return `
-import {TiniComponent, Page, Ref, html, css} from '@tinijs/core';
+import {TiniComponent, Page, Reactive, html, css} from '@tinijs/core';
 import {SubscribeStore, StoreSubscription} from '@tinijs/store';
 
 import {States} from '../app/states';
@@ -167,7 +165,7 @@ import {States} from '../app/states';
 export class ${className} extends TiniComponent {
   @SubscribeStore() storeSubscription!: StoreSubscription<States>;
 
-  @Ref() name!: string;
+  @Reactive() name!: string;
 
   onInit() {
     this.storeSubscription.subscribe(states => {
@@ -176,9 +174,7 @@ export class ${className} extends TiniComponent {
     });
   }
 
-  protected render() {
-    return html\`<p>${className}</p>\`;
-  }
+  protected template = html\`<p>${className}</p>\`;
 
   static styles = css\`
     :host {
@@ -216,13 +212,11 @@ export class ${className} extends TiniComponent {
     // element connected
   }
 
-  dispatchCustomEvent() {
+  emitCustomEvent() {
     this.customEvent.emit('any payload');
   }
 
-  protected render() {
-    return html\`<p @click=\${this.dispatchCustomEvent}>${className}</p>\`;
-  }
+  protected template = html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
 
   static styles = css\`
     :host {

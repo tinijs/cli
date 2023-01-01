@@ -105,22 +105,42 @@ export class BuilderService {
       return this.copyItem(srcPath, destPath);
     }
     let content = await this.fileService.readText(srcPath);
-    content = content.replace(
-      "import configs from '../configs/development'",
-      `import configs from '../configs/${target}'`
-    );
+    content = content.replace('configs/development', `configs/${target}`);
     return await this.fileService.createFile(destPath, content);
   }
 
   private async transformElement(srcPath: string, destPath: string) {
     let content = await this.fileService.readText(srcPath);
-    const matchArr = content.match(/(css`)([\s\S]*?)(`)/);
-    if (!matchArr) {
+    // checking
+    const hasRender = content.indexOf('render() {') !== -1;
+    const templateMatching = content.match(
+      /(protected template = html`)([\s\S]*?)(`;)/
+    );
+    const stylesMatchingArr = content.match(/(css`)([\s\S]*?)(`)/g);
+    // no transform needed
+    if ((hasRender || !templateMatching) && !stylesMatchingArr) {
       return this.copyItem(srcPath, destPath);
     }
-    const originalStyles = matchArr[2];
-    const {css: compiledStyles} = await compileStringAsync(originalStyles);
-    content = content.replace(originalStyles, compiledStyles);
+    // transform template
+    if (templateMatching) {
+      const matchedTemplate = templateMatching[0];
+      const newTemplate =
+        matchedTemplate.replace(
+          'protected template =',
+          'protected render() {\n  return'
+        ) + '}';
+      content = content.replace(matchedTemplate, newTemplate);
+    }
+    // transform styles
+    if (stylesMatchingArr) {
+      for (let i = 0; i < stylesMatchingArr.length; i++) {
+        const styleMatching = stylesMatchingArr[i];
+        let originalStyles = styleMatching.replace('css`', '');
+        originalStyles = originalStyles.substring(0, originalStyles.length - 1);
+        const {css: compiledStyles} = await compileStringAsync(originalStyles);
+        content = content.replace(originalStyles, compiledStyles);
+      }
+    }
     return await this.fileService.createFile(destPath, content);
   }
 
