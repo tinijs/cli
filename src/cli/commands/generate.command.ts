@@ -1,5 +1,6 @@
 import {resolve} from 'path';
 import {yellow, green, red} from 'chalk';
+import {capitalCase} from 'change-case';
 
 import {FileService} from '../../lib/services/file.service';
 import {GenerateService} from '../../lib/services/generate.service';
@@ -19,7 +20,9 @@ export class GenerateCommand {
     dest: string,
     commandOptions: GenerateCommandOptions
   ) {
-    const SUPPORTED_TYPES = this.generateService.SUPPORTED_TYPES;
+    const SUPPORTED_TYPES = Object.keys(
+      this.generateService.DEFAULT_FOLDERS
+    ).map(item => item);
     if (SUPPORTED_TYPES.indexOf(type) === -1) {
       return console.log(
         `Invalid type "${red(type)}", please try: ` +
@@ -31,11 +34,7 @@ export class GenerateCommand {
       dest,
       commandOptions.nested
     );
-    const {
-      path: mainPath,
-      fullPath: mainFullPath,
-      className: mainClassName,
-    } = templates[0];
+    const {path: mainPath, fullPath: mainFullPath} = templates[0];
     if (await this.fileService.exists(mainFullPath)) {
       return console.log(
         `A ${yellow(type)} already available at ` + green(mainPath)
@@ -48,17 +47,15 @@ export class GenerateCommand {
       console.log('CREATE ' + green(path));
     }
     // modify
-    await this.modify(mainClassName, mainPath);
+    await this.modify(mainPath);
     //result
     console.log('MODIFY public-api.ts');
   }
 
-  private async modify(exportName: string, exportPath: string) {
+  private async modify(exportPath: string) {
     await this.fileService.changeContent(
       resolve('public-api.ts'),
-      content =>
-        content +
-        `\nexport {${exportName}} from '${exportPath.replace('.ts', '')}';\n`
+      content => content + `export * from '${exportPath.replace('.ts', '')}';\n`
     );
   }
 }

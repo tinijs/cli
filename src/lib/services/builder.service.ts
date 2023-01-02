@@ -26,7 +26,7 @@ export class BuilderService {
   ];
 
   PROCESSABLE_PATTERN =
-    '!**/?(app|configs|layouts|pages|components|services)/*.@(d.ts|js|map)';
+    '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
   private processableMatch = picomatch(this.PROCESSABLE_PATTERN);
 
   constructor(

@@ -20,19 +20,21 @@ interface Template extends Names {
 }
 
 export class GenerateService {
-  private SERVICE = 'service';
-  private LAYOUT = 'layout';
-  private PAGE = 'page';
-  private COMPONENT = 'component';
+  SERVICE = 'service';
+  LAYOUT = 'layout';
+  PAGE = 'page';
+  COMPONENT = 'component';
+  HELPER = 'helper';
+  CONST = 'const';
 
-  private DEFAULT_FOLDERS = {
+  DEFAULT_FOLDERS = {
     [this.SERVICE]: 'services',
     [this.LAYOUT]: 'layouts',
     [this.PAGE]: 'pages',
     [this.COMPONENT]: 'components',
+    [this.HELPER]: 'helpers',
+    [this.CONST]: 'consts',
   };
-
-  SUPPORTED_TYPES = [this.SERVICE, this.LAYOUT, this.PAGE, this.COMPONENT];
 
   constructor(private projectService: ProjectService) {}
 
@@ -108,7 +110,10 @@ export class GenerateService {
     return {path, fullPath};
   }
 
-  private buildMainContent(type: string, {className, tagName}: Names) {
+  private buildMainContent(
+    type: string,
+    {className, tagName, nameCamel, nameCapital}: Names
+  ) {
     switch (type) {
       case this.SERVICE:
         return this.contentForService(className);
@@ -118,6 +123,10 @@ export class GenerateService {
         return this.contentForPage(className, tagName);
       case this.COMPONENT:
         return this.contentForComponent(className, tagName);
+      case this.HELPER:
+        return this.contentForHelper(nameCamel, nameCapital);
+      case this.CONST:
+        return this.contentForConst(nameCamel, nameCapital);
       default:
         return '';
     }
@@ -128,6 +137,8 @@ export class GenerateService {
 export class ${className} {
   name = '${className}';
 }
+
+export default ${className};
 `;
   }
 
@@ -157,18 +168,18 @@ declare global {
   private contentForPage(className: string, tagName: string) {
     return `
 import {TiniComponent, Page, Reactive, html, css} from '@tinijs/core';
-import {SubscribeStore, StoreSubscription} from '@tinijs/store';
+import {Shop, StoreSubscription} from '@tinijs/store';
 
 import {States} from '../app/states';
 
 @Page('${tagName}')
 export class ${className} extends TiniComponent {
-  @SubscribeStore() storeSubscription!: StoreSubscription<States>;
+  @Shop() shop!: StoreSubscription<States>;
 
   @Reactive() name!: string;
 
   onInit() {
-    this.storeSubscription.subscribe(states => {
+    this.shop.subscribe(states => {
       // do something with the states
       // this.name = states.name;
     });
@@ -230,6 +241,28 @@ declare global {
     '${tagName}': ${className};
   }
 }
+`;
+  }
+
+  private contentForHelper(nameCamel: string, nameCapital: string) {
+    const typeName = nameCapital.replace(/ /g, '');
+    return `
+function ${nameCamel}(param: string) {
+  return param.toUpperCase();
+}
+
+export default ${nameCamel};
+export type ${typeName} = typeof ${nameCamel};
+`;
+  }
+
+  private contentForConst(nameCamel: string, nameCapital: string) {
+    const typeName = nameCapital.replace(/ /g, '');
+    return `
+const ${nameCamel} = 'value';
+
+export default ${nameCamel};
+export type ${typeName} = typeof ${nameCamel};
 `;
   }
 }
