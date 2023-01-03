@@ -47,6 +47,7 @@
     "change-case": "^4.1.1",
     "chokidar": "^3.5.3",
     "commander": "^6.1.0",
+    "cross-env": "^7.0.3",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "open": "^8.2.0",

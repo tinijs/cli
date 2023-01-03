@@ -9,7 +9,10 @@ export class BuildCommand {
 
   async run(options: Options) {
     const target = options.target || 'production';
-    process.env.NODE_ENV = target;
-    this.terminalService.exec('parcel build', '.', 'inherit');
+    this.terminalService.exec(
+      `cross-env NODE_ENV=${target} parcel build --no-cache`,
+      '.',
+      'inherit'
+    );
   }
 }
