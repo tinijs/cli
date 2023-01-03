@@ -45,11 +45,7 @@ export class Cli {
     ['-n, --nested', 'Nested under a folder.'],
   ];
 
-  devCommandDef: CommandDef = [
-    ['dev', 'serve'],
-    'Start the dev server.',
-    ['-x, --headless', 'Run the headless mode.'],
-  ];
+  devCommandDef: CommandDef = [['dev', 'serve'], 'Start the dev server.'];
 
   buildCommandDef: CommandDef = [
     'build',
@@ -85,19 +81,13 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.generateService
     );
-    this.devCommand = new DevCommand(
-      this.tiniModule.terminalService,
-      this.tiniModule.builderService
-    );
-    this.buildCommand = new BuildCommand(
-      this.tiniModule.terminalService,
-      this.tiniModule.builderService
-    );
+    this.devCommand = new DevCommand(this.tiniModule.terminalService);
+    this.buildCommand = new BuildCommand(this.tiniModule.terminalService);
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
     this.cleanCommand = new CleanCommand(
       this.tiniModule.fileService,
-      this.tiniModule.builderService
+      this.tiniModule.projectService
     );
   }
 
@@ -154,14 +144,12 @@ export class Cli {
 
     // dev
     (() => {
-      const [[command, ...aliases], description, headlessOpt] =
-        this.devCommandDef;
+      const [[command, ...aliases], description] = this.devCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
-        .option(...headlessOpt)
-        .action(options => this.devCommand.run(options));
+        .action(() => this.devCommand.run());
     })();
 
     // build

@@ -4,7 +4,7 @@ import {prompt} from 'inquirer';
 import * as picomatch from 'picomatch';
 
 import {FileService} from '../../lib/services/file.service';
-import {BuilderService} from '../../lib/services/builder.service';
+import {ProjectService} from '../../lib/services/project.service';
 
 interface CleanCommandOptions {
   includes?: string;
@@ -12,9 +12,27 @@ interface CleanCommandOptions {
 }
 
 export class CleanCommand {
+  private ignoredPaths = [
+    'node_modules', // modules
+    '.*', // dot files
+    '.*/**', // dot folders
+    'dist', // output folder
+    'public', // handle by: parcel-reporter-static-files-copy
+    'public-api.*', // lib api
+    // defaults
+    'package.json',
+    'package-lock.json',
+    'LICENSE',
+    'README.md',
+    'tsconfig.json',
+  ];
+
+  private PROCESSABLE_PATTERN =
+    '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
+
   constructor(
     private fileService: FileService,
-    private builderService: BuilderService
+    private projectService: ProjectService
   ) {}
 
   async run(commandOptions: CleanCommandOptions) {
@@ -25,15 +43,13 @@ export class CleanCommand {
       ? this.processInputPaths(commandOptions.excludes)
       : [];
     // process files
-    const removableMatch = picomatch(
-      this.builderService.PROCESSABLE_PATTERN.substring(1)
-    );
+    const removableMatch = picomatch(this.PROCESSABLE_PATTERN.substring(1));
     const defaultFiles = [
       'public-api.d.ts',
       'public-api.js',
       'public-api.map',
     ].map(path => resolve(path));
-    const projectFiles = await this.builderService.listFiles();
+    const projectFiles = await this.listFiles();
     const files = [...defaultFiles, ...projectFiles]
       .map(path => path.replace(/\\/g, '/'))
       .filter(path => removableMatch(path) && excludes.indexOf(path) === -1)
@@ -84,5 +100,13 @@ export class CleanCommand {
       .map(path =>
         path.trim().replace('./', '').replace('.\\', '').replace(/\\/g, '/')
       );
+  }
+
+  private async listFiles() {
+    const options = await this.projectService.getOptions();
+    return await this.fileService.listDir(
+      resolve(options.source),
+      this.ignoredPaths
+    );
   }
 }
