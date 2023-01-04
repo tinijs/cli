@@ -3,7 +3,6 @@ import {resolve} from 'path';
 import {FileService} from './file.service';
 
 interface Options {
-  source?: string;
   out?: string;
   componentPrefix?: string;
 }
@@ -21,8 +20,7 @@ export class ProjectService {
   private packagePath = resolve('package.json');
 
   private defaultOptions: ProjectOptions = {
-    source: '.',
-    out: 'dist',
+    out: 'www',
     componentPrefix: 'app',
   };
 

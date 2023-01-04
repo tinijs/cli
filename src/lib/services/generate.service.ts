@@ -64,7 +64,7 @@ export class GenerateService {
       tagName,
     };
     const {path: mainPath, fullPath: mainFullPath} = this.buildPath(
-      options.source,
+      '.',
       nameParam,
       type,
       destSplits,

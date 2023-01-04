@@ -103,10 +103,6 @@ export class CleanCommand {
   }
 
   private async listFiles() {
-    const options = await this.projectService.getOptions();
-    return await this.fileService.listDir(
-      resolve(options.source),
-      this.ignoredPaths
-    );
+    return await this.fileService.listDir(resolve('.'), this.ignoredPaths);
   }
 }

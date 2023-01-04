@@ -81,8 +81,14 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.generateService
     );
-    this.devCommand = new DevCommand(this.tiniModule.terminalService);
-    this.buildCommand = new BuildCommand(this.tiniModule.terminalService);
+    this.devCommand = new DevCommand(
+      this.tiniModule.terminalService,
+      this.tiniModule.projectService
+    );
+    this.buildCommand = new BuildCommand(
+      this.tiniModule.terminalService,
+      this.tiniModule.projectService
+    );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
     this.cleanCommand = new CleanCommand(
