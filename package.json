@@ -39,7 +39,7 @@
   "dependencies": {
     "@parcel/reporter-bundle-analyzer": "^2.8.2",
     "@parcel/transformer-sass": "^2.8.2",
-    "@parcel/transformer-typescript-tsc": "^2.8.2",
+    "@tinijs/parcel-reporter-copy-public": "file:../parcel-reporter-copy-public/tinijs-parcel-reporter-copy-public-0.0.1.tgz",
     "@tinijs/parcel-transformer-default": "file:../parcel-transformer-default/tinijs-parcel-transformer-default-0.0.1.tgz",
     "adm-zip": "^0.4.16",
     "axios": "^0.21.1",
@@ -52,7 +52,6 @@
     "inquirer": "^7.3.3",
     "open": "^8.2.0",
     "parcel": "^2.8.2",
-    "parcel-reporter-static-files-copy": "^1.4.0",
     "picomatch": "^2.3.1",
     "recursive-readdir": "^2.2.2",
     "sharp": "^0.31.3",
