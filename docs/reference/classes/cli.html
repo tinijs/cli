@@ -87,11 +87,15 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#buildcommand" class="tsd-kind-icon">build<wbr>Command</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#buildcommanddef" class="tsd-kind-icon">build<wbr>Command<wbr>Def</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#cleancommand" class="tsd-kind-icon">clean<wbr>Command</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#cleancommanddef" class="tsd-kind-icon">clean<wbr>Command<wbr>Def</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#commander" class="tsd-kind-icon">commander</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#devcommand" class="tsd-kind-icon">dev<wbr>Command</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#devcommanddef" class="tsd-kind-icon">dev<wbr>Command<wbr>Def</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#docscommand" class="tsd-kind-icon">docs<wbr>Command</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#docscommanddef" class="tsd-kind-icon">docs<wbr>Command<wbr>Def</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#generatecommand" class="tsd-kind-icon">generate<wbr>Command</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#generatecommanddef" class="tsd-kind-icon">generate<wbr>Command<wbr>Def</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#newcommand" class="tsd-kind-icon">new<wbr>Command</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#newcommanddef" class="tsd-kind-icon">new<wbr>Command<wbr>Def</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="cli.html#previewcommand" class="tsd-kind-icon">preview<wbr>Command</a></li>
@@ -121,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L46">cli/index.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L72">cli/index.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="cli.html" class="tsd-signature-type">Cli</a></h4>
@@ -137,17 +141,37 @@
 					<div class="tsd-signature tsd-kind-icon">build<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="buildcommand.html" class="tsd-signature-type">BuildCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L15">cli/index.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L18">cli/index.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="buildcommanddef" class="tsd-anchor"></a>
 					<h3>build<wbr>Command<wbr>Def</h3>
-					<div class="tsd-signature tsd-kind-icon">build<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [&#x27;build&#x27;, &#x27;Build the app.&#x27;]</span></div>
+					<div class="tsd-signature tsd-kind-icon">build<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [&#x27;build&#x27;,&#x27;Build the app.&#x27;,[&#x27;-t, --target [value]&#x27;, &#x27;Target: production (default), qa1, any, ...&#x27;],]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L36">cli/index.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L51">cli/index.ts:51</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="cleancommand" class="tsd-anchor"></a>
+					<h3>clean<wbr>Command</h3>
+					<div class="tsd-signature tsd-kind-icon">clean<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="cleancommand.html" class="tsd-signature-type">CleanCommand</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L22">cli/index.ts:22</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="cleancommanddef" class="tsd-anchor"></a>
+					<h3>clean<wbr>Command<wbr>Def</h3>
+					<div class="tsd-signature tsd-kind-icon">clean<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [[&#x27;clean&#x27;, &#x27;c&#x27;],&#x27;Clean Typescript output files.&#x27;,[&#x27;-i, --includes [value]&#x27;, &#x27;Including files, separated by |.&#x27;],[&#x27;-e, --excludes [value]&#x27;, &#x27;Excluding files, separated by |.&#x27;],]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L67">cli/index.ts:67</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -157,7 +181,7 @@
 					<div class="tsd-signature tsd-kind-icon">commander<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&#x27;tini&#x27;, &#x27;The CLI for the TiniJS framework.&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L20">cli/index.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L24">cli/index.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -167,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">dev<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="devcommand.html" class="tsd-signature-type">DevCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L18">cli/index.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L21">cli/index.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">dev<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [[&#x27;dev&#x27;, &#x27;serve&#x27;], &#x27;Start the dev server.&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L34">cli/index.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L49">cli/index.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -187,7 +211,7 @@
 					<div class="tsd-signature tsd-kind-icon">docs<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="docscommand.html" class="tsd-signature-type">DocsCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L13">cli/index.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L15">cli/index.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -197,9 +221,39 @@
 					<div class="tsd-signature tsd-kind-icon">docs<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [[&#x27;docs&#x27;, &#x27;home&#x27;], &#x27;Open documentation.&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L22">cli/index.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L26">cli/index.ts:26</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="generatecommand" class="tsd-anchor"></a>
+					<h3>generate<wbr>Command</h3>
+					<div class="tsd-signature tsd-kind-icon">generate<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="generatecommand.html" class="tsd-signature-type">GenerateCommand</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L17">cli/index.ts:17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="generatecommanddef" class="tsd-anchor"></a>
+					<h3>generate<wbr>Command<wbr>Def</h3>
+					<div class="tsd-signature tsd-kind-icon">generate<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [[&#x27;generate &lt;type&gt; &lt;dest&gt;&#x27;, &#x27;create&#x27;, &#x27;g&#x27;],&#x27;Generate a resource.&#x27;,[&#x27;-t, --type-prefixed&#x27;, &#x27;Use the format [name].[type].[ext].&#x27;],[&#x27;-n, --nested&#x27;, &#x27;Nested under a folder.&#x27;],]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L42">cli/index.ts:42</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>The resource type</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The resource destination</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="newcommand" class="tsd-anchor"></a>
@@ -207,7 +261,7 @@
 					<div class="tsd-signature tsd-kind-icon">new<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="newcommand.html" class="tsd-signature-type">NewCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L14">cli/index.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L16">cli/index.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -217,7 +271,7 @@
 					<div class="tsd-signature tsd-kind-icon">new<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [[&#x27;new &lt;projectName&gt;&#x27;, &#x27;start&#x27;],&#x27;Create a new project.&#x27;,[&#x27;-i, --skip-install&#x27;, &#x27;Do not install dependency packages.&#x27;],[&#x27;-g, --skip-git&#x27;, &#x27;Do not initialize a git repository.&#x27;],]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L27">cli/index.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L31">cli/index.ts:31</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,7 +288,7 @@
 					<div class="tsd-signature tsd-kind-icon">preview<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="previewcommand.html" class="tsd-signature-type">PreviewCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L16">cli/index.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L19">cli/index.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,7 +298,7 @@
 					<div class="tsd-signature tsd-kind-icon">preview<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [&#x27;preview&#x27;,&#x27;Preview the app.&#x27;,[&#x27;-p, --port [value]&#x27;, &#x27;Custom port&#x27;],[&#x27;-h, --host [value]&#x27;, &#x27;Custom host&#x27;],[&#x27;-i, --i18n&#x27;, &#x27;Enable i18n&#x27;],]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L38">cli/index.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L57">cli/index.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -254,7 +308,7 @@
 					<div class="tsd-signature tsd-kind-icon">test<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="testcommand.html" class="tsd-signature-type">TestCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L17">cli/index.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L20">cli/index.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -264,7 +318,7 @@
 					<div class="tsd-signature tsd-kind-icon">test<wbr>Command<wbr>Def<span class="tsd-signature-symbol">:</span> <a href="../globals.html#commanddef" class="tsd-signature-type">CommandDef</a><span class="tsd-signature-symbol"> = [&#x27;test&#x27;, &#x27;Unit test the app.&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L46">cli/index.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L65">cli/index.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -281,7 +335,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/cli/index.ts#L61">cli/index.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/index.ts#L101">cli/index.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Command</span></h4>
@@ -303,6 +357,9 @@
 					<li class=" tsd-kind-class">
 						<a href="buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="cleancommand.html" class="tsd-kind-icon">Clean<wbr>Command</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -318,6 +375,12 @@
 								<a href="cli.html#buildcommanddef" class="tsd-kind-icon">build<wbr>Command<wbr>Def</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cli.html#cleancommand" class="tsd-kind-icon">clean<wbr>Command</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cli.html#cleancommanddef" class="tsd-kind-icon">clean<wbr>Command<wbr>Def</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="cli.html#commander" class="tsd-kind-icon">commander</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -331,6 +394,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="cli.html#docscommanddef" class="tsd-kind-icon">docs<wbr>Command<wbr>Def</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cli.html#generatecommand" class="tsd-kind-icon">generate<wbr>Command</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cli.html#generatecommanddef" class="tsd-kind-icon">generate<wbr>Command<wbr>Def</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="cli.html#newcommand" class="tsd-kind-icon">new<wbr>Command</a>
@@ -370,6 +439,12 @@
 						<a href="fileservice.html" class="tsd-kind-icon">File<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="generatecommand.html" class="tsd-kind-icon">Generate<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="generateservice.html" class="tsd-kind-icon">Generate<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="helperservice.html" class="tsd-kind-icon">Helper<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -394,6 +469,15 @@
 						<a href="testcommand.html" class="tsd-kind-icon">Test<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="../interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/names.html" class="tsd-kind-icon">Names</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="../interfaces/newcommandoptions.html" class="tsd-kind-icon">New<wbr>Command<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -401,6 +485,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/packagejson.html" class="tsd-kind-icon">Package<wbr>Json</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/template.html" class="tsd-kind-icon">Template</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#commanddef" class="tsd-kind-icon">Command<wbr>Def</a>

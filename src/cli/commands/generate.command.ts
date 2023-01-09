@@ -1,11 +1,11 @@
 import {resolve} from 'path';
 import {yellow, green, red} from 'chalk';
-import {capitalCase} from 'change-case';
 
 import {FileService} from '../../lib/services/file.service';
 import {GenerateService} from '../../lib/services/generate.service';
 
 interface GenerateCommandOptions {
+  typePrefixed?: boolean;
   nested?: boolean;
 }
 
@@ -32,6 +32,7 @@ export class GenerateCommand {
     const templates = await this.generateService.generate(
       type,
       dest,
+      commandOptions.typePrefixed,
       commandOptions.nested
     );
     const {path: mainPath, fullPath: mainFullPath} = templates[0];

@@ -86,6 +86,8 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fileservice.html#changecontent" class="tsd-kind-icon">change<wbr>Content</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fileservice.html#copyfile" class="tsd-kind-icon">copy<wbr>File</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fileservice.html#createdir" class="tsd-kind-icon">create<wbr>Dir</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fileservice.html#createfile" class="tsd-kind-icon">create<wbr>File</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="fileservice.html#createjson" class="tsd-kind-icon">create<wbr>Json</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fileservice.html#exists" class="tsd-kind-icon">exists</a></li>
@@ -110,7 +112,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L11">lib/services/file.service.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L13">lib/services/file.service.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="fileservice.html" class="tsd-signature-type">FileService</a></h4>
@@ -130,7 +132,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L38">lib/services/file.service.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L48">lib/services/file.service.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -150,6 +152,55 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="copyfile" class="tsd-anchor"></a>
+					<h3>copy<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>File<span class="tsd-signature-symbol">(</span>src<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dest<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L28">lib/services/file.service.ts:28</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>src: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>dest: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createdir" class="tsd-anchor"></a>
+					<h3>create<wbr>Dir</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Dir<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L20">lib/services/file.service.ts:20</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="createfile" class="tsd-anchor"></a>
 					<h3>create<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -159,7 +210,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L22">lib/services/file.service.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L32">lib/services/file.service.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,7 +236,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L30">lib/services/file.service.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L40">lib/services/file.service.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -217,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L14">lib/services/file.service.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L16">lib/services/file.service.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -240,7 +291,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L58">lib/services/file.service.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L68">lib/services/file.service.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -266,7 +317,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L26">lib/services/file.service.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L36">lib/services/file.service.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -295,7 +346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L18">lib/services/file.service.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L24">lib/services/file.service.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -318,7 +369,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/334e5be/src/lib/services/file.service.ts#L34">lib/services/file.service.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/file.service.ts#L44">lib/services/file.service.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -347,6 +398,9 @@
 						<a href="buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="cleancommand.html" class="tsd-kind-icon">Clean<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="cli.html" class="tsd-kind-icon">Cli</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -368,6 +422,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fileservice.html#changecontent" class="tsd-kind-icon">change<wbr>Content</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fileservice.html#copyfile" class="tsd-kind-icon">copy<wbr>File</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fileservice.html#createdir" class="tsd-kind-icon">create<wbr>Dir</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fileservice.html#createfile" class="tsd-kind-icon">create<wbr>File</a>
@@ -395,6 +455,12 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class">
+						<a href="generatecommand.html" class="tsd-kind-icon">Generate<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="generateservice.html" class="tsd-kind-icon">Generate<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="helperservice.html" class="tsd-kind-icon">Helper<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -419,6 +485,15 @@
 						<a href="testcommand.html" class="tsd-kind-icon">Test<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="../interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/names.html" class="tsd-kind-icon">Names</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="../interfaces/newcommandoptions.html" class="tsd-kind-icon">New<wbr>Command<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -426,6 +501,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/packagejson.html" class="tsd-kind-icon">Package<wbr>Json</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/template.html" class="tsd-kind-icon">Template</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#commanddef" class="tsd-kind-icon">Command<wbr>Def</a>

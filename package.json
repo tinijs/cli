@@ -41,10 +41,13 @@
     "url": "https://github.com/tinijs/cli/issues"
   },
   "dependencies": {
+    "@parcel/packager-raw-url": "^2.8.2",
     "@parcel/reporter-bundle-analyzer": "^2.8.2",
     "@parcel/transformer-sass": "^2.8.2",
+    "@parcel/transformer-webmanifest": "^2.8.2",
+    "@tinijs/parcel-reporter-build-pwa": "file:../parcel-reporter-build-pwa/tinijs-parcel-reporter-build-pwa-0.0.1.tgz",
     "@tinijs/parcel-reporter-copy-public": "^0.0.1",
-    "@tinijs/parcel-transformer-default": "^0.0.1",
+    "@tinijs/parcel-transformer-default": "file:../parcel-transformer-default/tinijs-parcel-transformer-default-0.0.1.tgz",
     "adm-zip": "^0.4.16",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",

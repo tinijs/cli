@@ -11,8 +11,10 @@
 - [Command overview](#cli-command-overview)
 - [Command reference](#cli-command-reference)
   - [`build`](#command-build)
+  - [`clean`](#command-clean)
   - [`dev`](#command-dev)
   - [`docs`](#command-docs)
+  - [`generate`](#command-generate)
   - [`new`](#command-new)
   - [`preview`](#command-preview)
   - [`test`](#command-test)
@@ -30,9 +32,11 @@
 
 The CLI for the TiniJS framework.
 
-- [`tini build`](#command-build)
+- [`tini build --target [value]`](#command-build)
+- [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
 - [`tini dev|serve`](#command-dev)
 - [`tini docs|home`](#command-docs)
+- [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
 - [`tini new|start <projectName> --skip-install --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
 - [`tini test`](#command-test)
@@ -50,8 +54,29 @@ Build the app.
 **Usage:**
 
 ```sh
-tini build
+tini build --target [value]
 ```
+
+**Options:**
+
+- `-t, --target [value]`: Target: production (default), qa1, any, ...
+
+<h3><a name="command-clean"><p><code>clean</code></p>
+</a></h3>
+
+Clean Typescript output files.
+
+**Usage:**
+
+```sh
+tini clean --includes [value] --excludes [value]
+tini c --includes [value] --excludes [value]
+```
+
+**Options:**
+
+- `-i, --includes [value]`: Including files, separated by |.
+- `-e, --excludes [value]`: Excluding files, separated by |.
 
 <h3><a name="command-dev"><p><code>dev</code></p>
 </a></h3>
@@ -76,6 +101,29 @@ Open documentation.
 tini docs
 tini home
 ```
+
+<h3><a name="command-generate"><p><code>generate</code></p>
+</a></h3>
+
+Generate a resource.
+
+**Usage:**
+
+```sh
+tini generate <type> <dest> --type-prefixed --nested
+tini create <type> <dest> --type-prefixed --nested
+tini g <type> <dest> --type-prefixed --nested
+```
+
+**Parameters:**
+
+- `<type>`: The resource type
+- `<dest>`: The resource destination
+
+**Options:**
+
+- `-t, --type-prefixed`: Use the format [name].[type].[ext].
+- `-n, --nested`: Nested under a folder.
 
 <h3><a name="command-new"><p><code>new</code></p>
 </a></h3>

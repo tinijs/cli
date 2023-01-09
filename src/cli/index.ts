@@ -42,6 +42,7 @@ export class Cli {
   generateCommandDef: CommandDef = [
     ['generate <type> <dest>', 'create', 'g'],
     'Generate a resource.',
+    ['-t, --type-prefixed', 'Use the format [name].[type].[ext].'],
     ['-n, --nested', 'Nested under a folder.'],
   ];
 
@@ -66,8 +67,8 @@ export class Cli {
   cleanCommandDef: CommandDef = [
     ['clean', 'c'],
     'Clean Typescript output files.',
-    ['-i, --includes [value]', 'Including files, separated by "|".'],
-    ['-e, --excludes [value]', 'Excluding files, separated by "|".'],
+    ['-i, --includes [value]', 'Including files, separated by |.'],
+    ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
   constructor() {
@@ -136,12 +137,13 @@ export class Cli {
 
     // generate
     (() => {
-      const [[command, ...aliases], description, nestedOpt] =
+      const [[command, ...aliases], description, typePrefixedOpt, nestedOpt] =
         this.generateCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
+        .option(...typePrefixedOpt)
         .option(...nestedOpt)
         .action((type, dest, options) =>
           this.generateCommand.run(type, dest, options)

@@ -38,7 +38,12 @@ export class GenerateService {
 
   constructor(private projectService: ProjectService) {}
 
-  async generate(type: string, dest: string, isNested = false) {
+  async generate(
+    type: string,
+    dest: string,
+    typePrefixed = false,
+    isNested = false
+  ) {
     const templates: Template[] = [];
     // process
     const options = await this.projectService.getOptions();
@@ -68,6 +73,7 @@ export class GenerateService {
       nameParam,
       type,
       destSplits,
+      typePrefixed,
       isNested,
       'ts'
     );
@@ -89,12 +95,13 @@ export class GenerateService {
     name: string,
     type: string,
     destSplits: string[] = [],
-    nested = false,
+    typePrefixed = false,
+    isNested = false,
     ext = 'ts',
     extPrefix?: string
   ) {
     const filePaths = [...destSplits];
-    if (nested) {
+    if (isNested) {
       filePaths.push(name);
     }
     const defaultFolder = this.DEFAULT_FOLDERS[type];
@@ -102,7 +109,9 @@ export class GenerateService {
       src,
       defaultFolder,
       ...filePaths,
-      `${name}.${type}.${extPrefix ? extPrefix + '.' : ''}${ext}`,
+      `${name}.${!typePrefixed ? '' : type + '.'}${
+        !extPrefix ? '' : extPrefix + '.'
+      }${ext}`,
     ]
       .join('/')
       .replace(`${defaultFolder}/${defaultFolder}`, defaultFolder);

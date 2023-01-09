@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NewCommandOptions | @tinijs/cli</title>
+	<title>Names | @tinijs/cli</title>
 	<meta name="description" content="Documentation for @tinijs/cli">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="newcommandoptions.html">NewCommandOptions</a>
+					<a href="names.html">Names</a>
 				</li>
 			</ul>
-			<h1>Interface NewCommandOptions</h1>
+			<h1>Interface Names</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">NewCommandOptions</span>
+						<span class="target">Names</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="template.html" class="tsd-signature-type">Template</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,8 +84,13 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="newcommandoptions.html#skipgit" class="tsd-kind-icon">skip<wbr>Git</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="newcommandoptions.html#skipinstall" class="tsd-kind-icon">skip<wbr>Install</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#classname" class="tsd-kind-icon">class<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#namecamel" class="tsd-kind-icon">name<wbr>Camel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#namecapital" class="tsd-kind-icon">name<wbr>Capital</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#nameparam" class="tsd-kind-icon">name<wbr>Param</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#namepascal" class="tsd-kind-icon">name<wbr>Pascal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="names.html#tagname" class="tsd-kind-icon">tag<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,22 +99,72 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="skipgit" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> skip<wbr>Git</h3>
-					<div class="tsd-signature tsd-kind-icon">skip<wbr>Git<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="classname" class="tsd-anchor"></a>
+					<h3>class<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">class<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/commands/new.command.ts#L10">cli/commands/new.command.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L12">lib/services/generate.service.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="skipinstall" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> skip<wbr>Install</h3>
-					<div class="tsd-signature tsd-kind-icon">skip<wbr>Install<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/cli/commands/new.command.ts#L11">cli/commands/new.command.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L7">lib/services/generate.service.ts:7</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="namecamel" class="tsd-anchor"></a>
+					<h3>name<wbr>Camel</h3>
+					<div class="tsd-signature tsd-kind-icon">name<wbr>Camel<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L8">lib/services/generate.service.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="namecapital" class="tsd-anchor"></a>
+					<h3>name<wbr>Capital</h3>
+					<div class="tsd-signature tsd-kind-icon">name<wbr>Capital<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L10">lib/services/generate.service.ts:10</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="nameparam" class="tsd-anchor"></a>
+					<h3>name<wbr>Param</h3>
+					<div class="tsd-signature tsd-kind-icon">name<wbr>Param<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L11">lib/services/generate.service.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="namepascal" class="tsd-anchor"></a>
+					<h3>name<wbr>Pascal</h3>
+					<div class="tsd-signature tsd-kind-icon">name<wbr>Pascal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L9">lib/services/generate.service.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tagname" class="tsd-anchor"></a>
+					<h3>tag<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">tag<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/2c1f140/src/lib/services/generate.service.ts#L13">lib/services/generate.service.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,24 +237,39 @@
 					<li class=" tsd-kind-interface">
 						<a href="generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="names.html" class="tsd-kind-icon">Names</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="newcommandoptions.html" class="tsd-kind-icon">New<wbr>Command<wbr>Options</a>
+						<a href="names.html" class="tsd-kind-icon">Names</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="newcommandoptions.html#skipgit" class="tsd-kind-icon">skip<wbr>Git</a>
+								<a href="names.html#classname" class="tsd-kind-icon">class<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="newcommandoptions.html#skipinstall" class="tsd-kind-icon">skip<wbr>Install</a>
+								<a href="names.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="names.html#namecamel" class="tsd-kind-icon">name<wbr>Camel</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="names.html#namecapital" class="tsd-kind-icon">name<wbr>Capital</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="names.html#nameparam" class="tsd-kind-icon">name<wbr>Param</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="names.html#namepascal" class="tsd-kind-icon">name<wbr>Pascal</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="names.html#tagname" class="tsd-kind-icon">tag<wbr>Name</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="newcommandoptions.html" class="tsd-kind-icon">New<wbr>Command<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="options.html" class="tsd-kind-icon">Options</a>
 					</li>
