@@ -5,6 +5,8 @@ import {FileService} from './file.service';
 interface Options {
   out?: string;
   componentPrefix?: string;
+  url?: string;
+  pwa?: boolean;
 }
 
 interface PackageJson {
@@ -16,26 +18,30 @@ export type ProjectOptions = {
 };
 
 export class ProjectService {
-  private rcPath = resolve('.tinirc.js');
-  private packagePath = resolve('package.json');
+  private RC_PATH = 'tini.config.json';
+  private PACKAGE_PATH = 'package.json';
 
   private defaultOptions: ProjectOptions = {
     out: 'www',
     componentPrefix: 'app',
+    url: 'https://tinijs.dev',
+    pwa: false,
   };
 
   constructor(private fileService: FileService) {}
 
+  getPackageJson() {
+    const packagePath = resolve(this.PACKAGE_PATH);
+    return this.fileService.readJson<PackageJson>(packagePath);
+  }
+
   async getOptions() {
-    let options: Options = {};
-    if (await this.fileService.exists(this.rcPath)) {
-      options = await import(this.rcPath);
-    } else {
-      const packageJson = this.fileService.readJson(
-        this.packagePath
-      ) as PackageJson;
-      options = packageJson.tinirc || {};
-    }
+    const rcPath = resolve(this.RC_PATH);
+    // read options
+    const options = !(await this.fileService.exists(rcPath))
+      ? ({} as unknown as Options)
+      : await this.fileService.readJson<Options>(rcPath);
+    // result
     return {...this.defaultOptions, ...options} as ProjectOptions;
   }
 }

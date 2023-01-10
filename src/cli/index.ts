@@ -9,6 +9,8 @@ import {PreviewCommand} from './commands/preview.command';
 import {TestCommand} from './commands/test.command';
 import {DevCommand} from './commands/dev.command';
 import {CleanCommand} from './commands/clean.command';
+import {PwaInitCommand} from './commands/pwa-init.command';
+import {PwaCommand} from './commands/pwa.command';
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -20,6 +22,8 @@ export class Cli {
   testCommand: TestCommand;
   devCommand: DevCommand;
   cleanCommand: CleanCommand;
+  pwaInitCommand: PwaInitCommand;
+  pwaCommand: PwaCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -71,6 +75,10 @@ export class Cli {
     ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
+  pwaCommandDef: CommandDef = ['pwa <subCommand>', 'Working with PWA apps.'];
+
+  pwaInitCommandDef: CommandDef = ['pwa-init', 'Turn a TiniJS app into a PWA.'];
+
   constructor() {
     this.tiniModule = new TiniModule();
     this.docsCommand = new DocsCommand();
@@ -96,6 +104,8 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.projectService
     );
+    this.pwaInitCommand = new PwaInitCommand(this.tiniModule.pwaService);
+    this.pwaCommand = new PwaCommand(this.pwaInitCommand);
   }
 
   getApp() {
@@ -203,6 +213,24 @@ export class Cli {
         .option(...includesOpt)
         .option(...excludesOpt)
         .action(options => this.cleanCommand.run(options));
+    })();
+
+    // pwa
+    (() => {
+      const [command, description] = this.pwaCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action(subCommand => this.pwaCommand.run(subCommand));
+    })();
+
+    // pwa-init
+    (() => {
+      const [command, description] = this.pwaInitCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action(() => this.pwaInitCommand.run());
     })();
 
     // help
