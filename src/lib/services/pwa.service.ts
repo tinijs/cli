@@ -1,12 +1,11 @@
 import {resolve} from 'path';
 import {FileService} from './file.service';
 import {TerminalService} from './terminal.service';
-import {ProjectService} from './project.service';
+import {ProjectService, Options} from './project.service';
 
 export class PwaService {
   private VENDOR_PATH = 'node_modules/@tinijs/pwa/assets';
 
-  private BUILD_SW_PATH = 'build-sw.js';
   private SW_PATH = 'app/sw.ts';
   private MANIFEST_PATH = 'app/manifest.webmanifest';
   private ICONS_PATH = 'assets/icons';
@@ -16,10 +15,6 @@ export class PwaService {
     private terminalService: TerminalService,
     private projectService: ProjectService
   ) {}
-
-  private buildSWFileExists() {
-    return this.fileService.exists(resolve(this.BUILD_SW_PATH));
-  }
 
   private swFileExists() {
     return this.fileService.exists(resolve(this.SW_PATH));
@@ -34,11 +29,10 @@ export class PwaService {
   }
 
   async assetsExist() {
-    const buildSW = await this.buildSWFileExists();
     const sw = await this.swFileExists();
     const manifest = await this.manifestFileExists();
     const icons = await this.iconsFolderExists();
-    return buildSW && sw && manifest && icons;
+    return sw && manifest && icons;
   }
 
   installPackages() {
@@ -48,11 +42,6 @@ export class PwaService {
 
   async copyAssets() {
     const assetArr = [] as string[][];
-    // build-sw.js
-    const buildSW = await this.buildSWFileExists();
-    if (!buildSW) {
-      assetArr.push([this.BUILD_SW_PATH, this.BUILD_SW_PATH]);
-    }
     // app/sw.ts
     const sw = await this.swFileExists();
     if (!sw) {
@@ -69,8 +58,6 @@ export class PwaService {
     // assets/icons
     const icons = await this.iconsFolderExists();
     if (!icons) {
-      await this.fileService.createDir(resolve(this.ICONS_PATH));
-      // copies
       const vendorIconsPath = `${this.VENDOR_PATH}/icons`;
       const iconFilePaths = await this.fileService.listDir(vendorIconsPath);
       for (let i = 0; i < iconFilePaths.length; i++) {
@@ -82,6 +69,7 @@ export class PwaService {
       }
     }
     // copy
+    await this.fileService.createDir(resolve(this.ICONS_PATH));
     return Promise.all(
       assetArr.map(([src0, dest0]) => {
         const src = resolve(`${this.VENDOR_PATH}/${src0}`);
@@ -92,13 +80,6 @@ export class PwaService {
   }
 
   async modifyFiles() {
-    const options = await this.projectService.getOptions();
-    // .eslintignore
-    await this.fileService.changeContent(resolve('.eslintignore'), content => {
-      const line = 'build-sw.js';
-      if (content.indexOf(line) !== -1) return content;
-      return `${content}\nbuild-sw.js\n`.replace(/(\n\n)/g, '\n');
-    });
     // .parcelrc
     await this.fileService.changeContent(resolve('.parcelrc'), content => {
       const pkg = '@tinijs/parcel-reporter-build-pwa';
@@ -108,10 +89,6 @@ export class PwaService {
         `"@tinijs/parcel-reporter-copy-public", "${pkg}"`
       );
     });
-    // build-sw.js
-    await this.fileService.changeContent(resolve('build-sw.js'), content =>
-      content.replace(/<out>/g, options.out)
-    );
     // index.html
     await this.fileService.changeContent(
       resolve('app', 'index.html'),
@@ -134,6 +111,25 @@ export class PwaService {
           return content.replace(anchorStr, template + '\n  ' + anchorStr);
         }
       }
+    );
+    // tini.config.json
+    await this.projectService.updateOptions(
+      async options =>
+        ({
+          ...options,
+          pwa: {
+            globPatterns: [
+              '**/*.html',
+              '**/*.css',
+              '**/*.js',
+              '**/*.ico',
+              '**/*.jpg',
+              '**/*.png',
+              '**/*.webp',
+              '**/*.svg',
+            ],
+          },
+        } as Options)
     );
   }
 }

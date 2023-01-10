@@ -2,15 +2,22 @@ import {resolve} from 'path';
 
 import {FileService} from './file.service';
 
-interface Options {
+export interface Options {
   out?: string;
   componentPrefix?: string;
-  url?: string;
-  pwa?: boolean;
+  pwa?: PWAPrecaching;
 }
 
-interface PackageJson {
-  tinirc?: Options;
+interface PWAPrecaching {
+  globPatterns?: string[];
+}
+
+export interface PackageJson {
+  name: string;
+  version: string;
+  description: string;
+  homepage?: string;
+  author?: string;
 }
 
 export type ProjectOptions = {
@@ -24,24 +31,36 @@ export class ProjectService {
   private defaultOptions: ProjectOptions = {
     out: 'www',
     componentPrefix: 'app',
-    url: 'https://tinijs.dev',
-    pwa: false,
+    pwa: {},
   };
 
   constructor(private fileService: FileService) {}
 
+  get rcPath() {
+    return resolve(this.RC_PATH);
+  }
+
+  get packagePath() {
+    return resolve(this.PACKAGE_PATH);
+  }
+
   getPackageJson() {
-    const packagePath = resolve(this.PACKAGE_PATH);
-    return this.fileService.readJson<PackageJson>(packagePath);
+    return this.fileService.readJson<PackageJson>(this.packagePath);
   }
 
   async getOptions() {
-    const rcPath = resolve(this.RC_PATH);
     // read options
-    const options = !(await this.fileService.exists(rcPath))
+    const options = !(await this.fileService.exists(this.rcPath))
       ? ({} as unknown as Options)
-      : await this.fileService.readJson<Options>(rcPath);
+      : await this.fileService.readJson<Options>(this.rcPath);
     // result
     return {...this.defaultOptions, ...options} as ProjectOptions;
+  }
+
+  async updateOptions(modifier: (currentData: Options) => Promise<Options>) {
+    const currentData = await this.fileService.readJson<Options>(this.rcPath);
+    const newData = await modifier(currentData);
+    await this.fileService.createJson(this.rcPath, newData);
+    return this.getOptions();
   }
 }
