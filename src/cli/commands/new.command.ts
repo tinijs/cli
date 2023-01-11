@@ -5,6 +5,7 @@ import {green, gray} from 'chalk';
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
 import {DownloadService} from '../../lib/services/download.service';
+import {ProjectService} from '../../lib/services/project.service';
 
 interface NewCommandOptions {
   skipGit?: boolean;
@@ -14,12 +15,13 @@ interface NewCommandOptions {
 export class NewCommand {
   constructor(
     private fileService: FileService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private projectService: ProjectService
   ) {}
 
   async run(projectName: string, commandOptions: NewCommandOptions) {
-    const resourceUrl =
-      'https://github.com/tinijs/skeleton/archive/refs/tags/latest.zip';
+    const version = this.projectService.version;
+    const resourceUrl = `https://github.com/tinijs/skeleton/archive/refs/tags/${version}.zip`;
     const validProjectName = projectName
       .toLowerCase()
       .replace(/[^a-zA-Z0-9-]/g, ' ')

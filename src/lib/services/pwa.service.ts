@@ -36,7 +36,7 @@ export class PwaService {
   }
 
   installPackages() {
-    const version = require('../../../package.json').version;
+    const version = this.projectService.version;
     this.terminalService.exec(`npm install --save @tinijs/pwa@${version}`);
   }
 

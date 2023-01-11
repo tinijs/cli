@@ -84,7 +84,8 @@ export class Cli {
     this.docsCommand = new DocsCommand();
     this.newCommand = new NewCommand(
       this.tiniModule.fileService,
-      this.tiniModule.downloadService
+      this.tiniModule.downloadService,
+      this.tiniModule.projectService
     );
     this.generateCommand = new GenerateCommand(
       this.tiniModule.fileService,

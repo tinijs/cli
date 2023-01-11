@@ -44,6 +44,10 @@ export class ProjectService {
     return resolve(this.PACKAGE_PATH);
   }
 
+  get version() {
+    return require('../../../package.json').version as string;
+  }
+
   getPackageJson() {
     return this.fileService.readJson<PackageJson>(this.packagePath);
   }
