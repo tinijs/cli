@@ -1,4 +1,4 @@
-import {red} from 'chalk';
+import chalk from 'chalk';
 import {Command} from 'commander';
 import {Lib as TiniModule} from '../lib/index';
 import {DocsCommand} from './commands/docs.command';
@@ -244,7 +244,9 @@ export class Cli {
     commander
       .command('*')
       .description('Any other command is not supported.')
-      .action(cmd => console.error(red(`Unknown command '${cmd.args[0]}'`)));
+      .action(cmd =>
+        console.error(chalk.red(`Unknown command '${cmd.args[0]}'`))
+      );
 
     return commander;
   }

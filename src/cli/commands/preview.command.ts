@@ -1,4 +1,4 @@
-import {blue} from 'chalk';
+import chalk from 'chalk';
 const superstatic = require('superstatic');
 
 import {INFO} from '../../lib/services/message.service';
@@ -34,7 +34,9 @@ export class PreviewCommand {
         debug: false,
       })
       .listen(() =>
-        console.log(INFO + 'Preview your app at: ' + blue(`${host}:${port}`))
+        console.log(
+          INFO + 'Preview your app at: ' + chalk.blue(`${host}:${port}`)
+        )
       );
   }
 }

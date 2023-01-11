@@ -48,21 +48,20 @@
     "@tinijs/parcel-reporter-build-pwa": "0.0.2",
     "@tinijs/parcel-reporter-copy-public": "0.0.2",
     "@tinijs/parcel-transformer-default": "0.0.2",
-    "adm-zip": "^0.4.16",
-    "axios": "^0.21.1",
-    "chalk": "^4.1.0",
-    "change-case": "^4.1.1",
-    "chokidar": "^3.5.3",
+    "adm-zip": "^0.5.10",
+    "axios": "^1.2.2",
+    "chalk": "^5.2.0",
+    "change-case": "^4.1.2",
     "commander": "^6.1.0",
     "cross-env": "^7.0.3",
-    "fs-extra": "^9.0.1",
-    "inquirer": "^7.3.3",
-    "open": "^8.2.0",
+    "fs-extra": "^11.1.0",
+    "inquirer": "^9.1.4",
+    "open": "^8.4.0",
     "parcel": "^2.8.2",
     "picomatch": "^2.3.1",
-    "recursive-readdir": "^2.2.2",
+    "recursive-readdir": "^2.2.3",
     "sharp": "^0.31.3",
-    "superstatic": "^7.1.0"
+    "superstatic": "^9.0.2"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
@@ -71,7 +70,6 @@
     "@types/node": "^18.11.18",
     "@types/picomatch": "^2.3.0",
     "@types/recursive-readdir": "^2.2.1",
-    "cpy-cli": "^4.2.0",
     "gts": "^4.0.0",
     "typescript": "~4.9.4"
   }

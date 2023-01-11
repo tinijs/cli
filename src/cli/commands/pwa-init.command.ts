@@ -1,4 +1,4 @@
-import {blue} from 'chalk';
+import chalk from 'chalk';
 
 import {INFO, OK} from '../../lib/services/message.service';
 import {PwaService} from '../../lib/services/pwa.service';
@@ -20,7 +20,7 @@ export class PwaInitCommand {
     console.log(
       OK +
         'Adding PWA successfully, for more detail: ' +
-        blue('https://tinijs.dev/docs/pwa')
+        chalk.blue('https://tinijs.dev/docs/pwa')
     );
   }
 }

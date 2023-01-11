@@ -1,7 +1,9 @@
 import {resolve} from 'path';
-import {gray, red, green} from 'chalk';
-import {prompt} from 'inquirer';
+import chalk from 'chalk';
+import inquirer from 'inquirer';
 import * as picomatch from 'picomatch';
+
+const prompt = inquirer.createPromptModule();
 
 import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
@@ -62,7 +64,7 @@ export class CleanCommand {
       files
         .map(path => path.replace(resolve('.'), '').substring(1))
         .sort()
-        .forEach((item, i) => console.log(`[${i + 1}] ` + red(item)));
+        .forEach((item, i) => console.log(`[${i + 1}] ` + chalk.red(item)));
     }
     // question
     const yes = await (async () => {
@@ -72,7 +74,8 @@ export class CleanCommand {
           name: 'ok',
           message:
             'Remove files (please REVIEW the list above and git COMMIT first). ' +
-            gray('[y/N]'),
+            chalk.gray('[y/N]'),
+          default: 'N',
         },
       ]);
       return answer.ok === 'y';
@@ -91,7 +94,7 @@ export class CleanCommand {
     } else {
       message = 'No file removed.';
     }
-    console.log(green(`\n===> ${message} <===\n`));
+    console.log(chalk.green(`\n===> ${message} <===\n`));
   }
 
   private processInputPaths(input: string) {

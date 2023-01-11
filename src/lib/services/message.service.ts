@@ -1,10 +1,10 @@
-import {grey, red, yellow, blue, green} from 'chalk';
+import chalk from 'chalk';
 
-export const ANY = grey('[ANY] ');
-export const ERROR = red('[ERROR] ');
-export const WARN = yellow('[WARN] ');
-export const INFO = blue('[INFO] ');
-export const OK = green('[OK] ');
+export const ANY = chalk.gray('[ANY] ');
+export const ERROR = chalk.red('[ERROR] ');
+export const WARN = chalk.yellow('[WARN] ');
+export const INFO = chalk.blue('[INFO] ');
+export const OK = chalk.green('[OK] ');
 
 export class MessageService {
   constructor() {}
