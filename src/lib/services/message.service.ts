@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 export const ANY = chalk.gray('[ANY] ');
 export const ERROR = chalk.red('[ERROR] ');

@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import {Command} from 'commander';
 import {Lib as TiniModule} from '../lib/index';
 import {DocsCommand} from './commands/docs.command';
@@ -35,6 +35,7 @@ export class Cli {
   newCommandDef: CommandDef = [
     ['new <projectName>', 'start'],
     'Create a new project.',
+    ['-l, --latest', 'Install the latest skeleton.'],
     ['-i, --skip-install', 'Do not install dependency packages.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
   ];
@@ -44,7 +45,7 @@ export class Cli {
    * @param dest - The resource destination
    */
   generateCommandDef: CommandDef = [
-    ['generate <type> <dest>', 'create', 'g'],
+    ['generate <type> <dest>', 'g', 'create'],
     'Generate a resource.',
     ['-t, --type-prefixed', 'Use the format [name].[type].[ext].'],
     ['-n, --nested', 'Nested under a folder.'],
@@ -132,12 +133,18 @@ export class Cli {
 
     // new
     (() => {
-      const [[command, ...aliases], description, skipInstallOpt, skipGitOpt] =
-        this.newCommandDef;
+      const [
+        [command, ...aliases],
+        description,
+        latestOpt,
+        skipInstallOpt,
+        skipGitOpt,
+      ] = this.newCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
+        .option(...latestOpt)
         .option(...skipInstallOpt)
         .option(...skipGitOpt)
         .description(description)

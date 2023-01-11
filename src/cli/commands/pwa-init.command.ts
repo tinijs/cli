@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 import {INFO, OK} from '../../lib/services/message.service';
 import {PwaService} from '../../lib/services/pwa.service';

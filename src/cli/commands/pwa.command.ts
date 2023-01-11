@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 import {ERROR} from '../../lib/services/message.service';
 import {PwaInitCommand} from './pwa-init.command';

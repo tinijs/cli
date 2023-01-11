@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 const superstatic = require('superstatic');
 
 import {INFO} from '../../lib/services/message.service';
