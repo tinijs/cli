@@ -1,17 +1,26 @@
 import * as chalk from 'chalk';
 
 import {INFO, OK} from '../../lib/services/message.service';
+import {ProjectService} from '../../lib/services/project.service';
 import {PwaService} from '../../lib/services/pwa.service';
 
-export class PwaInitCommand {
-  constructor(private pwaService: PwaService) {}
+export interface CommandOptions {
+  tag?: string;
+}
 
-  async run() {
+export class PwaInitCommand {
+  constructor(
+    private projectService: ProjectService,
+    private pwaService: PwaService
+  ) {}
+
+  async run(commandOptions: CommandOptions) {
     if (await this.pwaService.assetsExist()) {
       return console.log(INFO + 'PWA assets are already available!');
     }
     // install packages
-    this.pwaService.installPackages();
+    const version = commandOptions.tag || this.projectService.version;
+    this.pwaService.installPackages(version);
     // copy assets
     await this.pwaService.copyAssets();
     // modify files
@@ -19,7 +28,7 @@ export class PwaInitCommand {
     // done
     console.log(
       OK +
-        'Adding PWA successfully, for more detail: ' +
+        `Adding @tinijs/pwa@${version} successfully, for more detail: ` +
         chalk.blue('https://tinijs.dev/docs/pwa')
     );
   }

@@ -1,16 +1,21 @@
 import * as chalk from 'chalk';
 
 import {ERROR} from '../../lib/services/message.service';
-import {PwaInitCommand} from './pwa-init.command';
+import {
+  PwaInitCommand,
+  CommandOptions as InitCommandOptions,
+} from './pwa-init.command';
+
+type CommandOptions = InitCommandOptions;
 
 export class PwaCommand {
   constructor(private pwaInitCommand: PwaInitCommand) {}
 
-  run(subCommand: string) {
+  run(subCommand: string, commandOptions: CommandOptions) {
     switch (subCommand) {
       case 'init':
       case 'i':
-        this.pwaInitCommand.run();
+        this.pwaInitCommand.run(commandOptions);
         break;
       default:
         console.log(

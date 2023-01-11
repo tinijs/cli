@@ -153,17 +153,20 @@ export default ${className};
 
   private contentForLayout(className: string, tagName: string) {
     return `
-import {TiniComponent, Layout, html, css} from '@tinijs/core';
+import {TiniComponent, Layout, html, css, unistylus} from '@tinijs/core';
 
 @Layout('${tagName}')
 export class ${className} extends TiniComponent {
   protected template = html\`<div class="page"><slot></slot></div>\`;
 
-  static styles = css\`
-    :host {
-      margin: 0;
-    }
-  \`;
+  static styles = [
+    unistylus\`\`,
+    css\`
+      :host {
+        margin: 0;
+      }
+    \`,
+  ];
 }
 
 declare global {
@@ -176,7 +179,14 @@ declare global {
 
   private contentForPage(className: string, tagName: string) {
     return `
-import {TiniComponent, Page, Reactive, html, css} from '@tinijs/core';
+import {
+  TiniComponent,
+  Page,
+  Reactive,
+  html,
+  css,
+  unistylus,
+} from '@tinijs/core';
 import {Shop, StoreSubscription} from '@tinijs/store';
 
 import {States} from '../app/states';
@@ -196,11 +206,14 @@ export class ${className} extends TiniComponent {
 
   protected template = html\`<p>${className}</p>\`;
 
-  static styles = css\`
-    :host {
-      margin: 0;
-    }
-  \`;
+  static styles = [
+    unistylus\`\`,
+    css\`
+      :host {
+        margin: 0;
+      }
+    \`,
+  ];
 }
 
 declare global {
@@ -221,6 +234,7 @@ import {
   EventEmitter,
   html,
   css,
+  unistylus,
 } from '@tinijs/core';
 
 @Component('${tagName}')
@@ -238,11 +252,14 @@ export class ${className} extends TiniComponent {
 
   protected template = html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
 
-  static styles = css\`
-    :host {
-      margin: 0;
-    }
-  \`;
+  static styles = [
+    unistylus\`\`,
+    css\`
+      :host {
+        margin: 0;
+      }
+    \`,
+  ];
 }
 
 declare global {

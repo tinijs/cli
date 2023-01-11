@@ -35,9 +35,10 @@ export class PwaService {
     return sw && manifest && icons;
   }
 
-  installPackages() {
-    const version = this.projectService.version;
-    this.terminalService.exec(`npm install --save @tinijs/pwa@${version}`);
+  installPackages(version: string) {
+    this.terminalService.exec(
+      `npm install --save @tinijs/pwa@${version}  --loglevel error`
+    );
   }
 
   async copyAssets() {

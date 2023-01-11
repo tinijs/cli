@@ -57,9 +57,9 @@ export class CleanCommand {
       .filter(path => removableMatch(path) && excludes.indexOf(path) === -1)
       .concat(...includes);
     // show file list
-    console.log('\n(IMPORTANT) The list of files to be removed:');
+    console.log('(IMPORTANT) The list of files to be removed:');
     if (!files.length) {
-      console.log('[0] No file available.');
+      console.log(chalk.gray('[0] No file available.'));
     } else {
       files
         .map(path => path.replace(resolve('.'), '').substring(1))

@@ -76,9 +76,17 @@ export class Cli {
     ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
-  pwaCommandDef: CommandDef = ['pwa <subCommand>', 'Working with PWA apps.'];
+  pwaInitCommandDef: CommandDef = [
+    'pwa-init',
+    'Turn a TiniJS app into a PWA.',
+    ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
+  ];
 
-  pwaInitCommandDef: CommandDef = ['pwa-init', 'Turn a TiniJS app into a PWA.'];
+  pwaCommandDef: CommandDef = [
+    'pwa <subCommand>',
+    'Working with PWA apps.',
+    this.pwaInitCommandDef[2] as [string, string],
+  ];
 
   constructor() {
     this.tiniModule = new TiniModule();
@@ -106,7 +114,10 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.projectService
     );
-    this.pwaInitCommand = new PwaInitCommand(this.tiniModule.pwaService);
+    this.pwaInitCommand = new PwaInitCommand(
+      this.tiniModule.projectService,
+      this.tiniModule.pwaService
+    );
     this.pwaCommand = new PwaCommand(this.pwaInitCommand);
   }
 
@@ -225,20 +236,24 @@ export class Cli {
 
     // pwa
     (() => {
-      const [command, description] = this.pwaCommandDef;
+      const [command, description, tagOpt] = this.pwaCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .action(subCommand => this.pwaCommand.run(subCommand));
+        .option(...tagOpt)
+        .action((subCommand, options) =>
+          this.pwaCommand.run(subCommand, options)
+        );
     })();
 
     // pwa-init
     (() => {
-      const [command, description] = this.pwaInitCommandDef;
+      const [command, description, tagOpt] = this.pwaInitCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .action(() => this.pwaInitCommand.run());
+        .option(...tagOpt)
+        .action(options => this.pwaInitCommand.run(options));
     })();
 
     // help

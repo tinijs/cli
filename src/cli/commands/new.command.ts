@@ -68,6 +68,7 @@ What's next?
 › ${chalk.cyan('cd ' + validProjectName)}
 › Start development: ${chalk.cyan('npm run dev')}
 › Build production: ${chalk.cyan('npm run build')}
+› Preview production: ${chalk.cyan('npm run preview')}
 › For more, please visit: ${chalk.cyan('https://tinijs.dev')}
     `);
   }
