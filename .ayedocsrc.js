@@ -1,5 +1,5 @@
 module.exports = {
-  url: 'https://example.com',
+  url: 'https://cli-api.tinijs.dev',
   fileRender: {
     'README.md': 'clix'
   }

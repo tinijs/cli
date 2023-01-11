@@ -70,21 +70,34 @@
 				</section>
 				<section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 					<ul>
+						<li><a href="#install-usage">Install &amp; Usage</a></li>
+						<li><a href="#commands">Commands</a></li>
 						<li><a href="#cli-command-overview">Command overview</a></li>
 						<li><a href="#cli-command-reference">Command reference</a><ul>
-								<li><a href="#command-%5B"><code>[</code></a></li>
 								<li><a href="#command-build"><code>build</code></a></li>
 								<li><a href="#command-clean"><code>clean</code></a></li>
 								<li><a href="#command-dev"><code>dev</code></a></li>
 								<li><a href="#command-docs"><code>docs</code></a></li>
+								<li><a href="#command-generate"><code>generate</code></a></li>
 								<li><a href="#command-new"><code>new</code></a></li>
 								<li><a href="#command-preview"><code>preview</code></a></li>
+								<li><a href="#command-pwa"><code>pwa</code></a></li>
 								<li><a href="#command-test"><code>test</code></a></li>
 								<li><a href="#command-help"><code>help</code></a></li>
 								<li><a href="#command-*"><code>*</code></a></li>
 							</ul>
 						</li>
-						<li><a href="https://example.com">Detail API reference</a></li>
+						<li><a href="https://cli-api.tinijs.dev">Detail API reference</a></li>
+					</ul>
+				</section>
+				<section id="usage">
+					<a href="#install-amp-usage" id="install-amp-usage" style="color: inherit; text-decoration: none;">
+						<h2>Install &amp; Usage</h2>
+					</a>
+					<ul>
+						<li>Install: <code>npm i -g @tinijs/cli</code></li>
+						<li>Create a new TiniJS project: <code>tini new &lt;name&gt;</code></li>
+						<li>For more, please visit: <a href="https://tinijs.dev">https://tinijs.dev</a></li>
 					</ul>
 				</section>
 				<section id="cli" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
@@ -92,274 +105,20 @@
 					</a></h2>
 					<p>The CLI for the TiniJS framework.</p>
 					<ul>
-						<li>[`tini [         [ &#39; g e n e r a t e   &lt; t y p e &gt;   &lt; d e s t &gt; &#39; ,   &#39; c r e a t e &#39; ,   &#39; g &#39; ] ,
-							&#39; G e n e r a t e   a   r e s o u r c e . &#39; ,
-							[ <pre><code>  &#x27; - t ,   - - t y p <span class="hljs-built_in">e</span> - p r <span class="hljs-built_in">e</span> f i x <span class="hljs-built_in">e</span> d &#x27; ,
-  &#x27; U s <span class="hljs-built_in">e</span>   t h <span class="hljs-built_in">e</span>   f o r m a t   [ n a m <span class="hljs-built_in">e</span> ] . [ t y p <span class="hljs-built_in">e</span> ] . [ <span class="hljs-built_in">e</span> x t ]   f o r   g <span class="hljs-built_in">e</span> n <span class="hljs-built_in">e</span> r a t <span class="hljs-built_in">e</span> d   f i l <span class="hljs-built_in">e</span> s . &#x27; , 
-</code></pre>
-							] ,
-							[ &#39; - n ,   - - n e s t e d &#39; ,   &#39; N e s t e d   u n d e r   a   f o l d e r . &#39; ] ,
-						]`](#command-[)</li>
 						<li><a href="#command-build"><code>tini build --target [value]</code></a></li>
 						<li><a href="#command-clean"><code>tini clean|c --includes [value] --excludes [value]</code></a></li>
 						<li><a href="#command-dev"><code>tini dev|serve</code></a></li>
 						<li><a href="#command-docs"><code>tini docs|home</code></a></li>
-						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --skip-install --skip-git</code></a></li>
+						<li><a href="#command-generate"><code>tini generate|g|create &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
+						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --skip-install --skip-git</code></a></li>
 						<li><a href="#command-preview"><code>tini preview --port [value] --host [value] --i18n</code></a></li>
+						<li><a href="#command-pwa"><code>tini pwa &lt;subCommand&gt; --tag [value]</code></a></li>
 						<li><a href="#command-test"><code>tini test</code></a></li>
 						<li><a href="#command-help"><code>tini help</code></a></li>
 						<li><a href="#command-*"><code>tini *</code></a></li>
 					</ul>
 					<h2><a name="cli-command-reference"><p>Command reference</p>
 					</a></h2>
-					<h3><a name="command-["><p><code>[</code></p>
-					</a></h3>
-					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini [         [ <span class="hljs-string">&#x27; g e n e r a t e   &lt; t y p e &gt;   &lt; d e s t &gt; &#x27;</span> ,   <span class="hljs-string">&#x27; c r e a t e &#x27;</span> ,   <span class="hljs-string">&#x27; g &#x27;</span> ] ,
-         <span class="hljs-string">&#x27; G e n e r a t e   a   r e s o u r c e . &#x27;</span> ,
-         [
-             <span class="hljs-string">&#x27; - t ,   - - t y p e - p r e f i x e d &#x27;</span> ,
-             <span class="hljs-string">&#x27; U s e   t h e   f o r m a t   [ n a m e ] . [ t y p e ] . [ e x t ]   f o r   g e n e r a t e d   f i l e s . &#x27;</span> ,
-         ] ,
-         [ <span class="hljs-string">&#x27; - n ,   - - n e s t e d &#x27;</span> ,   <span class="hljs-string">&#x27; N e s t e d   u n d e r   a   f o l d e r . &#x27;</span> ] ,
-     ]
-</code></pre>
-					<p><strong>Options:</strong></p>
-					<ul>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>[</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>g</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&lt;</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>y</code>:</li>
-						<li><code>p</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>&gt;</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&lt;</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>&gt;</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>c</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>g</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>]</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>G</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>a</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>o</code>:</li>
-						<li><code>u</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>c</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>.</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>[</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>y</code>:</li>
-						<li><code>p</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>p</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>f</code>:</li>
-						<li><code>i</code>:</li>
-						<li><code>x</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>U</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>h</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>f</code>:</li>
-						<li><code>o</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>m</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>[</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>m</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>]</code>:</li>
-						<li><code>.</code>:</li>
-						<li><code>[</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>y</code>:</li>
-						<li><code>p</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>]</code>:</li>
-						<li><code>.</code>:</li>
-						<li><code>[</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>x</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>]</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>f</code>:</li>
-						<li><code>o</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>g</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>a</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>f</code>:</li>
-						<li><code>i</code>:</li>
-						<li><code>l</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>.</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>]</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>[</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>-</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>N</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>s</code>:</li>
-						<li><code>t</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>u</code>:</li>
-						<li><code>n</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>a</code>:</li>
-						<li><code> </code>:</li>
-						<li><code>f</code>:</li>
-						<li><code>o</code>:</li>
-						<li><code>l</code>:</li>
-						<li><code>d</code>:</li>
-						<li><code>e</code>:</li>
-						<li><code>r</code>:</li>
-						<li><code>.</code>:</li>
-						<li><code>&#39;</code>:</li>
-						<li><code>]</code>:</li>
-						<li><code>,</code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code> </code>:</li>
-						<li><code>]</code>:</li>
-					</ul>
 					<h3><a name="command-build"><p><code>build</code></p>
 					</a></h3>
 					<p>Build the app.</p>
@@ -396,12 +155,30 @@ tini serve
 					<pre><code class="language-sh">tini docs
 tini home
 </code></pre>
+					<h3><a name="command-generate"><p><code>generate</code></p>
+					</a></h3>
+					<p>Generate a resource.</p>
+					<p><strong>Usage:</strong></p>
+					<pre><code class="language-sh">tini generate &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
+tini g &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
+tini create &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
+</code></pre>
+					<p><strong>Parameters:</strong></p>
+					<ul>
+						<li><code>&lt;type&gt;</code>: The resource type</li>
+						<li><code>&lt;dest&gt;</code>: The resource destination</li>
+					</ul>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code>-t, --type-prefixed</code>: Use the format [name].[type].[ext].</li>
+						<li><code>-n, --nested</code>: Nested under a folder.</li>
+					</ul>
 					<h3><a name="command-new"><p><code>new</code></p>
 					</a></h3>
 					<p>Create a new project.</p>
 					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini new &lt;projectName&gt; --skip-install --skip-git
-tini start &lt;projectName&gt; --skip-install --skip-git
+					<pre><code class="language-sh">tini new &lt;projectName&gt; --latest --skip-install --skip-git
+tini start &lt;projectName&gt; --latest --skip-install --skip-git
 </code></pre>
 					<p><strong>Parameters:</strong></p>
 					<ul>
@@ -409,6 +186,7 @@ tini start &lt;projectName&gt; --skip-install --skip-git
 					</ul>
 					<p><strong>Options:</strong></p>
 					<ul>
+						<li><code>-l, --latest</code>: Install the latest skeleton.</li>
 						<li><code>-i, --skip-install</code>: Do not install dependency packages.</li>
 						<li><code>-g, --skip-git</code>: Do not initialize a git repository.</li>
 					</ul>
@@ -423,6 +201,20 @@ tini start &lt;projectName&gt; --skip-install --skip-git
 						<li><code>-p, --port [value]</code>: Custom port</li>
 						<li><code>-h, --host [value]</code>: Custom host</li>
 						<li><code>-i, --i18n</code>: Enable i18n</li>
+					</ul>
+					<h3><a name="command-pwa"><p><code>pwa</code></p>
+					</a></h3>
+					<p>Working with PWA apps.</p>
+					<p><strong>Usage:</strong></p>
+					<pre><code class="language-sh">tini pwa &lt;subCommand&gt; --tag [value]
+</code></pre>
+					<p><strong>Parameters:</strong></p>
+					<ul>
+						<li><code>&lt;subCommand&gt;</code>: The <code>&lt;subCommand&gt;</code> parameter.</li>
+					</ul>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code>-t, --tag [value]</code>: Use the custom version of @tinijs/pwa.</li>
 					</ul>
 					<h3><a name="command-test"><p><code>test</code></p>
 					</a></h3>
@@ -507,6 +299,15 @@ tini start &lt;projectName&gt; --skip-install --skip-git
 						<a href="classes/projectservice.html" class="tsd-kind-icon">Project<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/pwacommand.html" class="tsd-kind-icon">Pwa<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/pwainitcommand.html" class="tsd-kind-icon">Pwa<wbr>Init<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/pwaservice.html" class="tsd-kind-icon">Pwa<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/terminalservice.html" class="tsd-kind-icon">Terminal<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -516,16 +317,19 @@ tini start &lt;projectName&gt; --skip-install --skip-git
 						<a href="interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/commandoptions.html" class="tsd-kind-icon">Command<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/names.html" class="tsd-kind-icon">Names</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/newcommandoptions.html" class="tsd-kind-icon">New<wbr>Command<wbr>Options</a>
+						<a href="interfaces/options.html" class="tsd-kind-icon">Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/options.html" class="tsd-kind-icon">Options</a>
+						<a href="interfaces/pwaprecaching.html" class="tsd-kind-icon">PWAPrecaching</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/packagejson.html" class="tsd-kind-icon">Package<wbr>Json</a>
@@ -556,6 +360,9 @@ tini start &lt;projectName&gt; --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#cliapp" class="tsd-kind-icon">cli<wbr>App</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#prompt" class="tsd-kind-icon">prompt</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#superstatic" class="tsd-kind-icon">superstatic</a>

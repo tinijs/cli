@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TestCommand | @tinijs/cli</title>
+	<title>PwaCommand | @tinijs/cli</title>
 	<meta name="description" content="Documentation for @tinijs/cli">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="testcommand.html">TestCommand</a>
+					<a href="pwacommand.html">PwaCommand</a>
 				</li>
 			</ul>
-			<h1>Class TestCommand</h1>
+			<h1>Class PwaCommand</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TestCommand</span>
+						<span class="target">PwaCommand</span>
 					</li>
 				</ul>
 			</section>
@@ -79,13 +79,13 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="testcommand.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="pwacommand.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="testcommand.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="pwacommand.html#run" class="tsd-kind-icon">run</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,22 +97,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Test<wbr>Command<span class="tsd-signature-symbol">(</span>terminalService<span class="tsd-signature-symbol">: </span><a href="terminalservice.html" class="tsd-signature-type">TerminalService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="testcommand.html" class="tsd-signature-type">TestCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Pwa<wbr>Command<span class="tsd-signature-symbol">(</span>pwaInitCommand<span class="tsd-signature-symbol">: </span><a href="pwainitcommand.html" class="tsd-signature-type">PwaInitCommand</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pwacommand.html" class="tsd-signature-type">PwaCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/136c730/src/cli/commands/test.command.ts#L3">cli/commands/test.command.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/136c730/src/cli/commands/pwa.command.ts#L11">cli/commands/pwa.command.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>terminalService: <a href="terminalservice.html" class="tsd-signature-type">TerminalService</a></h5>
+									<h5>pwaInitCommand: <a href="pwainitcommand.html" class="tsd-signature-type">PwaInitCommand</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="testcommand.html" class="tsd-signature-type">TestCommand</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="pwacommand.html" class="tsd-signature-type">PwaCommand</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -123,15 +123,24 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3>run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>subCommand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commandOptions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CommandOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/136c730/src/cli/commands/test.command.ts#L6">cli/commands/test.command.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/136c730/src/cli/commands/pwa.command.ts#L14">cli/commands/pwa.command.ts:14</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>subCommand: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>commandOptions: <span class="tsd-signature-type">CommandOptions</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -193,9 +202,21 @@
 					<li class=" tsd-kind-class">
 						<a href="projectservice.html" class="tsd-kind-icon">Project<wbr>Service</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="pwacommand.html" class="tsd-kind-icon">Pwa<wbr>Command</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="pwacommand.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="pwacommand.html#run" class="tsd-kind-icon">run</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="pwainitcommand.html" class="tsd-kind-icon">Pwa<wbr>Init<wbr>Command</a>
 					</li>
@@ -205,21 +226,9 @@
 					<li class=" tsd-kind-class">
 						<a href="terminalservice.html" class="tsd-kind-icon">Terminal<wbr>Service</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="testcommand.html" class="tsd-kind-icon">Test<wbr>Command</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="testcommand.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="testcommand.html#run" class="tsd-kind-icon">run</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
 					</li>

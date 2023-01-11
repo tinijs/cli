@@ -8,6 +8,7 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
+- [Install & Usage](#install-usage)
 - [Command overview](#cli-command-overview)
 - [Command reference](#cli-command-reference)
   - [`build`](#command-build)
@@ -17,11 +18,22 @@
   - [`generate`](#command-generate)
   - [`new`](#command-new)
   - [`preview`](#command-preview)
+  - [`pwa`](#command-pwa)
   - [`test`](#command-test)
   - [`help`](#command-help)
   - [`*`](#command-*)
-- [Detail API reference](https://example.com)
+- [Detail API reference](https://cli-api.tinijs.dev)
 
+
+</section>
+
+<section id="usage">
+
+## Install & Usage
+
+- Install: `npm i -g @tinijs/cli`
+- Create a new TiniJS project: `tini new <name>`
+- For more, please visit: <https://tinijs.dev>
 
 </section>
 
@@ -36,9 +48,10 @@ The CLI for the TiniJS framework.
 - [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
 - [`tini dev|serve`](#command-dev)
 - [`tini docs|home`](#command-docs)
-- [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
-- [`tini new|start <projectName> --skip-install --skip-git`](#command-new)
+- [`tini generate|g|create <type> <dest> --type-prefixed --nested`](#command-generate)
+- [`tini new|start <projectName> --latest --skip-install --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
+- [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
 - [`tini help`](#command-help)
 - [`tini *`](#command-*)
@@ -111,8 +124,8 @@ Generate a resource.
 
 ```sh
 tini generate <type> <dest> --type-prefixed --nested
-tini create <type> <dest> --type-prefixed --nested
 tini g <type> <dest> --type-prefixed --nested
+tini create <type> <dest> --type-prefixed --nested
 ```
 
 **Parameters:**
@@ -133,8 +146,8 @@ Create a new project.
 **Usage:**
 
 ```sh
-tini new <projectName> --skip-install --skip-git
-tini start <projectName> --skip-install --skip-git
+tini new <projectName> --latest --skip-install --skip-git
+tini start <projectName> --latest --skip-install --skip-git
 ```
 
 **Parameters:**
@@ -143,6 +156,7 @@ tini start <projectName> --skip-install --skip-git
 
 **Options:**
 
+- `-l, --latest`: Install the latest skeleton.
 - `-i, --skip-install`: Do not install dependency packages.
 - `-g, --skip-git`: Do not initialize a git repository.
 
@@ -162,6 +176,25 @@ tini preview --port [value] --host [value] --i18n
 - `-p, --port [value]`: Custom port
 - `-h, --host [value]`: Custom host
 - `-i, --i18n`: Enable i18n
+
+<h3><a name="command-pwa"><p><code>pwa</code></p>
+</a></h3>
+
+Working with PWA apps.
+
+**Usage:**
+
+```sh
+tini pwa <subCommand> --tag [value]
+```
+
+**Parameters:**
+
+- `<subCommand>`: The `<subCommand>` parameter.
+
+**Options:**
+
+- `-t, --tag [value]`: Use the custom version of @tinijs/pwa.
 
 <h3><a name="command-test"><p><code>test</code></p>
 </a></h3>
