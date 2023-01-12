@@ -8,7 +8,10 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
-- [Install & Usage](#install-usage)
+- [Install & Usage](#install--usage)
+- [Development](#development)
+  - [The structure](#the-structure)
+  - [Add new command](#add-new-command)
 - [Command overview](#cli-command-overview)
 - [Command reference](#cli-command-reference)
   - [`build`](#command-build)
@@ -31,9 +34,44 @@
 
 ## Install & Usage
 
-- Install: `npm i -g @tinijs/cli`
-- Create a new TiniJS project: `tini new <name>`
-- For more, please visit: <https://tinijs.dev>
+`npm i -g @tinijs/cli`
+
+For more, please visit: <https://tinijs.dev>
+
+## Development
+
+- Create a home for TiniJS: `mkdir TiniJS && cd TiniJS`
+- Fork the repo: `git clone https://github.com/tinijs/cli.git`
+- Install dependencies: `cd cli && npm i`
+- Make changes & build locally: `npm run build`
+- Preview a command: `tini <command> [options]`
+- Push changes & create a PR 👌
+
+### The structure
+
+This project uses a design pattern called `seminjecto` (it's a term which I invented some years ago).
+
+The source of the package resides in the `src` folder:
+
+- `public-api.ts`: the public interface of the package
+- `bin.ts`: the entry of the CLI
+- `lib/index.ts`: the container for all shared features
+- `lib/services/...`: all the reusable services
+- `cli/index.ts`: the container of the CLI app
+- `cli/commands/...`: all the commands of the CLI app
+
+The test specs are in the `test` folder:
+
+- No unit test has been written yet (please help if you can, thank you!)
+
+### Add new command
+
+- Install the `@lamnhan/seminjecto` CLI tool: `npm i -g @lamnhan/seminjecto` (the tool is quite outdated but it is still working :), I will update it when I have more time).
+- Run: `semidi g command commands/<name>`
+
+A file will be create in `src/cli/commands/<name>.command.ts`.
+
+Beside, the command definition code will be injected into `src/cli/index.ts`.
 
 </section>
 
