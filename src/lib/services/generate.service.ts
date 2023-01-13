@@ -187,13 +187,13 @@ import {
   css,
   unistylus,
 } from '@tinijs/core';
-import {Shop, StoreSubscription} from '@tinijs/store';
+import {SubscribeStore, StoreSubscription} from '@tinijs/store';
 
 import {States} from '../app/states';
 
 @Page('${tagName}')
 export class ${className} extends TiniComponent {
-  @Shop() shop!: StoreSubscription<States>;
+  @SubscribeStore() shop!: StoreSubscription<States>;
 
   @Reactive() name!: string;
 
