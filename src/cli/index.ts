@@ -35,7 +35,8 @@ export class Cli {
   newCommandDef: CommandDef = [
     ['new <projectName>', 'start'],
     'Create a new project.',
-    ['-l, --latest', 'Install the latest skeleton.'],
+    ['-l, --latest', 'Install the latest @tinijs/skeleton.'],
+    ['-t, --tag [value]', 'Use the custom version of the @tinijs/skeleton.'],
     ['-i, --skip-install', 'Do not install dependency packages.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
   ];
@@ -45,7 +46,7 @@ export class Cli {
    * @param dest - The resource destination
    */
   generateCommandDef: CommandDef = [
-    ['generate <type> <dest>', 'g', 'create'],
+    ['generate <type> <dest>', 'create', 'g'],
     'Generate a resource.',
     ['-t, --type-prefixed', 'Use the format [name].[type].[ext].'],
     ['-n, --nested', 'Nested under a folder.'],
@@ -85,7 +86,7 @@ export class Cli {
   pwaCommandDef: CommandDef = [
     'pwa <subCommand>',
     'Working with PWA apps.',
-    this.pwaInitCommandDef[2] as [string, string],
+    ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
   ];
 
   constructor() {
@@ -148,6 +149,7 @@ export class Cli {
         [command, ...aliases],
         description,
         latestOpt,
+        tagOpt,
         skipInstallOpt,
         skipGitOpt,
       ] = this.newCommandDef;
@@ -156,6 +158,7 @@ export class Cli {
         .aliases(aliases)
         .description(description)
         .option(...latestOpt)
+        .option(...tagOpt)
         .option(...skipInstallOpt)
         .option(...skipGitOpt)
         .description(description)

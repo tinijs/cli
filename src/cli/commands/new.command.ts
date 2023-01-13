@@ -8,6 +8,7 @@ import {ProjectService} from '../../lib/services/project.service';
 
 interface CommandOptions {
   latest?: boolean;
+  tag?: string;
   skipGit?: boolean;
   skipInstall?: boolean;
 }
@@ -21,7 +22,9 @@ export class NewCommand {
 
   async run(projectName: string, commandOptions: CommandOptions) {
     const version = this.projectService.version;
-    const tag = commandOptions.latest ? 'latest' : version;
+    const tag = commandOptions.latest
+      ? 'latest'
+      : commandOptions.tag || version;
     const resourceUrl = `https://github.com/tinijs/skeleton/archive/refs/tags/${tag}.zip`;
     const validProjectName = projectName
       .toLowerCase()

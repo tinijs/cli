@@ -70,8 +70,12 @@
 				</section>
 				<section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 					<ul>
-						<li><a href="#install-usage">Install &amp; Usage</a></li>
-						<li><a href="#commands">Commands</a></li>
+						<li><a href="#install">Install</a></li>
+						<li><a href="#development">Development</a><ul>
+								<li><a href="#the-structure">The structure</a></li>
+								<li><a href="#add-new-command">Add new command</a></li>
+							</ul>
+						</li>
 						<li><a href="#cli-command-overview">Command overview</a></li>
 						<li><a href="#cli-command-reference">Command reference</a><ul>
 								<li><a href="#command-build"><code>build</code></a></li>
@@ -91,14 +95,48 @@
 					</ul>
 				</section>
 				<section id="usage">
-					<a href="#install-amp-usage" id="install-amp-usage" style="color: inherit; text-decoration: none;">
-						<h2>Install &amp; Usage</h2>
+					<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+						<h2>Install</h2>
+					</a>
+					<p><code>npm i -g @tinijs/cli</code></p>
+					<p>For more, please visit: <a href="https://tinijs.dev">https://tinijs.dev</a></p>
+					<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+						<h2>Development</h2>
 					</a>
 					<ul>
-						<li>Install: <code>npm i -g @tinijs/cli</code></li>
-						<li>Create a new TiniJS project: <code>tini new &lt;name&gt;</code></li>
-						<li>For more, please visit: <a href="https://tinijs.dev">https://tinijs.dev</a></li>
+						<li>Create a home for TiniJS: <code>mkdir TiniJS &amp;&amp; cd TiniJS</code></li>
+						<li>Fork the repo: <code>git clone https://github.com/tinijs/cli.git</code></li>
+						<li>Install dependencies: <code>cd cli &amp;&amp; npm i</code></li>
+						<li>Make changes &amp; build locally: <code>npm run build</code></li>
+						<li>Preview a command: <code>tini &lt;command&gt; [options]</code></li>
+						<li>Push changes &amp; create a PR 👌</li>
 					</ul>
+					<a href="#the-structure" id="the-structure" style="color: inherit; text-decoration: none;">
+						<h3>The structure</h3>
+					</a>
+					<p>This project uses a design pattern called <code>seminjecto</code> (it&#39;s a term which I invented some years ago).</p>
+					<p>The source of the package resides in the <code>src</code> folder:</p>
+					<ul>
+						<li><code>public-api.ts</code>: the public interface of the package</li>
+						<li><code>bin.ts</code>: the entry of the CLI</li>
+						<li><code>lib/index.ts</code>: the container for all shared features</li>
+						<li><code>lib/services/...</code>: all the reusable services</li>
+						<li><code>cli/index.ts</code>: the container of the CLI app</li>
+						<li><code>cli/commands/...</code>: all the commands of the CLI app</li>
+					</ul>
+					<p>The test specs are in the <code>test</code> folder:</p>
+					<ul>
+						<li>No unit test has been written yet (please help if you can, thank you!)</li>
+					</ul>
+					<a href="#add-new-command" id="add-new-command" style="color: inherit; text-decoration: none;">
+						<h3>Add new command</h3>
+					</a>
+					<ul>
+						<li>Install the <code>@lamnhan/seminjecto</code> CLI tool: <code>npm i -g @lamnhan/seminjecto</code> (the tool is quite outdated but it is still working :), I will update it when I have more time).</li>
+						<li>Run: <code>semidi g command commands/&lt;name&gt;</code></li>
+					</ul>
+					<p>A file will be create in <code>src/cli/commands/&lt;name&gt;.command.ts</code>.</p>
+					<p>Beside, the command definition code will be injected into <code>src/cli/index.ts</code>.</p>
 				</section>
 				<section id="cli" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 					<h2><a name="cli-command-overview"><p>Command overview</p>
@@ -110,7 +148,7 @@
 						<li><a href="#command-dev"><code>tini dev|serve</code></a></li>
 						<li><a href="#command-docs"><code>tini docs|home</code></a></li>
 						<li><a href="#command-generate"><code>tini generate|g|create &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
-						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --skip-install --skip-git</code></a></li>
+						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git</code></a></li>
 						<li><a href="#command-preview"><code>tini preview --port [value] --host [value] --i18n</code></a></li>
 						<li><a href="#command-pwa"><code>tini pwa &lt;subCommand&gt; --tag [value]</code></a></li>
 						<li><a href="#command-test"><code>tini test</code></a></li>
@@ -177,8 +215,8 @@ tini create &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-
 					</a></h3>
 					<p>Create a new project.</p>
 					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini new &lt;projectName&gt; --latest --skip-install --skip-git
-tini start &lt;projectName&gt; --latest --skip-install --skip-git
+					<pre><code class="language-sh">tini new &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
+tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 </code></pre>
 					<p><strong>Parameters:</strong></p>
 					<ul>
@@ -186,7 +224,8 @@ tini start &lt;projectName&gt; --latest --skip-install --skip-git
 					</ul>
 					<p><strong>Options:</strong></p>
 					<ul>
-						<li><code>-l, --latest</code>: Install the latest skeleton.</li>
+						<li><code>-l, --latest</code>: Install the latest @tinijs/skeleton.</li>
+						<li><code>-t, --tag [value]</code>: Use the custom version of the @tinijs/skeleton.</li>
 						<li><code>-i, --skip-install</code>: Do not install dependency packages.</li>
 						<li><code>-g, --skip-git</code>: Do not initialize a git repository.</li>
 					</ul>

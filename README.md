@@ -8,7 +8,7 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
-- [Install & Usage](#install--usage)
+- [Install](#install)
 - [Development](#development)
   - [The structure](#the-structure)
   - [Add new command](#add-new-command)
@@ -32,7 +32,7 @@
 
 <section id="usage">
 
-## Install & Usage
+## Install
 
 `npm i -g @tinijs/cli`
 
@@ -86,8 +86,8 @@ The CLI for the TiniJS framework.
 - [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
 - [`tini dev|serve`](#command-dev)
 - [`tini docs|home`](#command-docs)
-- [`tini generate|g|create <type> <dest> --type-prefixed --nested`](#command-generate)
-- [`tini new|start <projectName> --latest --skip-install --skip-git`](#command-new)
+- [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
+- [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
 - [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
@@ -162,8 +162,8 @@ Generate a resource.
 
 ```sh
 tini generate <type> <dest> --type-prefixed --nested
-tini g <type> <dest> --type-prefixed --nested
 tini create <type> <dest> --type-prefixed --nested
+tini g <type> <dest> --type-prefixed --nested
 ```
 
 **Parameters:**
@@ -184,8 +184,8 @@ Create a new project.
 **Usage:**
 
 ```sh
-tini new <projectName> --latest --skip-install --skip-git
-tini start <projectName> --latest --skip-install --skip-git
+tini new <projectName> --latest --tag [value] --skip-install --skip-git
+tini start <projectName> --latest --tag [value] --skip-install --skip-git
 ```
 
 **Parameters:**
@@ -194,7 +194,8 @@ tini start <projectName> --latest --skip-install --skip-git
 
 **Options:**
 
-- `-l, --latest`: Install the latest skeleton.
+- `-l, --latest`: Install the latest @tinijs/skeleton.
+- `-t, --tag [value]`: Use the custom version of the @tinijs/skeleton.
 - `-i, --skip-install`: Do not install dependency packages.
 - `-g, --skip-git`: Do not initialize a git repository.
 

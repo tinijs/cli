@@ -8,7 +8,10 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
-- [Install & Usage](#install-usage)
+- [Install](#install)
+- [Development](#development)
+  - [The structure](#the-structure)
+  - [Add new command](#add-new-command)
 - [Command overview](#cli-command-overview)
 - [Command reference](#cli-command-reference)
   - [`build`](#command-build)
@@ -29,11 +32,46 @@
 
 <section id="usage">
 
-## Install & Usage
+## Install
 
-- Install: `npm i -g @tinijs/cli`
-- Create a new TiniJS project: `tini new <name>`
-- For more, please visit: <https://tinijs.dev>
+`npm i -g @tinijs/cli`
+
+For more, please visit: <https://tinijs.dev>
+
+## Development
+
+- Create a home for TiniJS: `mkdir TiniJS && cd TiniJS`
+- Fork the repo: `git clone https://github.com/tinijs/cli.git`
+- Install dependencies: `cd cli && npm i`
+- Make changes & build locally: `npm run build`
+- Preview a command: `tini <command> [options]`
+- Push changes & create a PR 👌
+
+### The structure
+
+This project uses a design pattern called `seminjecto` (it's a term which I invented some years ago).
+
+The source of the package resides in the `src` folder:
+
+- `public-api.ts`: the public interface of the package
+- `bin.ts`: the entry of the CLI
+- `lib/index.ts`: the container for all shared features
+- `lib/services/...`: all the reusable services
+- `cli/index.ts`: the container of the CLI app
+- `cli/commands/...`: all the commands of the CLI app
+
+The test specs are in the `test` folder:
+
+- No unit test has been written yet (please help if you can, thank you!)
+
+### Add new command
+
+- Install the `@lamnhan/seminjecto` CLI tool: `npm i -g @lamnhan/seminjecto` (the tool is quite outdated but it is still working :), I will update it when I have more time).
+- Run: `semidi g command commands/<name>`
+
+A file will be create in `src/cli/commands/<name>.command.ts`.
+
+Beside, the command definition code will be injected into `src/cli/index.ts`.
 
 </section>
 
@@ -48,8 +86,8 @@ The CLI for the TiniJS framework.
 - [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
 - [`tini dev|serve`](#command-dev)
 - [`tini docs|home`](#command-docs)
-- [`tini generate|g|create <type> <dest> --type-prefixed --nested`](#command-generate)
-- [`tini new|start <projectName> --latest --skip-install --skip-git`](#command-new)
+- [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
+- [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
 - [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
@@ -124,8 +162,8 @@ Generate a resource.
 
 ```sh
 tini generate <type> <dest> --type-prefixed --nested
-tini g <type> <dest> --type-prefixed --nested
 tini create <type> <dest> --type-prefixed --nested
+tini g <type> <dest> --type-prefixed --nested
 ```
 
 **Parameters:**
@@ -146,8 +184,8 @@ Create a new project.
 **Usage:**
 
 ```sh
-tini new <projectName> --latest --skip-install --skip-git
-tini start <projectName> --latest --skip-install --skip-git
+tini new <projectName> --latest --tag [value] --skip-install --skip-git
+tini start <projectName> --latest --tag [value] --skip-install --skip-git
 ```
 
 **Parameters:**
@@ -156,7 +194,8 @@ tini start <projectName> --latest --skip-install --skip-git
 
 **Options:**
 
-- `-l, --latest`: Install the latest skeleton.
+- `-l, --latest`: Install the latest @tinijs/skeleton.
+- `-t, --tag [value]`: Use the custom version of the @tinijs/skeleton.
 - `-i, --skip-install`: Do not install dependency packages.
 - `-g, --skip-git`: Do not initialize a git repository.
 
