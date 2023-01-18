@@ -193,12 +193,12 @@ import {States} from '../app/states';
 
 @Page('${tagName}')
 export class ${className} extends TiniComponent {
-  @SubscribeStore() shop!: StoreSubscription<States>;
+  @SubscribeStore() store!: StoreSubscription<States>;
 
   @Reactive() name!: string;
 
   onInit() {
-    this.shop.subscribe(states => {
+    this.store.subscribe(states => {
       // do something with the states
       // this.name = states.name;
     });
