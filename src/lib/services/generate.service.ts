@@ -58,7 +58,7 @@ export class GenerateService {
     const tagName =
       type === this.COMPONENT
         ? `${options.componentPrefix}-${nameParam}`
-        : `${nameParam}-${type}`;
+        : `${type}-${nameParam}`;
     const names: Names = {
       name,
       nameCamel,
