@@ -4,7 +4,7 @@ import * as chalk from 'chalk';
 import {FileService} from '../../lib/services/file.service';
 import {GenerateService} from '../../lib/services/generate.service';
 
-interface GenerateCommandOptions {
+interface CommandOptions {
   typePrefixed?: boolean;
   nested?: boolean;
 }
@@ -15,11 +15,7 @@ export class GenerateCommand {
     private generateService: GenerateService
   ) {}
 
-  async run(
-    type: string,
-    dest: string,
-    commandOptions: GenerateCommandOptions
-  ) {
+  async run(type: string, dest: string, commandOptions: CommandOptions) {
     const SUPPORTED_TYPES = Object.keys(
       this.generateService.DEFAULT_FOLDERS
     ).map(item => item);

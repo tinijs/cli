@@ -6,9 +6,8 @@ import * as picomatch from 'picomatch';
 const prompt = inquirer.createPromptModule();
 
 import {FileService} from '../../lib/services/file.service';
-import {ProjectService} from '../../lib/services/project.service';
 
-interface CleanCommandOptions {
+interface CommandOptions {
   includes?: string;
   excludes?: string;
 }
@@ -32,12 +31,9 @@ export class CleanCommand {
   private PROCESSABLE_PATTERN =
     '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
 
-  constructor(
-    private fileService: FileService,
-    private projectService: ProjectService
-  ) {}
+  constructor(private fileService: FileService) {}
 
-  async run(commandOptions: CleanCommandOptions) {
+  async run(commandOptions: CommandOptions) {
     const includes = commandOptions.includes
       ? this.processInputPaths(commandOptions.includes)
       : [];

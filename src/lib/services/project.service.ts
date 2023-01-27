@@ -6,6 +6,7 @@ export interface Options {
   out?: string;
   componentPrefix?: string;
   pwa?: PWAPrecaching;
+  unistylus?: string;
 }
 
 interface PWAPrecaching {
@@ -32,6 +33,7 @@ export class ProjectService {
     out: 'www',
     componentPrefix: 'app',
     pwa: {},
+    unistylus: '',
   };
 
   constructor(private fileService: FileService) {}

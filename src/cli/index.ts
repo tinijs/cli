@@ -111,10 +111,7 @@ export class Cli {
     );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
-    this.cleanCommand = new CleanCommand(
-      this.tiniModule.fileService,
-      this.tiniModule.projectService
-    );
+    this.cleanCommand = new CleanCommand(this.tiniModule.fileService);
     this.pwaInitCommand = new PwaInitCommand(
       this.tiniModule.projectService,
       this.tiniModule.pwaService

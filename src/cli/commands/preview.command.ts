@@ -4,7 +4,7 @@ const superstatic = require('superstatic');
 import {INFO} from '../../lib/services/message.service';
 import {ProjectService} from '../../lib/services/project.service';
 
-interface Options {
+interface CommandOptions {
   port?: string;
   host?: string;
   i18n?: boolean;
@@ -13,16 +13,16 @@ interface Options {
 export class PreviewCommand {
   constructor(private projectService: ProjectService) {}
 
-  async run(options: Options) {
+  async run(commandOptions: CommandOptions) {
     const {out: cwd} = await this.projectService.getOptions();
     // launch server
-    const host = options.host || '0.0.0.0';
-    const port = options.port || 8080;
+    const host = commandOptions.host || '0.0.0.0';
+    const port = commandOptions.port || 8080;
     const config = {
       cleanUrls: true,
       rewrites: [{source: '**', destination: '/index.html'}],
     } as Record<string, unknown>;
-    if (options.i18n) {
+    if (commandOptions.i18n) {
       config.i18n = {root: '/'};
     }
     superstatic
