@@ -152,12 +152,31 @@ export default ${className};
   }
 
   private contentForLayout(className: string, tagName: string) {
-    return `
-import {TiniComponent, Layout, html, css, unistylus} from '@tinijs/core';
-
-@Layout('${tagName}')
+    return `@Layout('${tagName}')
 export class ${className} extends TiniComponent {
-  protected template = html\`<div class="page"><slot></slot></div>\`;
+  static styles = [
+    unistylus\`\`,
+    css\`
+      :host {
+        margin: 0;
+      }
+    \`,
+  ];
+
+  protected render() {
+    return html\`<div class="page"><slot></slot></div>\`;
+  }
+}
+`;
+  }
+
+  private contentForPage(className: string, tagName: string) {
+    return `import {States} from '../app/states';
+
+@Page('${tagName}')
+export class ${className} extends TiniComponent {
+  @SubscribeStore() store!: StoreSubscription<States>;
+  @Reactive() name!: string;
 
   static styles = [
     unistylus\`\`,
@@ -167,35 +186,10 @@ export class ${className} extends TiniComponent {
       }
     \`,
   ];
-}
 
-declare global {
-  interface HTMLElementTagNameMap {
-    '${tagName}': ${className};
+  protected render() {
+    return html\`<p>${className}</p>\`;
   }
-}
-`;
-  }
-
-  private contentForPage(className: string, tagName: string) {
-    return `
-import {
-  TiniComponent,
-  Page,
-  Reactive,
-  html,
-  css,
-  unistylus,
-} from '@tinijs/core';
-import {SubscribeStore, StoreSubscription} from '@tinijs/store';
-
-import {States} from '../app/states';
-
-@Page('${tagName}')
-export class ${className} extends TiniComponent {
-  @SubscribeStore() store!: StoreSubscription<States>;
-
-  @Reactive() name!: string;
 
   onInit() {
     this.store.subscribe(states => {
@@ -203,8 +197,15 @@ export class ${className} extends TiniComponent {
       // this.name = states.name;
     });
   }
+}
+`;
+  }
 
-  protected template = html\`<p>${className}</p>\`;
+  private contentForComponent(className: string, tagName: string) {
+    return `@Component('${tagName}')
+export class ${className} extends TiniComponent {
+  @Input() attr?: string;
+  @Output() customEvent!: EventEmitter<string>;
 
   static styles = [
     unistylus\`\`,
@@ -214,33 +215,10 @@ export class ${className} extends TiniComponent {
       }
     \`,
   ];
-}
 
-declare global {
-  interface HTMLElementTagNameMap {
-    '${tagName}': ${className};
+  protected render() {
+    return html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
   }
-}
-`;
-  }
-
-  private contentForComponent(className: string, tagName: string) {
-    return `
-import {
-  TiniComponent,
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  html,
-  css,
-  unistylus,
-} from '@tinijs/core';
-
-@Component('${tagName}')
-export class ${className} extends TiniComponent {
-  @Input() attr?: string;
-  @Output() customEvent!: EventEmitter<string>;
 
   onCreate() {
     // element connected
@@ -248,23 +226,6 @@ export class ${className} extends TiniComponent {
 
   emitCustomEvent() {
     this.customEvent.emit('any payload');
-  }
-
-  protected template = html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
-
-  static styles = [
-    unistylus\`\`,
-    css\`
-      :host {
-        margin: 0;
-      }
-    \`,
-  ];
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    '${tagName}': ${className};
   }
 }
 `;
