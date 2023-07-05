@@ -90,9 +90,9 @@ export class PwaService {
         `"@tinijs/parcel-reporter-copy-public", "${pkg}"`
       );
     });
-    // index.html
+    // app.html
     await this.fileService.changeContent(
-      resolve('app', 'index.html'),
+      resolve('app', 'app.html'),
       content => {
         const manifestUrl = './manifest.webmanifest';
         if (content.indexOf(manifestUrl) !== -1) return content;

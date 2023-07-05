@@ -15,7 +15,7 @@ export class BuildCommand {
     const {out} = await this.projectService.getOptions();
     const target = commandOptions.target || 'production';
     this.terminalService.exec(
-      `cross-env NODE_ENV=${target} parcel build app/index.html --dist-dir ${out} --no-cache`,
+      `cross-env NODE_ENV=${target} parcel build app/app.html --dist-dir ${out} --no-cache`,
       '.',
       'inherit'
     );

@@ -10,7 +10,7 @@ export class DevCommand {
   async run() {
     const {out} = await this.projectService.getOptions();
     this.terminalService.exec(
-      `parcel app/index.html --dist-dir ${out} --port 3000 --no-cache`,
+      `parcel app/app.html --dist-dir ${out} --port 3000 --no-cache`,
       '.',
       'inherit'
     );

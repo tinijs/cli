@@ -20,7 +20,7 @@ export class PreviewCommand {
     const port = commandOptions.port || 8080;
     const config = {
       cleanUrls: true,
-      rewrites: [{source: '**', destination: '/index.html'}],
+      rewrites: [{source: '**', destination: '/app.html'}],
     } as Record<string, unknown>;
     if (commandOptions.i18n) {
       config.i18n = {root: '/'};
