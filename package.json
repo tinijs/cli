@@ -38,36 +38,36 @@
     "url": "https://github.com/tinijs/cli/issues"
   },
   "dependencies": {
-    "@parcel/packager-raw-url": "^2.8.2",
-    "@parcel/reporter-bundle-analyzer": "^2.8.2",
-    "@parcel/transformer-sass": "^2.8.2",
-    "@parcel/transformer-webmanifest": "^2.8.2",
+    "@parcel/packager-raw-url": "^2.9.3",
+    "@parcel/reporter-bundle-analyzer": "^2.9.3",
+    "@parcel/transformer-sass": "^2.9.3",
+    "@parcel/transformer-webmanifest": "^2.9.3",
     "@tinijs/parcel-reporter-build-pwa": "file:../parcel-reporter-build-pwa/tinijs-parcel-reporter-build-pwa-0.0.3.tgz",
     "@tinijs/parcel-reporter-copy-public": "file:../parcel-reporter-copy-public/tinijs-parcel-reporter-copy-public-0.0.3.tgz",
     "@tinijs/parcel-transformer-default": "file:../parcel-transformer-default/tinijs-parcel-transformer-default-0.0.3.tgz",
     "adm-zip": "^0.5.10",
-    "axios": "^1.2.2",
+    "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "change-case": "^4.1.2",
     "commander": "^9.5.0",
     "cross-env": "^7.0.3",
-    "fs-extra": "^11.1.0",
+    "fs-extra": "^11.1.1",
     "inquirer": "^8.2.5",
-    "open": "^8.4.0",
-    "parcel": "^2.8.2",
+    "open": "^8.4.2",
+    "parcel": "^2.9.3",
     "picomatch": "^2.3.1",
     "recursive-readdir": "^2.2.3",
     "sharp": "^0.31.3",
-    "superstatic": "^9.0.2"
+    "superstatic": "^9.0.3"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.16.19",
     "@types/picomatch": "^2.3.0",
     "@types/recursive-readdir": "^2.2.1",
     "gts": "^4.0.0",
-    "typescript": "~4.9.4"
+    "typescript": "~4.9.5"
   }
 }
