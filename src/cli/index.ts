@@ -11,6 +11,9 @@ import {DevCommand} from './commands/dev.command';
 import {CleanCommand} from './commands/clean.command';
 import {PwaInitCommand} from './commands/pwa-init.command';
 import {PwaCommand} from './commands/pwa.command';
+import {UiUseCommand} from './commands/ui-use.command';
+import {UiBuildCommand} from './commands/ui-build.command';
+import {UiCommand} from './commands/ui.command';
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -24,6 +27,9 @@ export class Cli {
   cleanCommand: CleanCommand;
   pwaInitCommand: PwaInitCommand;
   pwaCommand: PwaCommand;
+  uiUseCommand: UiUseCommand;
+  uiBuildCommand: UiBuildCommand;
+  uiCommand: UiCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -63,9 +69,9 @@ export class Cli {
   previewCommandDef: CommandDef = [
     'preview',
     'Preview the app.',
-    ['-p, --port [value]', 'Custom port'],
-    ['-h, --host [value]', 'Custom host'],
-    ['-i, --i18n', 'Enable i18n'],
+    ['-p, --port [value]', 'Custom port.'],
+    ['-h, --host [value]', 'Custom host.'],
+    ['-i, --i18n', 'Enable superstatic i18n.'],
   ];
 
   testCommandDef: CommandDef = ['test', 'Unit test the app.'];
@@ -87,6 +93,34 @@ export class Cli {
     'pwa <subCommand>',
     'Working with PWA apps.',
     ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
+  ];
+
+  /**
+   * @param soul - A soul name.
+   * @param skins - List of skins, separated by comma.
+   */
+  uiUseCommandDef: CommandDef = [
+    'ui-use <soul> <skins>',
+    'Use soul, skins, icons pack or additional components packs in a project.',
+    ['-i, --icons [value]', 'Icons pack.'],
+    ['-c, --components [value]', 'Additional components packs.']
+  ];
+  
+  /**
+   * @param packageName - The package name.
+   * @param soulName? - The soul name.
+   */
+  uiBuildCommandDef: CommandDef = [
+    'ui-build <packageName> [soulName]',
+    'Build UI systems.',
+  ];
+
+  uiCommandDef: CommandDef = [
+    'ui <subCommand> [params...]',
+    'Tools for developing and using Tini.',
+    // TODO: replace options for docs
+    this.uiUseCommandDef[2],
+    this.uiUseCommandDef[3],
   ];
 
   constructor() {
@@ -117,6 +151,12 @@ export class Cli {
       this.tiniModule.pwaService
     );
     this.pwaCommand = new PwaCommand(this.pwaInitCommand);
+    this.uiUseCommand = new UiUseCommand();
+    this.uiBuildCommand = new UiBuildCommand();
+    this.uiCommand = new UiCommand(
+      this.uiUseCommand,
+      this.uiBuildCommand,
+    );
   }
 
   getApp() {
@@ -256,6 +296,43 @@ export class Cli {
         .action(options => this.pwaInitCommand.run(options));
     })();
 
+    // ui
+    (() => {
+      const [command, description, iconsOpt, componentsOpt] = this.uiCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .option(...iconsOpt)
+        .option(...componentsOpt)
+        .action((subCommand, params, options) =>
+          this.uiCommand.run(subCommand, params, options)
+        );
+    })();
+
+    // ui-use
+    (() => {
+      const [command, description, iconsOpt, componentsOpt] = this.uiUseCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .option(...iconsOpt)
+        .option(...componentsOpt)
+        .action((soul, skins, options) =>
+          this.uiUseCommand.run(soul, skins, options)
+        );
+    })();
+
+    // ui-build
+    (() => {
+      const [command, description] = this.uiBuildCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action((packageName, soulName) =>
+          this.uiBuildCommand.run(packageName, soulName)
+        );
+    })();
+
     // help
     commander
       .command('help')
@@ -266,7 +343,7 @@ export class Cli {
     commander
       .command('*')
       .description('Any other command is not supported.')
-      .action(cmd =>
+      .action((options, cmd) =>
         console.error(chalk.red(`Unknown command '${cmd.args[0]}'`))
       );
 

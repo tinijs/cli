@@ -1,6 +1,6 @@
 {
   "name": "@tinijs/cli",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "The CLI for the TiniJS framework.",
   "author": "Lam Nhan",
   "homepage": "https://lamnhan.com",
@@ -49,7 +49,7 @@
     "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "change-case": "^4.1.2",
-    "commander": "^9.5.0",
+    "commander": "^11.0.0",
     "cross-env": "^7.0.3",
     "fs-extra": "^11.1.1",
     "inquirer": "^8.2.5",
@@ -57,17 +57,17 @@
     "parcel": "^2.9.3",
     "picomatch": "^2.3.1",
     "recursive-readdir": "^2.2.3",
-    "sharp": "^0.31.3",
+    "sharp": "^0.32.3",
     "superstatic": "^9.0.3"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
-    "@types/node": "^18.16.19",
+    "@types/node": "^20.4.2",
     "@types/picomatch": "^2.3.0",
     "@types/recursive-readdir": "^2.2.1",
-    "gts": "^4.0.0",
-    "typescript": "~4.9.5"
+    "gts": "^4.0.1",
+    "typescript": "~5.1.6"
   }
 }

@@ -4,7 +4,7 @@ export class HelperService {
   parseParams(param: string, exclude?: string, separator = ',') {
     return (!exclude ? param : param.replace(new RegExp(exclude, 'g'), ''))
       .split(separator)
-      .map(x => x.trim())
-      .filter(x => !!x);
+      .map(item => item.trim())
+      .filter(item => !!item);
   }
 }
