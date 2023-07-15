@@ -4,12 +4,12 @@ import {ERROR} from '../../lib/services/message.service';
 import {UiUseCommand, UiUseCommandOptions} from './ui-use.command';
 import {UiBuildCommand} from './ui-build.command';
 
-interface CommandOptions extends UiUseCommandOptions {}
+type CommandOptions = UiUseCommandOptions;
 
 export class UiCommand {
   constructor(
     private uiUseCommand: UiUseCommand,
-    private uiBuildCommand: UiBuildCommand,
+    private uiBuildCommand: UiBuildCommand
   ) {}
 
   run(subCommand: string, params: string[], commandOptions: CommandOptions) {

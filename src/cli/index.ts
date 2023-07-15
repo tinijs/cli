@@ -103,9 +103,9 @@ export class Cli {
     'ui-use <soul> <skins>',
     'Use soul, skins, icons pack or additional components packs in a project.',
     ['-i, --icons [value]', 'Icons pack.'],
-    ['-c, --components [value]', 'Additional components packs.']
+    ['-c, --components [value]', 'Additional components packs.'],
   ];
-  
+
   /**
    * @param packageName - The package name.
    * @param soulName? - The soul name.
@@ -157,10 +157,7 @@ export class Cli {
       this.tiniModule.projectService,
       this.tiniModule.typescriptService
     );
-    this.uiCommand = new UiCommand(
-      this.uiUseCommand,
-      this.uiBuildCommand,
-    );
+    this.uiCommand = new UiCommand(this.uiUseCommand, this.uiBuildCommand);
   }
 
   getApp() {
@@ -315,7 +312,8 @@ export class Cli {
 
     // ui-use
     (() => {
-      const [command, description, iconsOpt, componentsOpt] = this.uiUseCommandDef;
+      const [command, description, iconsOpt, componentsOpt] =
+        this.uiUseCommandDef;
       commander
         .command(command as string)
         .description(description)

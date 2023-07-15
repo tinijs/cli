@@ -32,6 +32,6 @@ export class Lib {
       this.terminalService,
       this.projectService
     );
-    this.typescriptService = new TypescriptService();
+    this.typescriptService = new TypescriptService(this.fileService);
   }
 }
