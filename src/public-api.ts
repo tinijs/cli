@@ -9,6 +9,7 @@ export * from './lib/services/terminal.service';
 export * from './lib/services/project.service';
 export * from './lib/services/generate.service';
 export * from './lib/services/pwa.service';
+export * from './lib/services/typescript.service';
 
 export * from './cli/commands/docs.command';
 export * from './cli/commands/new.command';

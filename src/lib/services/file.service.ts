@@ -45,6 +45,11 @@ export class FileService {
     return Promise.all(paths.map(filePath => remove(filePath)));
   }
 
+  async cleanDir(path: string) {
+    await remove(path);
+    return this.createDir(path);
+  }
+
   async changeContent(
     filePath: string,
     modifier: {[str: string]: string} | ((content: string) => string),

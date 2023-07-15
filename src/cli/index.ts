@@ -152,7 +152,11 @@ export class Cli {
     );
     this.pwaCommand = new PwaCommand(this.pwaInitCommand);
     this.uiUseCommand = new UiUseCommand();
-    this.uiBuildCommand = new UiBuildCommand();
+    this.uiBuildCommand = new UiBuildCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.projectService,
+      this.tiniModule.typescriptService
+    );
     this.uiCommand = new UiCommand(
       this.uiUseCommand,
       this.uiBuildCommand,
