@@ -1,5 +1,7 @@
 import {ModuleKind, ScriptTarget} from 'typescript';
+import {compileString} from 'sass';
 import {resolve} from 'path';
+const CleanCSS = require('clean-css');
 
 import {MISSING_ARG} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
@@ -71,29 +73,53 @@ export class UiBuildCommand {
 
   private async buildSoul(destPath: string, soulName: string) {
     const paths = await this.fileService.listDir(resolve('styles', soulName));
-    paths.push(resolve('styles', 'types.ts'));
+    const filePathProcessor = (path: string) => path.split(`/styles/${soulName}/`).pop() as string
     // ts
     const tsPaths = paths.filter(path => path.endsWith('.ts'));
     await this.typescriptService.transpileAndOutputFiles(
       tsPaths,
       TS_CONFIG,
       `${destPath}/styles`,
-      path =>
-        (path.split('/styles/').pop() as string).replace(`${soulName}/`, ''),
-      content => content.replace(/('\.\.\/\.\.\/types')/g, "'../types'")
+      filePathProcessor
     );
     // scss
     const scssPaths = paths.filter(path => path.endsWith('.scss'));
     for (let i = 0; i < scssPaths.length; i++) {
       const path = scssPaths[i];
-      const filePath = path.split(`/styles/${soulName}/`).pop() as string;
+      const filePath = filePathProcessor(path);
       // dir
       const dirPaths = filePath.split('/');
       dirPaths.pop();
       await this.fileService.createDir(
         resolve(destPath, 'styles', ...dirPaths)
       );
-      // file
+      // .css & .css.map
+      const content = await this.fileService.readText(path);
+      const {css} = compileString(content, {
+        sourceMap: true,
+        loadPaths: [resolve('styles', soulName, ...dirPaths)],
+      });
+      await this.fileService.createFile(
+        resolve(destPath, 'styles', filePath.replace('.scss', '.css')),
+        css
+      );
+      // TODO: fix sourceMap
+      // await this.fileService.createFile(
+      //   resolve(destPath, 'styles', filePath.replace('.scss', '.css.map')),
+      //   sourceMap?.mappings || ''
+      // );
+      // .min.css & .min.css.map
+      const {styles} = new CleanCSS({ sourceMap: true }).minify(css);
+      await this.fileService.createFile(
+        resolve(destPath, 'styles', filePath.replace('.scss', '.min.css')),
+        styles
+      );
+      // TODO: fix sourceMap
+      // await this.fileService.createFile(
+      //   resolve(destPath, 'styles', filePath.replace('.scss', '.min.css.map')),
+      //   minSourceMap?.mappings || ''
+      // );
+      // .scss
       await this.fileService.copyFile(
         path,
         resolve(destPath, 'styles', filePath)
