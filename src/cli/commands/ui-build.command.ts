@@ -6,13 +6,12 @@ const CleanCSS = require('clean-css');
 
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
-import {TerminalService} from '../../lib/services/terminal.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
 
-const COMPONENTS_DIR = 'components';
-const STYLES_DIR = 'styles';
-const UI_PACKAGE_NAME = '@tinijs/ui';
+export const COMPONENTS_DIR = 'components';
+export const STYLES_DIR = 'styles';
+export const UI_PACKAGE_NAME = '@tinijs/ui';
 
 const TS_CONFIG = {
   declaration: true,
@@ -62,6 +61,14 @@ export class UiBuildCommand {
       homepage,
       license,
       keywords,
+      files: [
+        '**/*.ts',
+        '**/*.js',
+        '**/*.js.map',
+        '**/*.scss',
+        '**/*.css',
+        '**/*.css.map',
+      ],
     });
     // license
     const licensePath = resolve('LICENSE');
@@ -109,6 +116,7 @@ export class UiBuildCommand {
     for (let i = 0; i < scssPaths.length; i++) {
       const path = scssPaths[i];
       const filePath = stylesPathProcessor(path);
+      const fileName = filePath.split('/').pop() as string;
       // dir
       const dirPaths = filePath.split('/');
       dirPaths.pop();
@@ -117,30 +125,43 @@ export class UiBuildCommand {
       );
       // .css & .css.map
       const content = await this.fileService.readText(path);
-      const {css} = compileString(content, {
+      const {css, sourceMap} = compileString(content, {
         sourceMap: true,
         loadPaths: [resolve(STYLES_DIR, soulName, ...dirPaths)],
       });
       await this.fileService.createFile(
         resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css')),
-        css
+        css +
+          '\n' +
+          `/*# sourceMappingURL=${fileName.replace('.scss', '.css.map')} */`
       );
-      // TODO: fix sourceMap
-      // await this.fileService.createFile(
-      //   resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css.map')),
-      //   sourceMap?.mappings || ''
-      // );
+      const useSourceMap = (sourceMap || {}) as any;
+      useSourceMap.sources = [fileName.replace('.scss', '.css')];
+      await this.fileService.createFile(
+        resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css.map')),
+        JSON.stringify(useSourceMap)
+      );
       // .min.css & .min.css.map
-      const {styles} = new CleanCSS({sourceMap: true}).minify(css);
+      const {styles: minCss, sourceMap: minSourceMap} = new CleanCSS({
+        sourceMap: true,
+      }).minify(css);
       await this.fileService.createFile(
         resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.min.css')),
-        styles
+        minCss +
+          '\n' +
+          `/*# sourceMappingURL=${fileName.replace('.scss', '.min.css.map')} */`
       );
-      // TODO: fix sourceMap
-      // await this.fileService.createFile(
-      //   resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.min.css.map')),
-      //   minSourceMap?.mappings || ''
-      // );
+      await this.fileService.createFile(
+        resolve(
+          destPath,
+          STYLES_DIR,
+          filePath.replace('.scss', '.min.css.map')
+        ),
+        (minSourceMap?.toString() || '').replace(
+          '"$stdin"',
+          `"${fileName.replace('.scss', '.css.min')}"`
+        )
+      );
       // .scss
       await this.fileService.copyFile(
         path,
@@ -163,6 +184,7 @@ export class UiBuildCommand {
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
       const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
+      const componentNameConst = fileNameOnly.replace(/\-/g, '_').toUpperCase();
       // dir
       const dirPaths = filePath.split('/');
       dirPaths.pop();
@@ -178,16 +200,16 @@ export class UiBuildCommand {
           (result, item) => {
             const name = item.trim();
             if (name) {
-              result.styles.push(`${name}Style`);
               result.imports.push(
                 `import ${name}Style from '../${STYLES_DIR}/base/${name}';`
               );
+              result.styles.push(`${name}Style`);
             }
             return result;
           },
           {
-            styles: [] as string[],
             imports: [] as string[],
+            styles: [] as string[],
           }
         );
       if (useBaseMatching) code = code.replace(`${useBaseMatching[0]}\n`, '');
@@ -211,18 +233,41 @@ import {${componentName}Style, ${componentName}Script} from '../${STYLES_DIR}/so
     ${componentName}Script(this);
   }\n\n`
       );
+      const codeWithDefine =
+        "import {customElement} from 'lit/decorators.js';\n" +
+        code.replace(
+          'export class',
+          `@customElement(TINI_${componentNameConst})
+export class`
+        );
       await this.fileService.createFile(
         resolve(destPath, COMPONENTS_DIR, filePath),
         code
+      );
+      await this.fileService.createFile(
+        resolve(
+          destPath,
+          COMPONENTS_DIR,
+          filePath.replace('.ts', '.import.ts')
+        ),
+        codeWithDefine
+      );
+      await this.fileService.createFile(
+        resolve(
+          destPath,
+          COMPONENTS_DIR,
+          filePath.replace('.ts', '.bundle.ts')
+        ),
+        codeWithDefine
       );
     }
 
     /*
      * 4. Transpile components
      */
-    const outComponentsPaths = await this.fileService.listDir(
-      resolve(destPath, COMPONENTS_DIR)
-    );
+    const outComponentsPaths = (
+      await this.fileService.listDir(resolve(destPath, COMPONENTS_DIR))
+    ).filter(path => !path.endsWith('.bundle.ts'));
     await this.typescriptService.transpileAndOutputFiles(
       outComponentsPaths,
       TS_CONFIG,
