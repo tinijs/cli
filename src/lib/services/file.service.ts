@@ -7,6 +7,7 @@ import {
   remove,
   ensureDir,
   copyFile,
+  copy,
 } from 'fs-extra';
 import * as recursiveReaddir from 'recursive-readdir';
 
@@ -27,6 +28,10 @@ export class FileService {
 
   copyFile(src: string, dest: string) {
     return copyFile(src, dest);
+  }
+
+  copyDir(src: string, dest: string) {
+    return copy(src, dest);
   }
 
   createFile(filePath: string, content: string) {

@@ -19,6 +19,8 @@ export interface PackageJson {
   description: string;
   homepage?: string;
   author?: string;
+  license?: string;
+  keywords?: string[];
 }
 
 export type ProjectOptions = {
