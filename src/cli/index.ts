@@ -13,6 +13,7 @@ import {PwaInitCommand} from './commands/pwa-init.command';
 import {PwaCommand} from './commands/pwa.command';
 import {UiUseCommand} from './commands/ui-use.command';
 import {UiBuildCommand} from './commands/ui-build.command';
+import {UiDevCommand} from './commands/ui-dev.command';
 import {UiCommand} from './commands/ui.command';
 
 export class Cli {
@@ -29,6 +30,7 @@ export class Cli {
   pwaCommand: PwaCommand;
   uiUseCommand: UiUseCommand;
   uiBuildCommand: UiBuildCommand;
+  uiDevCommand: UiDevCommand;
   uiCommand: UiCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
@@ -115,6 +117,8 @@ export class Cli {
     'Build UI systems.',
   ];
 
+  uiDevCommandDef: CommandDef = ['ui-dev', 'Build the ui-dev package.'];
+
   uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
     'Tools for developing and using Tini.',
@@ -157,7 +161,12 @@ export class Cli {
       this.tiniModule.projectService,
       this.tiniModule.typescriptService
     );
-    this.uiCommand = new UiCommand(this.uiUseCommand, this.uiBuildCommand);
+    this.uiDevCommand = new UiDevCommand();
+    this.uiCommand = new UiCommand(
+      this.uiUseCommand,
+      this.uiBuildCommand,
+      this.uiDevCommand
+    );
   }
 
   getApp() {
@@ -333,6 +342,15 @@ export class Cli {
         .action((packageName, soulName) =>
           this.uiBuildCommand.run(packageName, soulName)
         );
+    })();
+
+    // ui-dev
+    (() => {
+      const [command, description] = this.uiDevCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action(() => this.uiDevCommand.run());
     })();
 
     // help

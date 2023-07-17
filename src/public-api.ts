@@ -24,3 +24,4 @@ export * from './cli/commands/pwa-init.command';
 export * from './cli/commands/ui.command';
 export * from './cli/commands/ui-use.command';
 export * from './cli/commands/ui-build.command';
+export * from './cli/commands/ui-dev.command';
