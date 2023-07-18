@@ -25,3 +25,4 @@ export * from './cli/commands/ui.command';
 export * from './cli/commands/ui-use.command';
 export * from './cli/commands/ui-build.command';
 export * from './cli/commands/ui-dev.command';
+export * from './cli/commands/ui-icon.command';

@@ -14,6 +14,7 @@ import {PwaCommand} from './commands/pwa.command';
 import {UiUseCommand} from './commands/ui-use.command';
 import {UiBuildCommand} from './commands/ui-build.command';
 import {UiDevCommand} from './commands/ui-dev.command';
+import {UiIconCommand} from './commands/ui-icon.command';
 import {UiCommand} from './commands/ui.command';
 
 export class Cli {
@@ -31,6 +32,7 @@ export class Cli {
   uiUseCommand: UiUseCommand;
   uiBuildCommand: UiBuildCommand;
   uiDevCommand: UiDevCommand;
+  uiIconCommand: UiIconCommand;
   uiCommand: UiCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
@@ -119,12 +121,20 @@ export class Cli {
 
   uiDevCommandDef: CommandDef = ['ui-dev', 'Build the ui-dev package.'];
 
+  /**
+   * @param packageName - The package name.
+   * @param src - The path to icon files.
+   */
+  uiIconCommandDef: CommandDef = [
+    'ui-icon <packageName> <src>',
+    'Build icons pack.',
+  ];
+
   uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
     'Tools for developing and using Tini.',
-    // TODO: replace options for docs
-    this.uiUseCommandDef[2],
-    this.uiUseCommandDef[3],
+    ['-i, --icons [value]', 'Icons pack.'],
+    ['-c, --components [value]', 'Additional components packs.'],
   ];
 
   constructor() {
@@ -162,10 +172,16 @@ export class Cli {
       this.tiniModule.typescriptService
     );
     this.uiDevCommand = new UiDevCommand(this.tiniModule.fileService);
+    this.uiIconCommand = new UiIconCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.projectService,
+      this.tiniModule.typescriptService
+    );
     this.uiCommand = new UiCommand(
       this.uiUseCommand,
       this.uiBuildCommand,
-      this.uiDevCommand
+      this.uiDevCommand,
+      this.uiIconCommand
     );
   }
 
@@ -351,6 +367,15 @@ export class Cli {
         .command(command as string)
         .description(description)
         .action(() => this.uiDevCommand.run());
+    })();
+
+    // ui-icon
+    (() => {
+      const [command, description] = this.uiIconCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action((packageName, src) => this.uiIconCommand.run(packageName, src));
     })();
 
     // help

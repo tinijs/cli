@@ -42,8 +42,8 @@ export class FileService {
     return readJson(filePath) as Promise<T>;
   }
 
-  createJson<T>(filePath: string, jsonData: T) {
-    return writeJson(filePath, jsonData, {spaces: 2});
+  createJson<T>(filePath: string, jsonData: T, noSpaces = false) {
+    return writeJson(filePath, jsonData, noSpaces ? {} : {spaces: 2});
   }
 
   removeFiles(paths: string[]) {

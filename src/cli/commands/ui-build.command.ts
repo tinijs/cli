@@ -12,8 +12,7 @@ import {TypescriptService} from '../../lib/services/typescript.service';
 export const COMPONENTS_DIR = 'components';
 export const STYLES_DIR = 'styles';
 export const UI_PACKAGE_NAME = '@tinijs/ui';
-
-const TS_CONFIG = {
+export const TS_CONFIG = {
   declaration: true,
   sourceMap: true,
   module: ModuleKind.ESNext,
