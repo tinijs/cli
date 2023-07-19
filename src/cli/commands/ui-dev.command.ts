@@ -22,7 +22,7 @@ export class UiDevCommand {
     // build components
     await this.buildComponents(destPath, souls);
     // result
-    console.log(OK + 'Build ui package for developing!');
+    console.log(OK + 'Build ui package for developing.\n');
   }
 
   private async copyGlobalFiles(destPath: string, firstSoul: string) {

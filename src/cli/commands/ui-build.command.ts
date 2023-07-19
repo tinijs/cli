@@ -77,6 +77,14 @@ export class UiBuildCommand {
         resolve(destPath, 'LICENSE')
       );
     }
+    // README.md
+    const readmePath = resolve('README.md');
+    if (await this.fileService.exists(readmePath)) {
+      await this.fileService.copyFile(
+        readmePath,
+        resolve(destPath, 'README.md')
+      );
+    }
     // result
     console.log(OK + `Build ${packageName} successfully!`);
   }
