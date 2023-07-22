@@ -255,7 +255,7 @@ export class`
         resolve(
           destPath,
           COMPONENTS_DIR,
-          filePath.replace('.ts', '.import.ts')
+          filePath.replace('.ts', '.include.ts')
         ),
         codeWithDefine
       );

@@ -161,11 +161,12 @@ export class UiIconCommand {
       // original names
       const fileName = path.split('/').pop() as string;
       const fileNameArr = fileName.split('.');
-      const fileExt = fileNameArr.pop() as string;
+      const fileExt = (fileNameArr.pop() as string).toLowerCase();
       const originalFileNameOnly = fileNameArr.join('.');
       spinner.text = `Build ${blue(fileName)}\n`;
       // new names
-      const fileNameOnly = buildFileNameOnly(originalFileNameOnly);
+      const fileNameOnly =
+        buildFileNameOnly(originalFileNameOnly).toLowerCase();
       const newFileName = `${fileNameOnly}.${fileExt}`;
       const nameArr = fileNameOnly.split('-');
       const componentNameClass = nameArr
@@ -211,7 +212,7 @@ export class `
         content
       );
       await this.fileService.createFile(
-        resolve(destPath, `${fileNameOnly}.import.ts`),
+        resolve(destPath, `${fileNameOnly}.include.ts`),
         contentWithDefine
       );
       await this.fileService.createFile(
@@ -285,7 +286,7 @@ export const dataURI = URIHead + base64;
       const ext = nameArr.pop() as string;
       const name = nameArr.join('.');
       const tag = `icon-${name}`;
-      appTSImports.push(`import './${name}.import';`);
+      appTSImports.push(`import './${name}.include';`);
       appTSTags.push(`<div class="icon"><${tag}></${tag}></div>`);
     });
     const appTSContentWithImports =
@@ -351,7 +352,7 @@ export const dataURI = URIHead + base64;
   }
 
   private async extractBase64Data(path: string) {
-    const ext = path.split('.').pop() as string;
+    const ext = (path.split('.').pop() as string).toLowerCase();
     const mimeType = {
       svg: 'image/svg+xml',
       webp: 'image/webp',
