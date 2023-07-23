@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import {bold, blueBright} from 'chalk';
 
 import {INFO, OK} from '../../lib/services/message.service';
 import {ProjectService} from '../../lib/services/project.service';
@@ -29,7 +29,7 @@ export class PwaInitCommand {
     console.log(
       OK +
         `Adding @tinijs/pwa@${version} successfully, for more detail: ` +
-        chalk.blue('https://tinijs.dev/docs/pwa')
+        bold(blueBright('https://tinijs.dev/docs/pwa'))
     );
   }
 }

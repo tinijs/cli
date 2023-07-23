@@ -1,7 +1,7 @@
 import {resolve} from 'path';
 import {readFile} from 'fs-extra';
 import {capitalCase} from 'change-case';
-import {blue} from 'chalk';
+import {bold, blueBright} from 'chalk';
 import {createHash} from 'crypto';
 import * as ora from 'ora';
 import {sanitize} from 'isomorphic-dompurify';
@@ -163,7 +163,7 @@ export class UiIconCommand {
       const fileNameArr = fileName.split('.');
       const fileExt = (fileNameArr.pop() as string).toLowerCase();
       const originalFileNameOnly = fileNameArr.join('.');
-      spinner.text = `Build ${blue(fileName)}\n`;
+      spinner.text = `Build ${bold(blueBright(fileName))}\n`;
       // new names
       const fileNameOnly =
         buildFileNameOnly(originalFileNameOnly).toLowerCase();

@@ -15,6 +15,8 @@ export class UiDevCommand {
       item => !~item.indexOf('.')
     );
     const destPath = resolve('dev');
+    // clean dir
+    await this.fileService.cleanDir(destPath);
     // copy global files
     this.copyGlobalFiles(destPath, souls[0]);
     // build skins

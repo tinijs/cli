@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import {bold, blueBright} from 'chalk';
 const superstatic = require('superstatic');
 
 import {INFO} from '../../lib/services/message.service';
@@ -14,7 +14,7 @@ export class PreviewCommand {
   constructor(private projectService: ProjectService) {}
 
   async run(commandOptions: CommandOptions) {
-    const {out: cwd} = await this.projectService.getOptions();
+    const {outDir: cwd} = await this.projectService.getOptions();
     // launch server
     const host = commandOptions.host || '0.0.0.0';
     const port = commandOptions.port || 8080;
@@ -35,7 +35,7 @@ export class PreviewCommand {
       })
       .listen(() =>
         console.log(
-          INFO + 'Preview your app at: ' + chalk.blue(`${host}:${port}`)
+          INFO + 'Preview your app at: ' + bold(blueBright(`${host}:${port}`))
         )
       );
   }

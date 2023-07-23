@@ -62,7 +62,11 @@ export class Cli {
     ['-n, --nested', 'Nested under a folder.'],
   ];
 
-  devCommandDef: CommandDef = [['dev', 'serve'], 'Start the dev server.'];
+  devCommandDef: CommandDef = [
+    ['dev', 'serve'],
+    'Start the dev server.',
+    ['-w, --watch', 'Watch mode only.'],
+  ];
 
   buildCommandDef: CommandDef = [
     'build',
@@ -150,12 +154,15 @@ export class Cli {
       this.tiniModule.generateService
     );
     this.devCommand = new DevCommand(
-      this.tiniModule.terminalService,
-      this.tiniModule.projectService
+      this.tiniModule.fileService,
+      this.tiniModule.projectService,
+      this.tiniModule.buildService
     );
     this.buildCommand = new BuildCommand(
+      this.tiniModule.fileService,
       this.tiniModule.terminalService,
-      this.tiniModule.projectService
+      this.tiniModule.projectService,
+      this.tiniModule.buildService
     );
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
@@ -247,12 +254,13 @@ export class Cli {
 
     // dev
     (() => {
-      const [[command, ...aliases], description] = this.devCommandDef;
+      const [[command, ...aliases], description, watchOpt] = this.devCommandDef;
       commander
         .command(command)
         .aliases(aliases)
         .description(description)
-        .action(() => this.devCommand.run());
+        .option(...watchOpt)
+        .action(options => this.devCommand.run(options));
     })();
 
     // build

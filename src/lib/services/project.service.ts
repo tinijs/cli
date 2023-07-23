@@ -3,7 +3,9 @@ import {resolve} from 'path';
 import {FileService} from './file.service';
 
 export interface Options {
-  out?: string;
+  srcDir?: string;
+  outDir?: string;
+  stagingPrefix?: string;
   componentPrefix?: string;
   pwa?: PWAPrecaching;
 }
@@ -31,12 +33,18 @@ export class ProjectService {
   private PACKAGE_PATH = 'package.json';
 
   private defaultOptions: ProjectOptions = {
-    out: 'www',
+    srcDir: 'app',
+    outDir: 'www',
+    stagingPrefix: '.tini',
     componentPrefix: 'app',
     pwa: {},
   };
 
   constructor(private fileService: FileService) {}
+
+  get targetEnv() {
+    return process.env.TARGET_ENV || 'development';
+  }
 
   get rcPath() {
     return resolve(this.RC_PATH);

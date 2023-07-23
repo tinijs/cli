@@ -7,6 +7,7 @@ import {ProjectService} from './services/project.service';
 import {GenerateService} from './services/generate.service';
 import {PwaService} from './services/pwa.service';
 import {TypescriptService} from './services/typescript.service';
+import {BuildService} from './services/build.service';
 
 export class Lib {
   public readonly helperService: HelperService;
@@ -17,7 +18,8 @@ export class Lib {
   public readonly projectService: ProjectService;
   public readonly generateService: GenerateService;
   public readonly pwaService: PwaService;
-  typescriptService: TypescriptService;
+  public readonly typescriptService: TypescriptService;
+  public readonly buildService: BuildService;
 
   constructor() {
     this.helperService = new HelperService();
@@ -33,5 +35,6 @@ export class Lib {
       this.projectService
     );
     this.typescriptService = new TypescriptService(this.fileService);
+    this.buildService = new BuildService(this.fileService, this.projectService);
   }
 }

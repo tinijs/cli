@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import {bold, blueBright} from 'chalk';
 import * as open from 'open';
 
 import {OK} from '../../lib/services/message.service';
@@ -8,7 +8,7 @@ export class DocsCommand {
 
   run() {
     const docsUrl = 'https://tinijs.dev/docs';
-    console.log(OK + 'Documetation link: ' + chalk.blue(docsUrl));
+    console.log(OK + 'Documetation link: ' + bold(blueBright(docsUrl)));
     open(docsUrl);
   }
 }
