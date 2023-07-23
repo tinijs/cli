@@ -81,15 +81,6 @@ export class PwaService {
   }
 
   async modifyFiles() {
-    // .parcelrc
-    await this.fileService.changeContent(resolve('.parcelrc'), content => {
-      const pkg = '@tinijs/parcel-reporter-build-pwa';
-      if (content.indexOf(pkg) !== -1) return content;
-      return content.replace(
-        '"@tinijs/parcel-reporter-copy-public"',
-        `"@tinijs/parcel-reporter-copy-public", "${pkg}"`
-      );
-    });
     // app.html
     await this.fileService.changeContent(
       resolve('app', 'app.html'),

@@ -116,7 +116,7 @@ export class UiDevCommand {
       code =
         `${useBaseContents.imports.join('\n')}
 ${soulContents.imports.join('\n')}
-import {Theming} from '../app/vendors/theming';\n\n` + code;
+import {Theming} from '@tinijs/core';\n\n` + code;
       const styling = souls.reduce((result, soul) => {
         result[soul] = [
           ...useBaseContents.styling[soul],

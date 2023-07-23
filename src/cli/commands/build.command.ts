@@ -1,3 +1,5 @@
+import {rename} from 'fs-extra';
+
 import {TerminalService} from '../../lib/services/terminal.service';
 import {ProjectService} from '../../lib/services/project.service';
 
@@ -15,9 +17,10 @@ export class BuildCommand {
     const {out} = await this.projectService.getOptions();
     const target = commandOptions.target || 'production';
     this.terminalService.exec(
-      `cross-env NODE_ENV=${target} parcel build app/app.html --dist-dir ${out} --no-cache --no-scope-hoist`,
+      `cross-env NODE_ENV=${target} parcel build app/app.html --dist-dir ${out} --no-cache`,
       '.',
       'inherit'
     );
+    await rename(`${out}/app.html`, `${out}/index.html`);
   }
 }

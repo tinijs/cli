@@ -155,7 +155,6 @@ export default ${className};
     return `@Layout('${tagName}')
 export class ${className} extends TiniComponent {
   static styles = [
-    unistylus\`\`,
     css\`
       :host {
         margin: 0;
@@ -179,7 +178,6 @@ export class ${className} extends TiniComponent {
   @Reactive() name!: string;
 
   static styles = [
-    unistylus\`\`,
     css\`
       :host {
         margin: 0;
@@ -208,7 +206,6 @@ export class ${className} extends TiniComponent {
   @Output() customEvent!: EventEmitter<string>;
 
   static styles = [
-    unistylus\`\`,
     css\`
       :host {
         margin: 0;
