@@ -23,6 +23,8 @@ export class UiDevCommand {
     await this.buildSkin(destPath, souls);
     // build components
     await this.buildComponents(destPath, souls);
+    // build bases
+    await this.buildBases(destPath, souls);
     // result
     console.log(OK + 'Build ui package for developing.\n');
   }
@@ -66,14 +68,17 @@ export class UiDevCommand {
       const componentNameCapital = capitalCase(componentName);
       // read file
       let code = await this.fileService.readText(path);
-      const useBaseMatching = code.match(/\/\* UseBase\(([\s\S]*?)\) \*\//);
+      const useBasesMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
+      const useComponentsMatching = code.match(
+        /\/\* UseComponents\(([\s\S]*?)\) \*\//
+      );
       // base imports
-      const useBaseContents = (!useBaseMatching ? '' : useBaseMatching[1])
+      const useBasesContents = (!useBasesMatching ? '' : useBasesMatching[1])
         .split(',')
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name);
+            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
             if (name) {
               souls.forEach(soul => {
                 result.imports.push(
@@ -88,6 +93,32 @@ export class UiDevCommand {
           {
             imports: [] as string[],
             styling: {} as Record<string, string[]>,
+          }
+        );
+      // component imports
+      const useComponentsContents = (
+        !useComponentsMatching ? '' : useComponentsMatching[1]
+      )
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const name = item.trim();
+            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameConst = `TINI_${name
+              .replace(/\-|\./g, '_')
+              .toUpperCase()}`;
+            const nameClass = `Tini${nameCapital}Component`;
+            if (name) {
+              result.imports.push(
+                `import {${nameConst}, ${nameClass}} from './${name}';`
+              );
+              result.components[`[${nameConst}]`] = nameClass;
+            }
+            return result;
+          },
+          {
+            imports: [] as string[],
+            components: {} as Record<string, string>,
           }
         );
       // soul imports
@@ -110,18 +141,35 @@ export class UiDevCommand {
         }
       );
       // build content
-      if (useBaseMatching) code = code.replace(`${useBaseMatching[0]}\n`, '');
+      if (useBasesMatching) code = code.replace(`${useBasesMatching[0]}\n`, '');
+      if (useComponentsMatching)
+        code = code.replace(`${useComponentsMatching[0]}\n`, '');
       code = code.replace(
         /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
         './'
       );
+      // imports
       code =
-        `${useBaseContents.imports.join('\n')}
+        `${useBasesContents.imports.join('\n')}
+${useComponentsContents.imports.join('\n')}
 ${soulContents.imports.join('\n')}
-import {Theming} from '@tinijs/core';\n\n` + code;
+import {Theming${
+          !useComponentsMatching ? '' : ', Components'
+        }} from '@tinijs/core';\n\n` + code;
+      // inject components
+      if (useComponentsMatching) {
+        code = code.replace(
+          'export class ',
+          `@Components(${JSON.stringify(
+            useComponentsContents.components
+          ).replace(/\"/g, '')})
+export class `
+        );
+      }
+      // inject bases
       const styling = souls.reduce((result, soul) => {
         result[soul] = [
-          ...useBaseContents.styling[soul],
+          ...useBasesContents.styling[soul],
           soulContents.styling[soul],
         ];
         return result;
@@ -134,7 +182,40 @@ import {Theming} from '@tinijs/core';\n\n` + code;
 })
 export class `
       );
+      // save file
       await this.fileService.createFile(resolve(destPath, filePath), code);
     }
+  }
+
+  private async buildBases(destPath: string, souls: string[]) {
+    const baseNames = (await readdir(resolve(STYLES_DIR, souls[0], 'base')))
+      .filter(item => item.endsWith('.ts'))
+      .map(item => item.replace('.ts', ''));
+    const importArr: string[] = [];
+    const exportArr: string[] = [];
+    for (let i = 0; i < baseNames.length; i++) {
+      const baseName = baseNames[i];
+      const baseNameCapital = capitalCase(baseName.replace(/\-|\./g, ' '));
+      const baseNameCamel = camelCase(baseNameCapital);
+      const baseExports = {} as Record<string, string>;
+      for (let j = 0; j < souls.length; j++) {
+        const soulName = souls[j];
+        const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
+        const importName = `${soulNameCamel}${baseNameCapital}Style`;
+        importArr.push(
+          `import ${importName} from '../${STYLES_DIR}/${soulName}/base/${baseName}';`
+        );
+        baseExports[soulName] = importName;
+      }
+      exportArr.push(
+        `export const ${baseNameCamel}Styles = ${JSON.stringify(
+          baseExports
+        ).replace(/\"/g, '')};`
+      );
+    }
+    await this.fileService.createFile(
+      resolve(destPath, 'styles.ts'),
+      `${importArr.join('\n')}\n\n${exportArr.join('\n')}`
+    );
   }
 }
