@@ -4,12 +4,15 @@ import {camelCase, capitalCase, pascalCase, paramCase} from 'change-case';
 import {ProjectService} from './project.service';
 
 interface Names {
+  typeCapital: string;
   name: string;
+  nameConst: string;
   nameCamel: string;
   namePascal: string;
   nameCapital: string;
   nameParam: string;
   className: string;
+  classNameWithPrefix: string;
   tagName: string;
 }
 
@@ -26,6 +29,8 @@ export class GenerateService {
   COMPONENT = 'component';
   HELPER = 'helper';
   CONST = 'const';
+  STORE = 'store';
+  TYPE = 'type';
 
   DEFAULT_FOLDERS = {
     [this.SERVICE]: 'services',
@@ -34,6 +39,8 @@ export class GenerateService {
     [this.COMPONENT]: 'components',
     [this.HELPER]: 'helpers',
     [this.CONST]: 'consts',
+    [this.STORE]: 'stores',
+    [this.TYPE]: 'types',
   };
 
   constructor(private projectService: ProjectService) {}
@@ -46,30 +53,38 @@ export class GenerateService {
   ) {
     const templates: Template[] = [];
     // process
-    const options = await this.projectService.getOptions();
+    const {componentPrefix, srcDir} = await this.projectService.getOptions();
     const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
     const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
+    const typeCapital = type[0].toUpperCase() + type.substring(1);
+    const nameConst = name.replace(/-/g, '_').toUpperCase();
     const nameCamel = camelCase(name);
     const namePascal = pascalCase(name);
     const nameCapital = capitalCase(name);
     const nameParam = paramCase(name);
     const className =
-      nameCapital.replace(/ /g, '') + type[0].toUpperCase() + type.substring(1);
+      (type === this.COMPONENT || type === this.SERVICE ? '' : typeCapital) +
+      nameCapital.replace(/ /g, '') +
+      (type !== this.COMPONENT && type !== this.SERVICE ? '' : typeCapital);
+    const classNameWithPrefix = capitalCase(componentPrefix) + className;
     const tagName =
       type === this.COMPONENT
-        ? `${options.componentPrefix}-${nameParam}`
-        : `${type}-${nameParam}`;
+        ? `${componentPrefix}-${nameParam}`
+        : `${componentPrefix}-${type}-${nameParam}`;
     const names: Names = {
+      typeCapital,
       name,
+      nameConst,
       nameCamel,
       namePascal,
       nameCapital,
       nameParam,
       className,
+      classNameWithPrefix,
       tagName,
     };
     const {path: mainPath, fullPath: mainFullPath} = this.buildPath(
-      '.',
+      srcDir,
       nameParam,
       type,
       destSplits,
@@ -121,132 +136,122 @@ export class GenerateService {
 
   private buildMainContent(
     type: string,
-    {className, tagName, nameCamel, nameCapital}: Names
+    {
+      typeCapital,
+      className,
+      classNameWithPrefix,
+      tagName,
+      nameCamel,
+      namePascal,
+      nameConst,
+    }: Names
   ) {
     switch (type) {
       case this.SERVICE:
         return this.contentForService(className);
       case this.LAYOUT:
-        return this.contentForLayout(className, tagName);
+        return this.contentForLayout(classNameWithPrefix, tagName);
       case this.PAGE:
-        return this.contentForPage(className, tagName);
+        return this.contentForPage(classNameWithPrefix, tagName);
       case this.COMPONENT:
-        return this.contentForComponent(className, tagName);
+        return this.contentForComponent(classNameWithPrefix, tagName);
       case this.HELPER:
-        return this.contentForHelper(nameCamel, nameCapital);
+        return this.contentForHelper(nameCamel);
       case this.CONST:
-        return this.contentForConst(nameCamel, nameCapital);
+        return this.contentForConst(nameConst);
+      case this.STORE:
+        return this.contentForStore(nameCamel, typeCapital);
+      case this.TYPE:
+        return this.contentForType(namePascal);
       default:
         return '';
     }
   }
 
   private contentForService(className: string) {
-    return `
-export class ${className} {
+    return `export class ${className} {
   name = '${className}';
 }
 
-export default ${className};
-`;
+export default ${className};\n`;
   }
 
   private contentForLayout(className: string, tagName: string) {
-    return `@Layout('${tagName}')
+    return `import {Layout, TiniComponent, html, css} from '@tinijs/core';
+
+@Layout({
+  name: '${tagName}',
+})
 export class ${className} extends TiniComponent {
-  static styles = [
-    css\`
-      :host {
-        margin: 0;
-      }
-    \`,
-  ];
+  static styles = css\`\`;
 
   protected render() {
     return html\`<div class="page"><slot></slot></div>\`;
   }
-}
-`;
+}\n`;
   }
 
   private contentForPage(className: string, tagName: string) {
-    return `import {States} from '../app/states';
+    return `import {Page, TiniComponent, html, css} from '@tinijs/core';
 
-@Page('${tagName}')
+@Page({
+  name: '${tagName}',
+})
 export class ${className} extends TiniComponent {
-  @SubscribeStore() store!: StoreSubscription<States>;
-  @Reactive() name!: string;
-
-  static styles = [
-    css\`
-      :host {
-        margin: 0;
-      }
-    \`,
-  ];
+  static styles = css\`\`;
 
   protected render() {
     return html\`<p>${className}</p>\`;
   }
-
-  onInit() {
-    this.store.subscribe(states => {
-      // do something with the states
-      // this.name = states.name;
-    });
-  }
-}
-`;
+}\n`;
   }
 
   private contentForComponent(className: string, tagName: string) {
-    return `@Component('${tagName}')
+    const constName = tagName.replace(/-/g, '_').toUpperCase();
+    return `import {Component, TiniComponent, Input, Output, EventEmitter, html, css} from '@tinijs/core';
+
+export const ${constName} = '${tagName}';
+
+@Component()
 export class ${className} extends TiniComponent {
-  @Input() attr?: string;
-  @Output() customEvent!: EventEmitter<string>;
+  static styles = css\`\`;
 
-  static styles = [
-    css\`
-      :host {
-        margin: 0;
-      }
-    \`,
-  ];
-
-  protected render() {
-    return html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
-  }
+  @Input() property?: string;
+  @Output() customEvent!: EventEmitter<{payload: any}>;
 
   onCreate() {
     // element connected
   }
 
   emitCustomEvent() {
-    this.customEvent.emit('any payload');
-  }
-}
-`;
+    this.customEvent.emit({payload: '...'});
   }
 
-  private contentForHelper(nameCamel: string, nameCapital: string) {
-    const typeName = nameCapital.replace(/ /g, '');
-    return `
-function ${nameCamel}(param: string) {
+  protected render() {
+    return html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
+  }
+}\n`;
+  }
+
+  private contentForHelper(nameCamel: string) {
+    return `export function ${nameCamel}(param: string) {
   return param.toUpperCase();
-}
-
-export default ${nameCamel};
-export type ${typeName} = typeof ${nameCamel};
-`;
+}\n`;
   }
 
-  private contentForConst(nameCamel: string, nameCapital: string) {
-    const typeName = nameCapital.replace(/ /g, '');
-    return `
-const ${nameCamel} = 'value';
+  private contentForConst(nameConst: string) {
+    return `export const ${nameConst} = 'value';\n`;
+  }
 
-export default ${nameCamel};
-export type ${typeName} = typeof ${nameCamel};
-`;
+  private contentForStore(nameCamel: string, typeCapital: string) {
+    return `import {createStore} from '@tinijs/store';
+
+export const ${nameCamel}${typeCapital} = createStore({
+  name: '${nameCamel}',
+});\n`;
+  }
+
+  private contentForType(namePascal: string) {
+    return `export type ${namePascal} = any;\n`;
   }
 }

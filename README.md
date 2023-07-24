@@ -23,6 +23,7 @@
   - [`preview`](#command-preview)
   - [`pwa`](#command-pwa)
   - [`test`](#command-test)
+  - [`ui`](#command-ui)
   - [`help`](#command-help)
   - [`*`](#command-*)
 - [Detail API reference](https://cli-api.tinijs.dev)
@@ -84,13 +85,14 @@ The CLI for the TiniJS framework.
 
 - [`tini build --target [value]`](#command-build)
 - [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
-- [`tini dev|serve`](#command-dev)
+- [`tini dev|serve --watch`](#command-dev)
 - [`tini docs|home`](#command-docs)
 - [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
 - [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
 - [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
+- [`tini ui <subCommand> [params...] --icons [value] --components [value]`](#command-ui)
 - [`tini help`](#command-help)
 - [`tini *`](#command-*)
 
@@ -137,9 +139,13 @@ Start the dev server.
 **Usage:**
 
 ```sh
-tini dev
-tini serve
+tini dev --watch
+tini serve --watch
 ```
+
+**Options:**
+
+- `-w, --watch`: Watch mode only.
 
 <h3><a name="command-docs"><p><code>docs</code></p>
 </a></h3>
@@ -212,9 +218,9 @@ tini preview --port [value] --host [value] --i18n
 
 **Options:**
 
-- `-p, --port [value]`: Custom port
-- `-h, --host [value]`: Custom host
-- `-i, --i18n`: Enable i18n
+- `-p, --port [value]`: Custom port.
+- `-h, --host [value]`: Custom host.
+- `-i, --i18n`: Enable superstatic i18n.
 
 <h3><a name="command-pwa"><p><code>pwa</code></p>
 </a></h3>
@@ -245,6 +251,27 @@ Unit test the app.
 ```sh
 tini test
 ```
+
+<h3><a name="command-ui"><p><code>ui</code></p>
+</a></h3>
+
+Tools for developing and using Tini.
+
+**Usage:**
+
+```sh
+tini ui <subCommand> [params...] --icons [value] --components [value]
+```
+
+**Parameters:**
+
+- `<subCommand>`: The `<subCommand>` parameter.
+- `[params...]`: The `[params...]` parameter.
+
+**Options:**
+
+- `-i, --icons [value]`: Icons pack.
+- `-c, --components [value]`: Additional components packs.
 
 <h3><a name="command-help"><p><code>help</code></p>
 </a></h3>

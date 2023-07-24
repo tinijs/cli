@@ -97,22 +97,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Dev<wbr>Command<span class="tsd-signature-symbol">(</span>terminalService<span class="tsd-signature-symbol">: </span><a href="terminalservice.html" class="tsd-signature-type">TerminalService</a>, projectService<span class="tsd-signature-symbol">: </span><a href="projectservice.html" class="tsd-signature-type">ProjectService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="devcommand.html" class="tsd-signature-type">DevCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Dev<wbr>Command<span class="tsd-signature-symbol">(</span>fileService<span class="tsd-signature-symbol">: </span><a href="fileservice.html" class="tsd-signature-type">FileService</a>, projectService<span class="tsd-signature-symbol">: </span><a href="projectservice.html" class="tsd-signature-type">ProjectService</a>, buildService<span class="tsd-signature-symbol">: </span><a href="buildservice.html" class="tsd-signature-type">BuildService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="devcommand.html" class="tsd-signature-type">DevCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/d5aed88/src/cli/commands/dev.command.ts#L4">cli/commands/dev.command.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/4cac98e/src/cli/commands/dev.command.ts#L14">src/cli/commands/dev.command.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>terminalService: <a href="terminalservice.html" class="tsd-signature-type">TerminalService</a></h5>
+									<h5>fileService: <a href="fileservice.html" class="tsd-signature-type">FileService</a></h5>
 								</li>
 								<li>
 									<h5>projectService: <a href="projectservice.html" class="tsd-signature-type">ProjectService</a></h5>
+								</li>
+								<li>
+									<h5>buildService: <a href="buildservice.html" class="tsd-signature-type">BuildService</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="devcommand.html" class="tsd-signature-type">DevCommand</a></h4>
@@ -126,15 +129,21 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3>run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>commandOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/commandoptions.html" class="tsd-signature-type">CommandOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/d5aed88/src/cli/commands/dev.command.ts#L10">cli/commands/dev.command.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/4cac98e/src/cli/commands/dev.command.ts#L21">src/cli/commands/dev.command.ts:21</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>commandOptions: <a href="../interfaces/commandoptions.html" class="tsd-signature-type">CommandOptions</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -151,15 +160,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class">
-						<a href="buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="cleancommand.html" class="tsd-kind-icon">Clean<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="cli.html" class="tsd-kind-icon">Cli</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -175,108 +175,6 @@
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class">
-						<a href="docscommand.html" class="tsd-kind-icon">Docs<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="downloadservice.html" class="tsd-kind-icon">Download<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="fileservice.html" class="tsd-kind-icon">File<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="generatecommand.html" class="tsd-kind-icon">Generate<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="generateservice.html" class="tsd-kind-icon">Generate<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="helperservice.html" class="tsd-kind-icon">Helper<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="lib.html" class="tsd-kind-icon">Lib</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="messageservice.html" class="tsd-kind-icon">Message<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="newcommand.html" class="tsd-kind-icon">New<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="previewcommand.html" class="tsd-kind-icon">Preview<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="projectservice.html" class="tsd-kind-icon">Project<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="pwacommand.html" class="tsd-kind-icon">Pwa<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="pwainitcommand.html" class="tsd-kind-icon">Pwa<wbr>Init<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="pwaservice.html" class="tsd-kind-icon">Pwa<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="terminalservice.html" class="tsd-kind-icon">Terminal<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="testcommand.html" class="tsd-kind-icon">Test<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/commandoptions.html" class="tsd-kind-icon">Command<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/names.html" class="tsd-kind-icon">Names</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/options.html" class="tsd-kind-icon">Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/pwaprecaching.html" class="tsd-kind-icon">PWAPrecaching</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/packagejson.html" class="tsd-kind-icon">Package<wbr>Json</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/template.html" class="tsd-kind-icon">Template</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#commanddef" class="tsd-kind-icon">Command<wbr>Def</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#projectoptions" class="tsd-kind-icon">Project<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#any" class="tsd-kind-icon">ANY</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#error" class="tsd-kind-icon">ERROR</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#info" class="tsd-kind-icon">INFO</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#ok" class="tsd-kind-icon">OK</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#warn" class="tsd-kind-icon">WARN</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#cliapp" class="tsd-kind-icon">cli<wbr>App</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#prompt" class="tsd-kind-icon">prompt</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#superstatic" class="tsd-kind-icon">superstatic</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

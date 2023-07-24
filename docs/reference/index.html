@@ -147,7 +147,7 @@
 						<li><a href="#command-clean"><code>tini clean|c --includes [value] --excludes [value]</code></a></li>
 						<li><a href="#command-dev"><code>tini dev|serve</code></a></li>
 						<li><a href="#command-docs"><code>tini docs|home</code></a></li>
-						<li><a href="#command-generate"><code>tini generate|g|create &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
+						<li><a href="#command-generate"><code>tini generate|create|g &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
 						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git</code></a></li>
 						<li><a href="#command-preview"><code>tini preview --port [value] --host [value] --i18n</code></a></li>
 						<li><a href="#command-pwa"><code>tini pwa &lt;subCommand&gt; --tag [value]</code></a></li>
@@ -198,8 +198,8 @@ tini home
 					<p>Generate a resource.</p>
 					<p><strong>Usage:</strong></p>
 					<pre><code class="language-sh">tini generate &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
-tini g &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
 tini create &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
+tini g &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefixed --nested
 </code></pre>
 					<p><strong>Parameters:</strong></p>
 					<ul>
@@ -296,6 +296,9 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<a href="classes/buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/buildservice.html" class="tsd-kind-icon">Build<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/cleancommand.html" class="tsd-kind-icon">Clean<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -352,14 +355,26 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					<li class=" tsd-kind-class">
 						<a href="classes/testcommand.html" class="tsd-kind-icon">Test<wbr>Command</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/cleancommandoptions.html" class="tsd-kind-icon">Clean<wbr>Command<wbr>Options</a>
+					<li class=" tsd-kind-class">
+						<a href="classes/typescriptservice.html" class="tsd-kind-icon">Typescript<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uibuildcommand.html" class="tsd-kind-icon">Ui<wbr>Build<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uicommand.html" class="tsd-kind-icon">Ui<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uidevcommand.html" class="tsd-kind-icon">Ui<wbr>Dev<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uiiconcommand.html" class="tsd-kind-icon">Ui<wbr>Icon<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uiusecommand.html" class="tsd-kind-icon">Ui<wbr>Use<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/commandoptions.html" class="tsd-kind-icon">Command<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/generatecommandoptions.html" class="tsd-kind-icon">Generate<wbr>Command<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/names.html" class="tsd-kind-icon">Names</a>
@@ -376,14 +391,122 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/template.html" class="tsd-kind-icon">Template</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#builtinswithoptionalparams" class="tsd-kind-icon">Builtins<wbr>With<wbr>Optional<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#builtinswithrequiredparams" class="tsd-kind-icon">Builtins<wbr>With<wbr>Required<wbr>Params</a>
+					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#commanddef" class="tsd-kind-icon">Command<wbr>Def</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#computedstyles" class="tsd-kind-icon">Computed<wbr>Styles</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#datauri" class="tsd-kind-icon">Data<wbr>Uri</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#defaultplugins" class="tsd-kind-icon">Default<wbr>Plugins</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#dynamicstyle" class="tsd-kind-icon">Dynamic<wbr>Style</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#pathdatacommand" class="tsd-kind-icon">Path<wbr>Data<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#pathdataitem" class="tsd-kind-icon">Path<wbr>Data<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="globals.html#plugin" class="tsd-kind-icon">Plugin</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#plugininfo" class="tsd-kind-icon">Plugin<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#pluginsparams" class="tsd-kind-icon">Plugins<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#presetdefaultoverrides" class="tsd-kind-icon">Preset<wbr>Default<wbr>Overrides</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#projectoptions" class="tsd-kind-icon">Project<wbr>Options</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#specificity" class="tsd-kind-icon">Specificity</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#staticstyle" class="tsd-kind-icon">Static<wbr>Style</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#stringifyoptions" class="tsd-kind-icon">Stringify<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#stylesheet" class="tsd-kind-icon">Stylesheet</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#stylesheetdeclaration" class="tsd-kind-icon">Stylesheet<wbr>Declaration</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#stylesheetrule" class="tsd-kind-icon">Stylesheet<wbr>Rule</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#visitor" class="tsd-kind-icon">Visitor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="globals.html#visitornode" class="tsd-kind-icon">Visitor<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#visitorroot" class="tsd-kind-icon">Visitor<wbr>Root</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastcdata" class="tsd-kind-icon">Xast<wbr>Cdata</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastchild" class="tsd-kind-icon">Xast<wbr>Child</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastcomment" class="tsd-kind-icon">Xast<wbr>Comment</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastdoctype" class="tsd-kind-icon">Xast<wbr>Doctype</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastelement" class="tsd-kind-icon">Xast<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastinstruction" class="tsd-kind-icon">Xast<wbr>Instruction</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastnode" class="tsd-kind-icon">Xast<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastparent" class="tsd-kind-icon">Xast<wbr>Parent</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xastroot" class="tsd-kind-icon">Xast<wbr>Root</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external">
+						<a href="globals.html#xasttext" class="tsd-kind-icon">Xast<wbr>Text</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#any" class="tsd-kind-icon">ANY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#app_html_file" class="tsd-kind-icon">APP_<wbr>HTML_<wbr>FILE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#app_ts_file" class="tsd-kind-icon">APP_<wbr>TS_<wbr>FILE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#changelogs_dir" class="tsd-kind-icon">CHANGELOGS_<wbr>DIR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#components_dir" class="tsd-kind-icon">COMPONENTS_<wbr>DIR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#cleancss" class="tsd-kind-icon">CleanCSS</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#error" class="tsd-kind-icon">ERROR</a>
@@ -393,6 +516,15 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#ok" class="tsd-kind-icon">OK</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#styles_dir" class="tsd-kind-icon">STYLES_<wbr>DIR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#template_file" class="tsd-kind-icon">TEMPLATE_<wbr>FILE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#ui_package_name" class="tsd-kind-icon">UI_<wbr>PACKAGE_<wbr>NAME</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#warn" class="tsd-kind-icon">WARN</a>
@@ -405,6 +537,12 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#superstatic" class="tsd-kind-icon">superstatic</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#missing_arg" class="tsd-kind-icon">MISSING_<wbr>ARG</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#ts_config" class="tsd-kind-icon">TS_<wbr>CONFIG</a>
 					</li>
 				</ul>
 			</nav>
