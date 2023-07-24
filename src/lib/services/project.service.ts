@@ -8,6 +8,7 @@ export interface Options {
   stagingPrefix?: string;
   componentPrefix?: string;
   pwa?: PWAPrecaching;
+  skipMinifyHTMLLiterals?: boolean;
 }
 
 interface PWAPrecaching {
@@ -38,6 +39,7 @@ export class ProjectService {
     stagingPrefix: '.tini',
     componentPrefix: 'app',
     pwa: {},
+    skipMinifyHTMLLiterals: false,
   };
 
   constructor(private fileService: FileService) {}

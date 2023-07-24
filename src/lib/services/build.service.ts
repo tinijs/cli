@@ -35,7 +35,7 @@ export class BuildService {
       stagingPath,
       srcDir
     );
-    const tiniConfig = await this.projectService.getOptions();
+    const appConfig = await this.projectService.getOptions();
     // create dir
     await this.fileService.createDir(resolve(stagingPath, dirPath));
     // app.html -> index.html
@@ -47,7 +47,7 @@ export class BuildService {
     } else if (fileExt === 'ts') {
       await this.fileService.createFile(
         outFilePath,
-        await this.buildTS(path, tiniConfig)
+        await this.buildTS(path, appConfig)
       );
     } else {
       await this.fileService.copyFile(path, outFilePath);
@@ -58,7 +58,7 @@ export class BuildService {
     return this.fileService.readText(path);
   }
 
-  private async buildTS(path: string, tiniConfig: ProjectOptions) {
+  private async buildTS(path: string, appConfig: ProjectOptions) {
     const targetEnv = this.projectService.targetEnv;
     const isDev = targetEnv === 'development';
     const isMain = this.isAppEntry(path);
@@ -84,13 +84,13 @@ export class BuildService {
      * 2. HTML, CSS, Assets
      */
     content = this.processAssets(content);
-    content = this.processHTML(content, isDev);
+    content = this.processHTML(content, isDev, appConfig);
     content = await this.processCSS(content, isDev);
 
     /*
      * 3. PWA
      */
-    if (isMain && Object.keys(tiniConfig.pwa).length) {
+    if (isMain && Object.keys(appConfig.pwa).length) {
       content = this.injectPWA(content);
     }
 
@@ -135,7 +135,11 @@ export class BuildService {
     return content;
   }
 
-  private processHTML(content: string, isDev: boolean) {
+  private processHTML(
+    content: string,
+    isDev: boolean,
+    appConfig: ProjectOptions
+  ) {
     const templateMatching = content.match(/(return html`)([\s\S]*?)(`;)/);
     // dev or no return html`...`
     if (isDev || !templateMatching) return content;
@@ -143,9 +147,13 @@ export class BuildService {
     const matchedTemplate = templateMatching[0];
     let minifiedTemplate: string;
     try {
-      const result = minifyHTMLLiterals(matchedTemplate);
-      if (!result) throw new Error('minifyHTMLLiterals() failed.');
-      minifiedTemplate = result.code;
+      if (appConfig.skipMinifyHTMLLiterals) {
+        minifiedTemplate = matchedTemplate;
+      } else {
+        const result = minifyHTMLLiterals(matchedTemplate);
+        if (!result) throw new Error('minifyHTMLLiterals() failed.');
+        minifiedTemplate = result.code;
+      }
     } catch (err) {
       minifiedTemplate = matchedTemplate;
     }
