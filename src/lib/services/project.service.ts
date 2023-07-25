@@ -38,8 +38,8 @@ export class ProjectService {
     outDir: 'www',
     stagingPrefix: '.tini',
     componentPrefix: 'app',
-    pwa: {},
     skipMinifyHTMLLiterals: false,
+    pwa: {},
   };
 
   constructor(private fileService: FileService) {}
@@ -58,6 +58,12 @@ export class ProjectService {
 
   get version() {
     return require('../../../package.json').version as string;
+  }
+
+  async isPWAEnabled(appConfig?: ProjectOptions) {
+    const {srcDir, pwa} = appConfig ? appConfig : await this.getOptions();
+    const swExists = await this.fileService.exists(resolve(srcDir, 'sw.ts'));
+    return swExists && pwa?.globPatterns;
   }
 
   getPackageJson() {

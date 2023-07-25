@@ -2,6 +2,16 @@ import {remove} from 'fs-extra';
 import {resolve} from 'path';
 import {minifyHTMLLiterals} from 'minify-html-literals';
 import {compileStringAsync} from 'sass';
+import {
+  transpileModule,
+  ScriptTarget,
+  ModuleKind,
+  ModuleResolutionKind,
+} from 'typescript';
+import {gray, cyan, red, bold, magenta, green} from 'chalk';
+import {stat} from 'fs-extra';
+import {getManifest} from 'workbox-build';
+import {build as esBuild} from 'esbuild';
 
 import {FileService} from '../../lib/services/file.service';
 import {
@@ -54,6 +64,66 @@ export class BuildService {
     }
   }
 
+  async buildPWA(appConfig: ProjectOptions) {
+    const SW_TS = 'sw.ts';
+    const SW_JS = 'sw.js';
+    const {srcDir, outDir, pwa: pwaPrecaching} = appConfig;
+    const startTime = new Date().getTime();
+    // read sw.ts
+    const tsCode = await this.fileService.readText(resolve(srcDir, SW_TS));
+    // transpile
+    let {outputText: code} = transpileModule(tsCode, {
+      compilerOptions: {
+        noEmit: false,
+        sourceMap: false,
+        skipLibCheck: true,
+        moduleResolution: ModuleResolutionKind.NodeJs,
+        module: ModuleKind.ESNext,
+        target: ScriptTarget.ESNext,
+      },
+    });
+    // inject precaching entries
+    if (pwaPrecaching?.globPatterns) {
+      const {manifestEntries} = await getManifest({
+        globDirectory: outDir,
+        ...(pwaPrecaching || {}),
+      });
+      code =
+        `
+import {precacheAndRoute} from 'workbox-precaching';
+precacheAndRoute(${JSON.stringify(manifestEntries)});
+      \n` + code;
+    }
+    // save file
+    const swPath = resolve(outDir, SW_JS);
+    await this.fileService.createFile(swPath, code);
+    // bundle
+    try {
+      await esBuild({
+        entryPoints: [`${outDir}/sw.js`],
+        allowOverwrite: true,
+        bundle: true,
+        sourcemap: true,
+        minify: true,
+        outdir: outDir,
+      });
+      if (this.projectService.targetEnv !== 'development') {
+        const endTime = new Date().getTime();
+        const timeSecs = ((endTime - startTime) / 1000).toFixed(2);
+        const fileStat = await stat(swPath);
+        process.stdout.write(
+          `${gray(outDir + '/')}${bold(cyan(SW_JS))}          ${bold(
+            magenta((fileStat.size / 1024).toFixed(2) + ' KB')
+          )}    ${bold(green(timeSecs + 's'))}\n`
+        );
+      }
+    } catch (error: unknown) {
+      process.stdout.write(
+        red(`Failed to build ${outDir}/${SW_JS}, please try again!`) + '\n'
+      );
+    }
+  }
+
   private buildIndexHTML(path: string) {
     return this.fileService.readText(path);
   }
@@ -90,7 +160,7 @@ export class BuildService {
     /*
      * 3. PWA
      */
-    if (isMain && Object.keys(appConfig.pwa).length) {
+    if (isMain && (await this.projectService.isPWAEnabled(appConfig))) {
       content = this.injectPWA(content);
     }
 
@@ -268,11 +338,11 @@ export class BuildService {
 
   private injectPWA(content: string) {
     const wbCode = `
-      if ('serviceWorker' in navigator) {
-        this.$workbox = new Workbox('/sw.js');
-        this.$workbox.register();
-      }
-    `;
+    if ('serviceWorker' in navigator) {
+      this.$workbox = new Workbox('/sw.js');
+      this.$workbox.register();
+    }
+  `;
     // import workbox-window
     content = "import {Workbox} from 'workbox-window';\n" + content;
     // add code
@@ -284,7 +354,7 @@ export class BuildService {
       const anchorStr = 'export class AppRoot extends TiniComponent {';
       content = content.replace(
         anchorStr,
-        anchorStr + `\nonCreate() {${wbCode}}`
+        anchorStr + `\n  onCreate() {${wbCode}}`
       );
     }
     return content;

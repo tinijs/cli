@@ -19,8 +19,8 @@ export class BuildCommand {
   ) {}
 
   async run(commandOptions: CommandOptions) {
-    const {srcDir, outDir, stagingPrefix} =
-      await this.projectService.getOptions();
+    const tiniConfig = await this.projectService.getOptions();
+    const {srcDir, outDir, stagingPrefix} = tiniConfig;
     process.env.TARGET_ENV = commandOptions.target || 'production';
     const srcPath = resolve(srcDir);
     const stagingPath = this.buildService.resolveStagingPath(
@@ -41,5 +41,9 @@ export class BuildCommand {
       '.',
       'inherit'
     );
+    // build pwa
+    if (await this.projectService.isPWAEnabled(tiniConfig)) {
+      await this.buildService.buildPWA(tiniConfig);
+    }
   }
 }
