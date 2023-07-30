@@ -17,7 +17,7 @@ export class PreviewCommand {
     const {outDir: cwd} = await this.projectService.getOptions();
     // launch server
     const host = commandOptions.host || '0.0.0.0';
-    const port = commandOptions.port || 8080;
+    const port = commandOptions.port || 3000;
     const config = {
       cleanUrls: true,
       rewrites: [{source: '**', destination: '/app.html'}],

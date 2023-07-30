@@ -50,7 +50,7 @@ export class DevCommand {
       concurrently(
         [
           {
-            command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level error`,
+            command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
           },
           {command: 'tini dev --watch'},
         ],
