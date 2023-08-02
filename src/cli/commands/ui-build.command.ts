@@ -116,8 +116,25 @@ export class UiBuildCommand {
     );
 
     /*
-     * 2. scss
+     * 2. css/scss
      */
+
+    const cssPaths = paths.filter(path => path.endsWith('.css'));
+    for (let i = 0; i < cssPaths.length; i++) {
+      const path = cssPaths[i];
+      const filePath = stylesPathProcessor(path);
+      // dir
+      const dirPaths = filePath.split('/');
+      dirPaths.pop();
+      await this.fileService.createDir(
+        resolve(destPath, STYLES_DIR, ...dirPaths)
+      );
+      // .css
+      await this.fileService.copyFile(
+        path,
+        resolve(destPath, STYLES_DIR, filePath)
+      );
+    }
 
     const scssPaths = paths.filter(path => path.endsWith('.scss'));
     for (let i = 0; i < scssPaths.length; i++) {

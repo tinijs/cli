@@ -41,14 +41,14 @@ export class UiDevCommand {
     for (let i = 0; i < souls.length; i++) {
       const soul = souls[i];
       const skins = (await readdir(resolve(STYLES_DIR, soul, 'skins'))).filter(
-        item => item.endsWith('.scss')
+        item => item.endsWith('.css')
       );
       skins.forEach(skin =>
         imports.push(`@import '../styles/${soul}/skins/${skin}';`)
       );
     }
     await this.fileService.createFile(
-      resolve(destPath, 'skins.scss'),
+      resolve(destPath, 'skins.css'),
       imports.join('\n')
     );
   }
