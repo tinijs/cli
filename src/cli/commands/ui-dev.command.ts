@@ -4,11 +4,12 @@ import {camelCase, capitalCase} from 'change-case';
 
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
+import {UiService} from '../../lib/services/ui.service';
 
 import {COMPONENTS_DIR, STYLES_DIR} from './ui-build.command';
 
 export class UiDevCommand {
-  constructor(private fileService: FileService) {}
+  constructor(private fileService: FileService, private uiService: UiService) {}
 
   async run() {
     const souls = (await readdir(resolve(STYLES_DIR))).filter(
@@ -20,11 +21,11 @@ export class UiDevCommand {
     // copy global files
     this.copyGlobalFiles(destPath, souls[0]);
     // build skins
-    await this.buildSkin(destPath, souls);
-    // build components
-    await this.buildComponents(destPath, souls);
+    await this.buildSkins(destPath, souls);
     // build bases
     await this.buildBases(destPath, souls);
+    // build components
+    await this.buildComponents(destPath, souls);
     // result
     console.log(OK + 'Build ui package for developing.\n');
   }
@@ -36,7 +37,7 @@ export class UiDevCommand {
     );
   }
 
-  private async buildSkin(destPath: string, souls: string[]) {
+  private async buildSkins(destPath: string, souls: string[]) {
     const imports: string[] = [];
     for (let i = 0; i < souls.length; i++) {
       const soul = souls[i];
@@ -47,9 +48,41 @@ export class UiDevCommand {
         imports.push(`@import '../styles/${soul}/skins/${skin}';`)
       );
     }
+    const content = `${imports.join('\n')}\n${this.uiService.skinUtils}${
+      this.uiService.skinShorthands
+    }`;
+    await this.fileService.createFile(resolve(destPath, 'skins.css'), content);
+  }
+
+  private async buildBases(destPath: string, souls: string[]) {
+    const baseNames = (await readdir(resolve(STYLES_DIR, souls[0], 'base')))
+      .filter(item => item.endsWith('.ts'))
+      .map(item => item.replace('.ts', ''));
+    const importArr: string[] = [];
+    const exportArr: string[] = [];
+    for (let i = 0; i < baseNames.length; i++) {
+      const baseName = baseNames[i];
+      const baseNameCapital = capitalCase(baseName.replace(/\-|\./g, ' '));
+      const baseNameCamel = camelCase(baseNameCapital);
+      const baseExports = {} as Record<string, string>;
+      for (let j = 0; j < souls.length; j++) {
+        const soulName = souls[j];
+        const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
+        const importName = `${soulNameCamel}${baseNameCapital}Base`;
+        importArr.push(
+          `import ${importName} from '../${STYLES_DIR}/${soulName}/base/${baseName}';`
+        );
+        baseExports[soulName] = importName;
+      }
+      exportArr.push(
+        `export const ${baseNameCamel}Bases = ${JSON.stringify(
+          baseExports
+        ).replace(/\"/g, '')};`
+      );
+    }
     await this.fileService.createFile(
-      resolve(destPath, 'skins.css'),
-      imports.join('\n')
+      resolve(destPath, 'bases.ts'),
+      `${importArr.join('\n')}\n\n${exportArr.join('\n')}`
     );
   }
 
@@ -82,7 +115,7 @@ export class UiDevCommand {
             if (name) {
               souls.forEach(soul => {
                 result.imports.push(
-                  `import ${soul}${nameCapital}Style from '../${STYLES_DIR}/${soul}/base/${name}';`
+                  `import ${soul}${nameCapital}Style from '../../${STYLES_DIR}/${soul}/base/${name}';`
                 );
                 result.styling[soul] ||= [];
                 result.styling[soul].push(`${soul}${nameCapital}Style`);
@@ -125,7 +158,7 @@ export class UiDevCommand {
       const soulContents = souls.reduce(
         (result, soul) => {
           result.imports.push(
-            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '../${STYLES_DIR}/${soul}/soul/${componentName}';`
+            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '../../${STYLES_DIR}/${soul}/soul/${componentName}';`
           );
           result.styling[soul] = `${soul}${componentNameCapital}Style`;
           result.scripting[soul] = {
@@ -146,7 +179,7 @@ export class UiDevCommand {
         code = code.replace(`${useComponentsMatching[0]}\n`, '');
       code = code.replace(
         /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
-        './'
+        '../'
       );
       // imports
       code =
@@ -183,39 +216,10 @@ export class `
 export class `
       );
       // save file
-      await this.fileService.createFile(resolve(destPath, filePath), code);
-    }
-  }
-
-  private async buildBases(destPath: string, souls: string[]) {
-    const baseNames = (await readdir(resolve(STYLES_DIR, souls[0], 'base')))
-      .filter(item => item.endsWith('.ts'))
-      .map(item => item.replace('.ts', ''));
-    const importArr: string[] = [];
-    const exportArr: string[] = [];
-    for (let i = 0; i < baseNames.length; i++) {
-      const baseName = baseNames[i];
-      const baseNameCapital = capitalCase(baseName.replace(/\-|\./g, ' '));
-      const baseNameCamel = camelCase(baseNameCapital);
-      const baseExports = {} as Record<string, string>;
-      for (let j = 0; j < souls.length; j++) {
-        const soulName = souls[j];
-        const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
-        const importName = `${soulNameCamel}${baseNameCapital}Style`;
-        importArr.push(
-          `import ${importName} from '../${STYLES_DIR}/${soulName}/base/${baseName}';`
-        );
-        baseExports[soulName] = importName;
-      }
-      exportArr.push(
-        `export const ${baseNameCamel}Styles = ${JSON.stringify(
-          baseExports
-        ).replace(/\"/g, '')};`
+      await this.fileService.createFile(
+        resolve(destPath, COMPONENTS_DIR, filePath),
+        code
       );
     }
-    await this.fileService.createFile(
-      resolve(destPath, 'styles.ts'),
-      `${importArr.join('\n')}\n\n${exportArr.join('\n')}`
-    );
   }
 }

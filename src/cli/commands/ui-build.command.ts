@@ -8,6 +8,7 @@ import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
+import {UiService} from '../../lib/services/ui.service';
 
 export const COMPONENTS_DIR = 'components';
 export const STYLES_DIR = 'styles';
@@ -25,7 +26,8 @@ export class UiBuildCommand {
   constructor(
     private fileService: FileService,
     private projectService: ProjectService,
-    private typescriptService: TypescriptService
+    private typescriptService: TypescriptService,
+    private uiService: UiService
   ) {}
 
   async run(packageName: string, soulName?: string) {
@@ -119,24 +121,9 @@ export class UiBuildCommand {
      * 2. css/scss
      */
 
-    const cssPaths = paths.filter(path => path.endsWith('.css'));
-    for (let i = 0; i < cssPaths.length; i++) {
-      const path = cssPaths[i];
-      const filePath = stylesPathProcessor(path);
-      // dir
-      const dirPaths = filePath.split('/');
-      dirPaths.pop();
-      await this.fileService.createDir(
-        resolve(destPath, STYLES_DIR, ...dirPaths)
-      );
-      // .css
-      await this.fileService.copyFile(
-        path,
-        resolve(destPath, STYLES_DIR, filePath)
-      );
-    }
-
-    const scssPaths = paths.filter(path => path.endsWith('.scss'));
+    const scssPaths = paths.filter(
+      path => path.endsWith('.css') || path.endsWith('.scss')
+    );
     for (let i = 0; i < scssPaths.length; i++) {
       const path = scssPaths[i];
       const filePath = stylesPathProcessor(path);
@@ -147,50 +134,63 @@ export class UiBuildCommand {
       await this.fileService.createDir(
         resolve(destPath, STYLES_DIR, ...dirPaths)
       );
-      // .css & .css.map
-      const content = await this.fileService.readText(path);
-      const {css, sourceMap} = compileString(content, {
-        sourceMap: true,
-        loadPaths: [resolve(STYLES_DIR, soulName, ...dirPaths)],
-      });
-      await this.fileService.createFile(
-        resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css')),
-        css +
-          '\n' +
-          `/*# sourceMappingURL=${fileName.replace('.scss', '.css.map')} */`
-      );
-      const useSourceMap = (sourceMap || {}) as any;
-      useSourceMap.sources = [fileName.replace('.scss', '.css')];
-      await this.fileService.createFile(
-        resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css.map')),
-        JSON.stringify(useSourceMap)
-      );
-      // .min.css & .min.css.map
-      const {styles: minCss, sourceMap: minSourceMap} = new CleanCSS({
-        sourceMap: true,
-      }).minify(css);
-      await this.fileService.createFile(
-        resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.min.css')),
-        minCss +
-          '\n' +
-          `/*# sourceMappingURL=${fileName.replace('.scss', '.min.css.map')} */`
-      );
-      await this.fileService.createFile(
-        resolve(
-          destPath,
-          STYLES_DIR,
-          filePath.replace('.scss', '.min.css.map')
-        ),
-        (minSourceMap?.toString() || '').replace(
-          '"$stdin"',
-          `"${fileName.replace('.scss', '.css.min')}"`
-        )
-      );
+      // .css
+      if (path.endsWith('.css')) {
+        await this.fileService.copyFile(
+          path,
+          resolve(destPath, STYLES_DIR, filePath)
+        );
+      }
       // .scss
-      await this.fileService.copyFile(
-        path,
-        resolve(destPath, STYLES_DIR, filePath)
-      );
+      else {
+        // .css & .css.map
+        const content = await this.fileService.readText(path);
+        const {css, sourceMap} = compileString(content, {
+          sourceMap: true,
+          loadPaths: [resolve(STYLES_DIR, soulName, ...dirPaths)],
+        });
+        await this.fileService.createFile(
+          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css')),
+          css +
+            '\n' +
+            `/*# sourceMappingURL=${fileName.replace('.scss', '.css.map')} */`
+        );
+        const useSourceMap = (sourceMap || {}) as any;
+        useSourceMap.sources = [fileName.replace('.scss', '.css')];
+        await this.fileService.createFile(
+          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css.map')),
+          JSON.stringify(useSourceMap)
+        );
+        // .min.css & .min.css.map
+        const {styles: minCss, sourceMap: minSourceMap} = new CleanCSS({
+          sourceMap: true,
+        }).minify(css);
+        await this.fileService.createFile(
+          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.min.css')),
+          minCss +
+            '\n' +
+            `/*# sourceMappingURL=${fileName.replace(
+              '.scss',
+              '.min.css.map'
+            )} */`
+        );
+        await this.fileService.createFile(
+          resolve(
+            destPath,
+            STYLES_DIR,
+            filePath.replace('.scss', '.min.css.map')
+          ),
+          (minSourceMap?.toString() || '').replace(
+            '"$stdin"',
+            `"${fileName.replace('.scss', '.css.min')}"`
+          )
+        );
+        // .scss
+        await this.fileService.copyFile(
+          path,
+          resolve(destPath, STYLES_DIR, filePath)
+        );
+      }
     }
 
     /*
@@ -297,6 +297,40 @@ export class`
       TS_CONFIG,
       `${destPath}/${COMPONENTS_DIR}`,
       componentsPathProcessor
+    );
+
+    /*
+     * 5. Extract base .ts into .css
+     */
+    const basePaths = (
+      await this.fileService.listDir(resolve(STYLES_DIR, soulName, 'base'))
+    ).filter(path => path.endsWith('.ts'));
+    for (let i = 0; i < basePaths.length; i++) {
+      const path = basePaths[i];
+      const pathArr = path.split('/');
+      const fileName = pathArr.pop() as string;
+      const tsContent = await this.fileService.readText(path);
+      const cssContentMatching = tsContent.match(
+        /(export default css`)([\s\S]*?)(`;)/
+      );
+      if (!cssContentMatching) continue;
+      const cssContent = cssContentMatching[2];
+      await this.fileService.createFile(
+        resolve(destPath, STYLES_DIR, 'base', fileName.replace('.ts', '.css')),
+        cssContent
+      );
+    }
+
+    /*
+     * 6. Skin utils/shorthands
+     */
+    await this.fileService.createFile(
+      resolve(destPath, STYLES_DIR, 'skin-utils.css'),
+      this.uiService.skinUtils
+    );
+    await this.fileService.createFile(
+      resolve(destPath, STYLES_DIR, 'skin-shorthands.css'),
+      this.uiService.skinShorthands
     );
   }
 }
