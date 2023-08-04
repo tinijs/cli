@@ -29,6 +29,13 @@ export class BuildService {
     return resolve(`${stagingPrefix}-${srcDir}`);
   }
 
+  async copyPublic(srcDir: string, outDir: string) {
+    const outPath = resolve(outDir);
+    if (await this.fileService.exists(outPath)) {
+      await this.fileService.copyDir(resolve(srcDir, 'public'), outPath);
+    }
+  }
+
   async removeFile(path: string, stagingPath: string, srcDir: string) {
     const {outFilePath} = this.extractPathValues(
       resolve(path),

@@ -60,8 +60,20 @@ export class DevCommand {
           restartTries: 3,
         }
       );
+      // copy public dir
+      this.copyPublic(srcDir, outDir);
       // running
       console.log(bold(blueBright('Server running at http://localhost:3000')));
     }
+  }
+
+  private copyPublic(srcDir: string, outDir: string) {
+    setTimeout(async () => {
+      if (await this.fileService.exists(resolve(outDir))) {
+        await this.buildService.copyPublic(srcDir, outDir);
+      } else {
+        this.copyPublic(srcDir, outDir);
+      }
+    }, 2000);
   }
 }
