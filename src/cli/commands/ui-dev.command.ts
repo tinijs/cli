@@ -48,9 +48,7 @@ export class UiDevCommand {
         imports.push(`@import '../styles/${soul}/skins/${skin}';`)
       );
     }
-    const content = `${imports.join('\n')}\n${this.uiService.skinUtils}${
-      this.uiService.skinShorthands
-    }`;
+    const content = `${imports.join('\n')}\n${this.uiService.skinUtils}`;
     await this.fileService.createFile(resolve(destPath, 'skins.css'), content);
   }
 

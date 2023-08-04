@@ -96,10 +96,6 @@ export class UiBuildCommand {
       resolve(destPath, 'skin-utils.css'),
       this.uiService.skinUtils
     );
-    await this.fileService.createFile(
-      resolve(destPath, 'skin-shorthands.css'),
-      this.uiService.skinShorthands
-    );
   }
 
   private buildComponents(destPath: string) {
@@ -336,10 +332,6 @@ export class`
     await this.fileService.createFile(
       resolve(destPath, STYLES_DIR, 'skin-utils.css'),
       this.uiService.skinUtils
-    );
-    await this.fileService.createFile(
-      resolve(destPath, STYLES_DIR, 'skin-shorthands.css'),
-      this.uiService.skinShorthands
     );
   }
 }
