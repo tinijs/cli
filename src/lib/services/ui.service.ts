@@ -11,11 +11,15 @@ export class UiService {
     );
     const sizeRadiusUtils = this.sizeUtilGenerator(
       ['--size-radius'],
-      [0.5, 1.5, 2, 2.5, 3]
+      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
     );
     const sizeBorderUtils = this.sizeUtilGenerator(
       ['--size-border'],
-      [0.5, 1.5, 2, 2.5, 3]
+      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
+    );
+    const sizeOutlineUtils = this.sizeUtilGenerator(
+      ['--size-outline'],
+      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
     );
     const sizeSpaceUtils = this.sizeUtilGenerator(
       ['--size-space'],
@@ -36,7 +40,10 @@ export class UiService {
         '--size-xxl',
         '--size-xxxl',
       ],
-      [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
+      [
+        0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.5, 2, 2.5, 3,
+        4, 5,
+      ]
     );
     const rgbaColorUtils = this.rgbaUtilGenerator(
       [
@@ -84,6 +91,7 @@ export class UiService {
   ${sizeTextUtils}
   ${sizeRadiusUtils}
   ${sizeBorderUtils}
+  ${sizeOutlineUtils}
   ${sizeSpaceUtils}
   ${sizeStepsUtils}
   ${rgbaColorUtils}
