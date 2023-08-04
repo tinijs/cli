@@ -327,7 +327,7 @@ export class`
     }
 
     /*
-     * 6. Skin utils/shorthands
+     * 6. Skin utils
      */
     await this.fileService.createFile(
       resolve(destPath, STYLES_DIR, 'skin-utils.css'),

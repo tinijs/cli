@@ -4,18 +4,24 @@ import {camelCase, capitalCase} from 'change-case';
 
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
+import {ProjectService} from '../../lib/services/project.service';
 import {UiService} from '../../lib/services/ui.service';
 
 import {COMPONENTS_DIR, STYLES_DIR} from './ui-build.command';
 
 export class UiDevCommand {
-  constructor(private fileService: FileService, private uiService: UiService) {}
+  constructor(
+    private fileService: FileService,
+    private projectService: ProjectService,
+    private uiService: UiService
+  ) {}
 
   async run() {
+    const {stagingPrefix} = await this.projectService.getOptions();
     const souls = (await readdir(resolve(STYLES_DIR))).filter(
       item => !~item.indexOf('.')
     );
-    const destPath = resolve('dev');
+    const destPath = resolve(`${stagingPrefix}-ui`);
     // clean dir
     await this.fileService.cleanDir(destPath);
     // copy global files
