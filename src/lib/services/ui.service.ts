@@ -3,23 +3,40 @@ export class UiService {
 
   get skinUtils() {
     const sizeTextUtils = this.sizeUtilGenerator(
-      '--size-text',
+      ['--size-text'],
       [
-        0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5, 1.75, 2,
-        2.5, 3, 4, 5, 6, 7, 8, 9, 10,
+        0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5,
+        1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10,
       ]
     );
     const sizeRadiusUtils = this.sizeUtilGenerator(
-      '--size-radius',
+      ['--size-radius'],
       [0.5, 1.5, 2, 2.5, 3]
     );
     const sizeBorderUtils = this.sizeUtilGenerator(
-      '--size-border',
+      ['--size-border'],
       [0.5, 1.5, 2, 2.5, 3]
     );
     const sizeSpaceUtils = this.sizeUtilGenerator(
-      '--size-space',
+      ['--size-space'],
       [0.1, 0.25, 0.5, 0.75, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+    );
+    const sizeStepsUtils = this.sizeUtilGenerator(
+      [
+        '--size-xxxs',
+        '--size-xxs',
+        '--size-xs',
+        '--size-ss',
+        '--size-sm',
+        '--size-md',
+        '--size-ml',
+        '--size-lg',
+        '--size-sl',
+        '--size-xl',
+        '--size-xxl',
+        '--size-xxxl',
+      ],
+      [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
     );
     const rgbaColorUtils = this.rgbaUtilGenerator(
       [
@@ -48,13 +65,29 @@ export class UiService {
       ],
       [0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
     );
+    const shadeTintColorUtils = this.shadeTintUtilGenerator(
+      [
+        '--color-primary',
+        '--color-secondary',
+        '--color-tertiary',
+        '--color-success',
+        '--color-warning',
+        '--color-danger',
+        '--color-dark',
+        '--color-medium',
+        '--color-light',
+      ],
+      [95, 90, 85, 80, 75, 70]
+    );
     return `
 [data-theme] {
   ${sizeTextUtils}
   ${sizeRadiusUtils}
   ${sizeBorderUtils}
   ${sizeSpaceUtils}
+  ${sizeStepsUtils}
   ${rgbaColorUtils}
+  ${shadeTintColorUtils}
 }    
 `;
   }
@@ -199,8 +232,8 @@ export class UiService {
         ['1', 'xxxs'],
         ['2', 'xxs'],
         ['3', 'xs'],
-        ['4', 'sm'],
-        ['5', 'ms'],
+        ['4', 'ss'],
+        ['5', 'sm'],
         ['6', 'md'],
         ['7', 'ml'],
         ['8', 'lg'],
@@ -216,8 +249,8 @@ export class UiService {
         ['1', 'xxxs'],
         ['2', 'xxs'],
         ['3', 'xs'],
-        ['4', 'sm'],
-        ['5', 'ms'],
+        ['4', 'ss'],
+        ['5', 'sm'],
         ['6', 'md'],
         ['7', 'ml'],
         ['8', 'lg'],
@@ -239,17 +272,21 @@ export class UiService {
   ${sizeShorthands}
   ${wideShorthands}
   ${otherShorthands}
-}    
+}
 `;
   }
 
-  private sizeUtilGenerator(key: string, sizes: number[]) {
-    return sizes
-      .map(
-        size =>
-          `${key}-${size
-            .toString()
-            .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${size});`
+  private sizeUtilGenerator(keys: string[], sizes: number[]) {
+    return keys
+      .map(key =>
+        sizes
+          .map(
+            size =>
+              `${key}-${size
+                .toString()
+                .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${size});`
+          )
+          .join('\n  ')
       )
       .join('\n  ');
   }
@@ -262,12 +299,32 @@ export class UiService {
             alpha =>
               `${key.replace(
                 'rgb',
-                (alpha * 100).toString()
+                `rgba-${alpha * 100}`
               )}: rgba(var(${key}), ${alpha});`
           )
           .join('\n  ')
       )
       .join('\n  ');
+  }
+
+  private shadeTintUtilGenerator(liteKeys: string[], shades: number[]) {
+    return ['shade', 'tint'].reduce((result, kind) => {
+      const group = liteKeys
+        .map(liteKey => {
+          const key = `${liteKey}-${kind}`;
+          return shades
+            .map(
+              (shade, i) =>
+                `${key}-${i + 2}: color-mix(in oklab, var(${key}) ${shade}%, ${
+                  kind === 'shade' ? 'black' : 'white'
+                });`
+            )
+            .join('\n  ');
+        })
+        .join('\n  ');
+      result += group + '\n  ';
+      return result;
+    }, '' as string);
   }
 
   private shorthandGenerator(

@@ -39,7 +39,7 @@ export class UiBuildCommand {
     await this.fileService.cleanDir(destPath);
     // build
     if (packageName === UI_PACKAGE_NAME) {
-      await this.buildUI();
+      await this.buildUI(destPath);
     } else if (soulName) {
       await this.buildSoul(destPath, soulName);
     } else {
@@ -91,7 +91,16 @@ export class UiBuildCommand {
     console.log(OK + `Build ${packageName} successfully!`);
   }
 
-  private async buildUI() {}
+  private async buildUI(destPath: string) {
+    await this.fileService.createFile(
+      resolve(destPath, 'skin-utils.css'),
+      this.uiService.skinUtils
+    );
+    await this.fileService.createFile(
+      resolve(destPath, 'skin-shorthands.css'),
+      this.uiService.skinShorthands
+    );
+  }
 
   private buildComponents(destPath: string) {
     return this.fileService.copyDir(
