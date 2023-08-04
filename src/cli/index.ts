@@ -177,6 +177,7 @@ export class Cli {
       this.tiniModule.fileService,
       this.tiniModule.projectService,
       this.tiniModule.typescriptService,
+      this.tiniModule.buildService,
       this.tiniModule.uiService
     );
     this.uiDevCommand = new UiDevCommand(

@@ -35,7 +35,11 @@ export class PreviewCommand {
       })
       .listen(() =>
         console.log(
-          INFO + 'Preview your app at: ' + bold(blueBright(`${host}:${port}`))
+          '\n' +
+            INFO +
+            'Preview your app at: ' +
+            bold(blueBright(`${host}:${port}`)) +
+            '\n'
         )
       );
   }

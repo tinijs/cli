@@ -29,6 +29,18 @@ export class BuildService {
     return resolve(`${stagingPrefix}-${srcDir}`);
   }
 
+  async buildStaging() {
+    const {srcDir, stagingPrefix} = await this.projectService.getOptions();
+    const srcPath = resolve(srcDir);
+    const stagingPath = this.resolveStagingPath(srcDir, stagingPrefix);
+    await this.fileService.cleanDir(stagingPath);
+    const paths = await this.fileService.listDir(srcPath);
+    for (let i = 0; i < paths.length; i++) {
+      await this.buildFile(paths[i], stagingPath, srcDir);
+    }
+    return stagingPath;
+  }
+
   async copyPublic(srcDir: string, outDir: string) {
     const outPath = resolve(outDir);
     if (await this.fileService.exists(outPath)) {

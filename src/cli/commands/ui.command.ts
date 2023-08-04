@@ -32,11 +32,12 @@ export class UiCommand {
         break;
       default:
         console.log(
-          ERROR +
+          '\n' +
+            ERROR +
             `Invalid sub-command '${chalk.red(subCommand)}', available: ` +
             `${chalk.green('use')}, ${chalk.green('build')}, ${chalk.green(
               'dev'
-            )}, ${chalk.green('icon')}`
+            )}, ${chalk.green('icon')}.\n`
         );
         break;
     }

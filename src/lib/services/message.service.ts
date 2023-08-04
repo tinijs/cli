@@ -1,10 +1,9 @@
 import * as chalk from 'chalk';
 
-export const ANY = chalk.gray('[ANY] ');
-export const ERROR = chalk.red('[ERROR] ');
-export const WARN = chalk.yellow('[WARN] ');
-export const INFO = chalk.blue('[INFO] ');
-export const OK = chalk.green('[OK] ');
+export const ERROR = chalk.red('✖ ');
+export const WARN = chalk.yellow('⚠ ');
+export const INFO = chalk.blue('ℹ ');
+export const OK = chalk.green('✔ ');
 export function MISSING_ARG(name: string) {
   return `error: missing required argument '${name}'`;
 }

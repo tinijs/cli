@@ -22,7 +22,6 @@ export class BuildCommand {
     const tiniConfig = await this.projectService.getOptions();
     const {srcDir, outDir, stagingPrefix} = tiniConfig;
     process.env.TARGET_ENV = commandOptions.target || 'production';
-    const srcPath = resolve(srcDir);
     const stagingPath = this.buildService.resolveStagingPath(
       srcDir,
       stagingPrefix
@@ -30,14 +29,10 @@ export class BuildCommand {
     // clean target dir
     await remove(resolve(outDir));
     // build staging
-    await this.fileService.cleanDir(stagingPath);
-    const paths = await this.fileService.listDir(srcPath);
-    for (let i = 0; i < paths.length; i++) {
-      await this.buildService.buildFile(paths[i], stagingPath, srcDir);
-    }
+    await this.buildService.buildStaging();
     // build target
     this.terminalService.exec(
-      `cross-env NODE_ENV=${process.env.TARGET_ENV} parcel build "${stagingPath}/index.html" --dist-dir ${outDir} --no-cache`,
+      `npx cross-env NODE_ENV=${process.env.TARGET_ENV} npx parcel build "${stagingPath}/index.html" --dist-dir ${outDir} --no-cache`,
       '.',
       'inherit'
     );

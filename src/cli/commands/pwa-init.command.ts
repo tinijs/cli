@@ -16,7 +16,7 @@ export class PwaInitCommand {
 
   async run(commandOptions: CommandOptions) {
     if (await this.pwaService.assetsExist()) {
-      return console.log(INFO + 'PWA assets are already available!');
+      return console.log('\n' + INFO + 'PWA assets are already available!\n');
     }
     // install packages
     const version = commandOptions.tag || this.projectService.version;
@@ -27,9 +27,11 @@ export class PwaInitCommand {
     await this.pwaService.modifyFiles();
     // done
     console.log(
-      OK +
+      '\n' +
+        OK +
         `Adding @tinijs/pwa@${version} successfully, for more detail: ` +
-        bold(blueBright('https://tinijs.dev/docs/pwa'))
+        bold(blueBright('https://tinijs.dev/docs/pwa')) +
+        '\n'
     );
   }
 }

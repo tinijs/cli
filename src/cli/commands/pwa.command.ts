@@ -19,9 +19,10 @@ export class PwaCommand {
         break;
       default:
         console.log(
-          ERROR +
+          '\n' +
+            ERROR +
             `Invalid sub-command '${chalk.red(subCommand)}', available: ` +
-            `${chalk.green('init')}, `
+            `${chalk.green('init')}.\n`
         );
         break;
     }

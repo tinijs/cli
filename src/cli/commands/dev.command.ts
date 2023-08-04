@@ -21,7 +21,6 @@ export class DevCommand {
   async run(commandOptions: CommandOptions) {
     const {srcDir, outDir, stagingPrefix} =
       await this.projectService.getOptions();
-    const srcPath = resolve(srcDir);
     const stagingPath = this.buildService.resolveStagingPath(
       srcDir,
       stagingPrefix
@@ -39,20 +38,15 @@ export class DevCommand {
           this.buildService.removeFile(path, stagingPath, srcDir)
         );
     } else {
-      // clean staging dir
-      await this.fileService.cleanDir(stagingPath);
-      // build all
-      const paths = await this.fileService.listDir(srcPath);
-      for (let i = 0; i < paths.length; i++) {
-        await this.buildService.buildFile(paths[i], stagingPath, srcDir);
-      }
+      // build staging
+      await this.buildService.buildStaging();
       // start dev server
       concurrently(
         [
           {
-            command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
+            command: `npx parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
           },
-          {command: 'tini dev --watch'},
+          {command: 'npx tini dev --watch'},
         ],
         {
           prefix: 'none',
@@ -63,7 +57,9 @@ export class DevCommand {
       // copy public dir
       this.copyPublic(srcDir, outDir);
       // running
-      console.log(bold(blueBright('Server running at http://localhost:3000')));
+      console.log(
+        '\n' + bold(blueBright('Server running at http://localhost:3000'))
+      );
     }
   }
 

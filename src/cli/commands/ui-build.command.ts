@@ -3,14 +3,18 @@ import {compileString} from 'sass';
 import {resolve} from 'path';
 import {camelCase} from 'change-case';
 const CleanCSS = require('clean-css');
+import {bold, blueBright} from 'chalk';
 
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
+import {BuildService} from '../../lib/services/build.service';
 import {UiService} from '../../lib/services/ui.service';
 
+export const APP_DIR = 'app';
 export const COMPONENTS_DIR = 'components';
+export const BLOCKS_DIR = 'blocks';
 export const STYLES_DIR = 'styles';
 export const UI_PACKAGE_NAME = '@tinijs/ui';
 export const TS_CONFIG = {
@@ -27,23 +31,24 @@ export class UiBuildCommand {
     private fileService: FileService,
     private projectService: ProjectService,
     private typescriptService: TypescriptService,
+    private buildService: BuildService,
     private uiService: UiService
   ) {}
 
   async run(packageName: string, soulName?: string) {
     packageName = !packageName
       ? UI_PACKAGE_NAME
-      : `${packageName}-${!soulName ? COMPONENTS_DIR : soulName}`;
+      : `${packageName}-${!soulName ? 'common' : soulName}`;
     const destPath = resolve('build', packageName);
     // clean
     await this.fileService.cleanDir(destPath);
     // build
     if (packageName === UI_PACKAGE_NAME) {
-      await this.buildUI(destPath);
+      await this.buildBare(destPath);
     } else if (soulName) {
       await this.buildSoul(destPath, soulName);
     } else {
-      await this.buildComponents(destPath);
+      await this.buildCommon(destPath);
     }
     // package.json
     const {
@@ -88,21 +93,35 @@ export class UiBuildCommand {
       );
     }
     // result
-    console.log(OK + `Build ${packageName} successfully!`);
+    console.log(
+      '\n' + OK + `Build ${bold(blueBright(packageName))} successfully!\n`
+    );
   }
 
-  private async buildUI(destPath: string) {
+  private async buildBare(destPath: string) {
+    // tokens.ts
+    await this.outputAndTranspileTokensTS(destPath);
+    // skin utils
     await this.fileService.createFile(
       resolve(destPath, 'skin-utils.css'),
       this.uiService.skinUtils
     );
   }
 
-  private buildComponents(destPath: string) {
-    return this.fileService.copyDir(
+  private async buildCommon(destPath: string) {
+    // components
+    await this.fileService.copyDir(
       resolve(COMPONENTS_DIR),
       resolve(destPath, COMPONENTS_DIR)
     );
+    // blocks
+    await this.fileService.copyDir(
+      resolve(BLOCKS_DIR),
+      resolve(destPath, BLOCKS_DIR)
+    );
+    // app
+    const stagingPath = await this.buildService.buildStaging();
+    await this.fileService.copyDir(stagingPath, resolve(destPath, APP_DIR));
   }
 
   private async buildSoul(destPath: string, soulName: string) {
@@ -199,14 +218,56 @@ export class UiBuildCommand {
     }
 
     /*
-     * 3. components
+     * 3. Components, Blocks
      */
+    await this.buildSoulComponents(COMPONENTS_DIR, destPath);
+    await this.buildSoulComponents(BLOCKS_DIR, destPath);
 
+    /*
+     * 4. Extract base .ts into .css
+     */
+    const basePaths = (
+      await this.fileService.listDir(resolve(STYLES_DIR, soulName, 'base'))
+    ).filter(path => path.endsWith('.ts'));
+    for (let i = 0; i < basePaths.length; i++) {
+      const path = basePaths[i];
+      const pathArr = path.split('/');
+      const fileName = pathArr.pop() as string;
+      const tsContent = await this.fileService.readText(path);
+      const cssContentMatching = tsContent.match(
+        /(export default css`)([\s\S]*?)(`;)/
+      );
+      if (!cssContentMatching) continue;
+      const cssContent = cssContentMatching[2];
+      await this.fileService.createFile(
+        resolve(destPath, STYLES_DIR, 'base', fileName.replace('.ts', '.css')),
+        cssContent
+      );
+    }
+
+    /*
+     * 5. tokens.ts
+     */
+    await this.outputAndTranspileTokensTS(destPath);
+
+    /*
+     * 6. Skin utils
+     */
+    await this.fileService.createFile(
+      resolve(destPath, 'skin-utils.css'),
+      this.uiService.skinUtils
+    );
+  }
+
+  private async buildSoulComponents(inputDir: string, destPath: string) {
+    /*
+     * A. Build
+     */
     const componentPaths = (
-      await this.fileService.listDir(resolve(COMPONENTS_DIR))
+      await this.fileService.listDir(resolve(inputDir))
     ).filter(path => path.endsWith('.ts'));
     const componentsPathProcessor = (path: string) =>
-      path.split(`/${COMPONENTS_DIR}/`).pop() as string;
+      path.split(`/${inputDir}/`).pop() as string;
     for (let i = 0; i < componentPaths.length; i++) {
       const path = componentPaths[i];
       const filePath = componentsPathProcessor(path);
@@ -218,7 +279,7 @@ export class UiBuildCommand {
       const dirPaths = filePath.split('/');
       dirPaths.pop();
       await this.fileService.createDir(
-        resolve(destPath, STYLES_DIR, ...dirPaths)
+        resolve(destPath, inputDir, ...dirPaths)
       );
       // output .ts
       let code = await this.fileService.readText(path);
@@ -241,11 +302,12 @@ export class UiBuildCommand {
             styles: [] as string[],
           }
         );
-      if (useBaseMatching) code = code.replace(`${useBaseMatching[0]}\n`, '');
-      code = code.replace(
-        /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
-        '../styles/'
-      );
+      if (useBaseMatching) {
+        code = code.replace(`${useBaseMatching[0]}\n`, '');
+      }
+      code = code
+        .replace(/(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g, '../styles/')
+        .replace(/(app\/tokens)/g, 'tokens');
       code =
         `
 ${useBaseContents.imports.join('\n')}
@@ -270,68 +332,46 @@ import {${componentName}Style, ${componentName}Script} from '../${STYLES_DIR}/so
 export class`
         );
       await this.fileService.createFile(
-        resolve(destPath, COMPONENTS_DIR, filePath),
+        resolve(destPath, inputDir, filePath),
         code
       );
       await this.fileService.createFile(
-        resolve(
-          destPath,
-          COMPONENTS_DIR,
-          filePath.replace('.ts', '.include.ts')
-        ),
+        resolve(destPath, inputDir, filePath.replace('.ts', '.include.ts')),
         codeWithDefine
       );
       await this.fileService.createFile(
-        resolve(
-          destPath,
-          COMPONENTS_DIR,
-          filePath.replace('.ts', '.bundle.ts')
-        ),
+        resolve(destPath, inputDir, filePath.replace('.ts', '.bundle.ts')),
         codeWithDefine
       );
     }
 
     /*
-     * 4. Transpile components
+     * B. Transpile
      */
-    const outComponentsPaths = (
-      await this.fileService.listDir(resolve(destPath, COMPONENTS_DIR))
-    ).filter(path => !path.endsWith('.bundle.ts'));
-    await this.typescriptService.transpileAndOutputFiles(
-      outComponentsPaths,
-      TS_CONFIG,
-      `${destPath}/${COMPONENTS_DIR}`,
-      componentsPathProcessor
+    if (componentPaths.length) {
+      const outComponentsPaths = (
+        await this.fileService.listDir(resolve(destPath, inputDir))
+      ).filter(path => !path.endsWith('.bundle.ts'));
+      await this.typescriptService.transpileAndOutputFiles(
+        outComponentsPaths,
+        TS_CONFIG,
+        `${destPath}/${inputDir}`,
+        componentsPathProcessor
+      );
+    }
+  }
+
+  private async outputAndTranspileTokensTS(destPath: string) {
+    const tokensOutPath = resolve(destPath, 'tokens.ts');
+    await this.fileService.copyFile(
+      resolve(APP_DIR, 'tokens.ts'),
+      tokensOutPath
     );
-
-    /*
-     * 5. Extract base .ts into .css
-     */
-    const basePaths = (
-      await this.fileService.listDir(resolve(STYLES_DIR, soulName, 'base'))
-    ).filter(path => path.endsWith('.ts'));
-    for (let i = 0; i < basePaths.length; i++) {
-      const path = basePaths[i];
-      const pathArr = path.split('/');
-      const fileName = pathArr.pop() as string;
-      const tsContent = await this.fileService.readText(path);
-      const cssContentMatching = tsContent.match(
-        /(export default css`)([\s\S]*?)(`;)/
-      );
-      if (!cssContentMatching) continue;
-      const cssContent = cssContentMatching[2];
-      await this.fileService.createFile(
-        resolve(destPath, STYLES_DIR, 'base', fileName.replace('.ts', '.css')),
-        cssContent
-      );
-    }
-
-    /*
-     * 6. Skin utils
-     */
-    await this.fileService.createFile(
-      resolve(destPath, STYLES_DIR, 'skin-utils.css'),
-      this.uiService.skinUtils
+    await this.typescriptService.transpileAndOutputFiles(
+      [tokensOutPath],
+      TS_CONFIG,
+      destPath,
+      path => path.split('/').pop() as string
     );
   }
 }
