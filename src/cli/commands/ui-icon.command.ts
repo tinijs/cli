@@ -185,8 +185,8 @@ export class UiIconCommand {
       const {base64Content, base64Digest, URIHead, dataURI} =
         await this.extractBase64Data(path);
       let content = templateContent.replace(
-        '--icon-image: url()',
-        `--icon-image: url('${dataURI}')`
+        "--icon-image:url('icon.svg')",
+        `--icon-image:url('${dataURI}')`
       );
       content = content.replace(
         "const ICON = 'icon'",
