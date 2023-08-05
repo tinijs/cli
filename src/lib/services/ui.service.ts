@@ -110,4 +110,75 @@ export class UiService {
       return result;
     }, '' as string);
   }
+
+  get iconTemplate() {
+    return `import {LitElement, html, css} from 'lit';
+import {property} from 'lit/decorators.js';
+import {classMap} from 'lit/directives/class-map.js';
+import {generateColorDynamicAndVaries, generateGradientDynamicAndVaries, generateSizeVaries} from '@tinijs/core';
+export const ICON = 'icon';
+export class IconComponent extends LitElement {
+  static styles = css\`:host{--icon-width:var(--size-md-2x);--icon-height:var(--size-md-2x);--icon-color:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.recolor{background:var(--icon-color);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorDynamicAndVaries(({name, color}) => \`.\${name} {--icon-color: \${color};}\`)}\${generateGradientDynamicAndVaries(({name, gradient}) => \`.gradient-\${name} {--icon-color: \${gradient};}\`)\}\${generateSizeVaries(size => \`.\${size} {--icon-width: var(--size-\${size}-2x);--icon-height: var(--size-\${size}-2x);}\`)}
+  \`;
+  @property({type: String}) declare readonly size?: string;
+  @property({type: String}) declare readonly color?: string;
+  protected render() { return html\`<i part="icon" class=\${classMap({ recolor: !!this.color, [this.color as string]: !!this.color, [this.size as string]: !!this.size })}></i>\`; }
+}
+    `;
+  }
+
+  get iconPreviewHTMLTemplate() {
+    return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tini Icons Preview</title>
+    <script type="module" src="___preview.app.ts"></script>
+    <style>
+      :root {
+        --size-md-2x: 32px;
+      }
+      body {
+        margin: 0;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <app-preview></app-preview>
+  </body>
+</html>
+    `;
+  }
+
+  get iconPreviewTSTemplate() {
+    return `import {LitElement, html, css} from 'lit';
+import {customElement} from 'lit/decorators.js';
+
+@customElement('app-preview')
+export class AppPreview extends LitElement {
+  static styles = css\`
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 3rem);
+      gap: .5rem;
+    }
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  \`;
+
+  protected render() {
+    return html\`<main></main>\`;
+  }
+}
+    `;
+  }
 }

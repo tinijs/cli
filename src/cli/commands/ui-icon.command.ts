@@ -11,18 +11,17 @@ import {MISSING_ARG} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
+import {UiService} from '../../lib/services/ui.service';
 import {TS_CONFIG} from './ui-build.command';
 
 const CHANGELOGS_DIR = 'changelogs';
-const TEMPLATE_FILE = 'src/template.ts';
-const APP_HTML_FILE = 'src/app.html';
-const APP_TS_FILE = 'src/app.ts';
 
 export class UiIconCommand {
   constructor(
     private fileService: FileService,
     private projectService: ProjectService,
-    private typescriptService: TypescriptService
+    private typescriptService: TypescriptService,
+    private uiService: UiService
   ) {}
 
   async run(packageName: string, src: string) {
@@ -66,6 +65,10 @@ export class UiIconCommand {
         '*.d.ts',
         'index.json',
       ],
+      peerDependencies: {
+        '@tinijs/core': 'latest',
+        lit: 'latest',
+      }
     });
     // license
     const licensePath = resolve('LICENSE');
@@ -97,14 +100,10 @@ export class UiIconCommand {
     }: {packageName: string; version: string; spinner: ora.Ora}
   ) {
     // icon template
-    const templateContent = await this.fileService.readText(
-      resolve(TEMPLATE_FILE)
-    );
+    const templateContent = this.uiService.iconTemplate;
     // preview app
-    const appHtmlContent = await this.fileService.readText(
-      resolve(APP_HTML_FILE)
-    );
-    const appTsContent = await this.fileService.readText(resolve(APP_TS_FILE));
+    const appHtmlContent = this.uiService.iconPreviewHTMLTemplate;
+    const appTsContent = this.uiService.iconPreviewTSTemplate;
     // retrieve history
     const changelogDirPath = resolve(CHANGELOGS_DIR, packageName);
     const historyFilePath = `${changelogDirPath}/history.json`;
