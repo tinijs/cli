@@ -1,90 +1,84 @@
 export class UiService {
   constructor() {}
 
+  private readonly SIZES = [
+    '--size-xxxs',
+    '--size-xxs',
+    '--size-xs',
+    '--size-ss',
+    '--size-sm',
+    '--size-md',
+    '--size-ml',
+    '--size-lg',
+    '--size-sl',
+    '--size-xl',
+    '--size-xxl',
+    '--size-xxxl',
+  ];
+  private readonly COLORS = [
+    '--color-primary',
+    '--color-secondary',
+    '--color-tertiary',
+    '--color-success',
+    '--color-warning',
+    '--color-danger',
+    '--color-dark',
+    '--color-medium',
+    '--color-light',
+    '--color-background',
+    '--color-foreground',
+  ];
+  private readonly COLOR_OPTIONS = [
+    'contrast',
+    'shade',
+    'shade-2',
+    'shade-3',
+    'shade-3',
+    'shade-5',
+    'tint',
+    'tint-2',
+    'tint-3',
+    'tint-4',
+    'tint-5',
+  ];
+  private readonly COMMON_SIZE_FACTORS = [
+    0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5, 1.75, 2,
+    3, 4, 5,
+  ];
+  private readonly EXTRA_SIZE_FACTORS = [6, 7, 8, 9, 10];
+
   get skinUtils() {
     const sizeTextUtils = this.sizeUtilGenerator(
       ['--size-text'],
-      [
-        0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5,
-        1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10,
-      ]
+      [...this.COMMON_SIZE_FACTORS, ...this.EXTRA_SIZE_FACTORS]
     );
     const sizeRadiusUtils = this.sizeUtilGenerator(
       ['--size-radius'],
-      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
+      this.COMMON_SIZE_FACTORS
     );
     const sizeBorderUtils = this.sizeUtilGenerator(
       ['--size-border'],
-      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
+      this.COMMON_SIZE_FACTORS
     );
     const sizeOutlineUtils = this.sizeUtilGenerator(
       ['--size-outline'],
-      [0.25, 0.5, 0.75, 1.5, 2, 2.5, 3, 4, 5]
+      this.COMMON_SIZE_FACTORS
     );
     const sizeSpaceUtils = this.sizeUtilGenerator(
       ['--size-space'],
-      [0.1, 0.25, 0.5, 0.75, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+      [...this.COMMON_SIZE_FACTORS, ...this.EXTRA_SIZE_FACTORS]
     );
     const sizeStepsUtils = this.sizeUtilGenerator(
-      [
-        '--size-xxxs',
-        '--size-xxs',
-        '--size-xs',
-        '--size-ss',
-        '--size-sm',
-        '--size-md',
-        '--size-ml',
-        '--size-lg',
-        '--size-sl',
-        '--size-xl',
-        '--size-xxl',
-        '--size-xxxl',
-      ],
-      [
-        0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.5, 2, 2.5, 3,
-        4, 5,
-      ]
-    );
-    const rgbaColorUtils = this.rgbaUtilGenerator(
-      [
-        '--color-primary-rgb',
-        '--color-primary-contrast-rgb',
-        '--color-secondary-rgb',
-        '--color-secondary-contrast-rgb',
-        '--color-tertiary-rgb',
-        '--color-tertiary-contrast-rgb',
-        '--color-success-rgb',
-        '--color-success-contrast-rgb',
-        '--color-warning-rgb',
-        '--color-warning-contrast-rgb',
-        '--color-danger-rgb',
-        '--color-danger-contrast-rgb',
-        '--color-dark-rgb',
-        '--color-dark-contrast-rgb',
-        '--color-medium-rgb',
-        '--color-medium-contrast-rgb',
-        '--color-light-rgb',
-        '--color-light-contrast-rgb',
-        '--color-background-rgb',
-        '--color-background-contrast-rgb',
-        '--color-foreground-rgb',
-        '--color-foreground-contrast-rgb',
-      ],
-      [0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
+      this.SIZES,
+      this.COMMON_SIZE_FACTORS
     );
     const shadeTintColorUtils = this.shadeTintUtilGenerator(
-      [
-        '--color-primary',
-        '--color-secondary',
-        '--color-tertiary',
-        '--color-success',
-        '--color-warning',
-        '--color-danger',
-        '--color-dark',
-        '--color-medium',
-        '--color-light',
-      ],
-      [95, 90, 85, 80, 75, 70]
+      this.COLORS,
+      [90, 80, 70, 60]
+    );
+    const rgbaColorUtils = this.rgbaUtilGenerator(
+      this.COLORS,
+      [10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90]
     );
     return `
 [data-theme] {
@@ -94,8 +88,8 @@ export class UiService {
   ${sizeOutlineUtils}
   ${sizeSpaceUtils}
   ${sizeStepsUtils}
-  ${rgbaColorUtils}
   ${shadeTintColorUtils}
+  ${rgbaColorUtils}
 }    
 `;
   }
@@ -115,16 +109,20 @@ export class UiService {
       .join('\n  ');
   }
 
-  private rgbaUtilGenerator(keys: string[], alphas: number[]) {
+  private rgbaUtilGenerator(keys: string[], alphaPercents: number[]) {
+    const options = ['', ...this.COLOR_OPTIONS];
     return keys
       .map(key =>
-        alphas
-          .map(
-            alpha =>
-              `${key.replace(
-                'rgb',
-                `rgba-${alpha * 100}`
-              )}: rgba(var(${key}), ${alpha});`
+        options
+          .map(option =>
+            alphaPercents
+              .map(alphaPercent => {
+                const mainKey = `${key}${!option ? '' : `-${option}`}`;
+                return `${mainKey}-rgba-${alphaPercent}: color-mix(in oklab, var(${mainKey}), transparent ${
+                  100 - alphaPercent
+                }%);`;
+              })
+              .join('\n  ')
           )
           .join('\n  ')
       )
