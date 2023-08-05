@@ -42,12 +42,7 @@ export class UiDevCommand {
     console.log('\n' + OK + 'Build ui package for developing.\n');
   }
 
-  private async copyGlobalFiles(destPath: string) {
-    await this.fileService.copyFile(
-      resolve(APP_DIR, 'tokens.ts'),
-      resolve(destPath, 'tokens.ts')
-    );
-  }
+  private async copyGlobalFiles(destPath: string) {}
 
   private async buildSkins(destPath: string, souls: string[]) {
     const imports: string[] = [];
@@ -192,9 +187,10 @@ export class UiDevCommand {
       if (useComponentsMatching) {
         code = code.replace(`${useComponentsMatching[0]}\n`, '');
       }
-      code = code
-        .replace(/(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g, '../')
-        .replace(/(app\/tokens)/g, 'tokens');
+      code = code.replace(
+        /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
+        '../'
+      );
       // imports
       code =
         `${useBasesContents.imports.join('\n')}

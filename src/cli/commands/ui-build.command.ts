@@ -99,8 +99,6 @@ export class UiBuildCommand {
   }
 
   private async buildBare(destPath: string) {
-    // tokens.ts
-    await this.outputAndTranspileTokensTS(destPath);
     // skin utils
     await this.fileService.createFile(
       resolve(destPath, 'skin-utils.css'),
@@ -246,12 +244,7 @@ export class UiBuildCommand {
     }
 
     /*
-     * 5. tokens.ts
-     */
-    await this.outputAndTranspileTokensTS(destPath);
-
-    /*
-     * 6. Skin utils
+     * 5. Skin utils
      */
     await this.fileService.createFile(
       resolve(destPath, 'skin-utils.css'),
@@ -305,9 +298,10 @@ export class UiBuildCommand {
       if (useBaseMatching) {
         code = code.replace(`${useBaseMatching[0]}\n`, '');
       }
-      code = code
-        .replace(/(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g, '../styles/')
-        .replace(/(app\/tokens)/g, 'tokens');
+      code = code.replace(
+        /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
+        '../styles/'
+      );
       code =
         `
 ${useBaseContents.imports.join('\n')}
@@ -359,19 +353,5 @@ export class`
         componentsPathProcessor
       );
     }
-  }
-
-  private async outputAndTranspileTokensTS(destPath: string) {
-    const tokensOutPath = resolve(destPath, 'tokens.ts');
-    await this.fileService.copyFile(
-      resolve(APP_DIR, 'tokens.ts'),
-      tokensOutPath
-    );
-    await this.typescriptService.transpileAndOutputFiles(
-      [tokensOutPath],
-      TS_CONFIG,
-      destPath,
-      path => path.split('/').pop() as string
-    );
   }
 }
