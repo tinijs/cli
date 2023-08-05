@@ -28,19 +28,6 @@ export class UiService {
     '--color-background',
     '--color-foreground',
   ];
-  private readonly COLOR_OPTIONS = [
-    'contrast',
-    'shade',
-    'shade-2',
-    'shade-3',
-    'shade-3',
-    'shade-5',
-    'tint',
-    'tint-2',
-    'tint-3',
-    'tint-4',
-    'tint-5',
-  ];
   private readonly COMMON_SIZE_FACTORS = [
     0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5, 1.75, 2,
     3, 4, 5,
@@ -76,10 +63,6 @@ export class UiService {
       this.COLORS,
       [90, 80, 70, 60]
     );
-    const rgbaColorUtils = this.rgbaUtilGenerator(
-      this.COLORS,
-      [10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90]
-    );
     return `
 [data-theme] {
   ${sizeTextUtils}
@@ -89,7 +72,6 @@ export class UiService {
   ${sizeSpaceUtils}
   ${sizeStepsUtils}
   ${shadeTintColorUtils}
-  ${rgbaColorUtils}
 }    
 `;
   }
@@ -103,26 +85,6 @@ export class UiService {
               `${key}-${size
                 .toString()
                 .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${size});`
-          )
-          .join('\n  ')
-      )
-      .join('\n  ');
-  }
-
-  private rgbaUtilGenerator(keys: string[], alphaPercents: number[]) {
-    const options = ['', ...this.COLOR_OPTIONS];
-    return keys
-      .map(key =>
-        options
-          .map(option =>
-            alphaPercents
-              .map(alphaPercent => {
-                const mainKey = `${key}${!option ? '' : `-${option}`}`;
-                return `${mainKey}-rgba-${alphaPercent}: color-mix(in oklab, var(${mainKey}), transparent ${
-                  100 - alphaPercent
-                }%);`;
-              })
-              .join('\n  ')
           )
           .join('\n  ')
       )
