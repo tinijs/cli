@@ -26,6 +26,7 @@ export class UiService {
     '--color-medium',
     '--color-light',
     '--color-background',
+    '--color-middleground',
     '--color-foreground',
   ];
   private readonly COMMON_SIZE_FACTORS = [
