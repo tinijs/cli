@@ -214,6 +214,8 @@ export const ${constName} = '${tagName}';
 
 @Component()
 export class ${className} extends TiniComponent {
+  static readonly defaultTagName = ${constName};
+
   static styles = css\`\`;
 
   @Input() property?: string;

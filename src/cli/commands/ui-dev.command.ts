@@ -124,10 +124,10 @@ export class UiDevCommand {
             if (name) {
               souls.forEach(soul => {
                 result.imports.push(
-                  `import ${soul}${nameCapital}Style from '../../${STYLES_DIR}/${soul}/base/${name}';`
+                  `import ${soul}${nameCapital}Base from '../../${STYLES_DIR}/${soul}/base/${name}';`
                 );
                 result.styling[soul] ||= [];
-                result.styling[soul].push(`${soul}${nameCapital}Style`);
+                result.styling[soul].push(`${soul}${nameCapital}Base`);
               });
             }
             return result;
@@ -146,21 +146,16 @@ export class UiDevCommand {
           (result, item) => {
             const name = item.trim();
             const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
-            const nameConst = `TINI_${name
-              .replace(/\-|\./g, '_')
-              .toUpperCase()}`;
             const nameClass = `Tini${nameCapital}Component`;
             if (name) {
-              result.imports.push(
-                `import {${nameConst}, ${nameClass}} from './${name}';`
-              );
-              result.components[`[${nameConst}]`] = nameClass;
+              result.imports.push(`import {${nameClass}} from './${name}';`);
+              result.components.push(nameClass);
             }
             return result;
           },
           {
             imports: [] as string[],
-            components: {} as Record<string, string>,
+            components: [] as string[],
           }
         );
       // soul imports
@@ -183,7 +178,9 @@ export class UiDevCommand {
         }
       );
       // build content
-      if (useBasesMatching) code = code.replace(`${useBasesMatching[0]}\n`, '');
+      if (useBasesMatching) {
+        code = code.replace(`${useBasesMatching[0]}\n`, '');
+      }
       if (useComponentsMatching) {
         code = code.replace(`${useComponentsMatching[0]}\n`, '');
       }
@@ -193,7 +190,8 @@ export class UiDevCommand {
       );
       // imports
       code =
-        `${useBasesContents.imports.join('\n')}
+        `
+${useBasesContents.imports.join('\n')}
 ${useComponentsContents.imports.join('\n')}
 ${soulContents.imports.join('\n')}
 import {Theming${

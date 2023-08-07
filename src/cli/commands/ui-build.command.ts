@@ -1,7 +1,7 @@
 import {ModuleKind, ScriptTarget} from 'typescript';
 import {compileString} from 'sass';
 import {resolve} from 'path';
-import {camelCase} from 'change-case';
+import {camelCase, capitalCase} from 'change-case';
 const CleanCSS = require('clean-css');
 import {bold, blueBright} from 'chalk';
 
@@ -276,7 +276,11 @@ export class UiBuildCommand {
       );
       // output .ts
       let code = await this.fileService.readText(path);
-      const useBaseMatching = code.match(/\/\* UseBase\(([\s\S]*?)\) \*\//);
+      const useBaseMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
+      const useComponentsMatching = code.match(
+        /\/\* UseComponents\(([\s\S]*?)\) \*\//
+      );
+      // base imports
       const useBaseContents = (!useBaseMatching ? '' : useBaseMatching[1])
         .split(',')
         .reduce(
@@ -284,9 +288,9 @@ export class UiBuildCommand {
             const name = item.trim();
             if (name) {
               result.imports.push(
-                `import ${name}Style from '../${STYLES_DIR}/base/${name}';`
+                `import ${name}Base from '../${STYLES_DIR}/base/${name}';`
               );
-              result.styles.push(`${name}Style`);
+              result.styles.push(`${name}Base`);
             }
             return result;
           },
@@ -295,8 +299,33 @@ export class UiBuildCommand {
             styles: [] as string[],
           }
         );
+      // component imports
+      const useComponentsContents = (
+        !useComponentsMatching ? '' : useComponentsMatching[1]
+      )
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const name = item.trim();
+            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameClass = `Tini${nameCapital}Component`;
+            if (name) {
+              result.imports.push(`import {${nameClass}} from './${name}';`);
+              result.components.push(nameClass);
+            }
+            return result;
+          },
+          {
+            imports: [] as string[],
+            components: [] as string[],
+          }
+        );
+      // build content
       if (useBaseMatching) {
         code = code.replace(`${useBaseMatching[0]}\n`, '');
+      }
+      if (useComponentsMatching) {
+        code = code.replace(`${useComponentsMatching[0]}\n`, '');
       }
       code = code.replace(
         /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
@@ -305,8 +334,20 @@ export class UiBuildCommand {
       code =
         `
 ${useBaseContents.imports.join('\n')}
+${useComponentsContents.imports.join('\n')}
 import {${componentName}Style, ${componentName}Script} from '../${STYLES_DIR}/soul/${fileNameOnly}';\n\n` +
         code;
+      // inject components
+      if (useComponentsMatching) {
+        code = code.replace(
+          'export class ',
+          `@Components(${JSON.stringify(
+            useComponentsContents.components
+          ).replace(/\"/g, '')})
+export class `
+        );
+      }
+      // inject bases
       code = code.replace(
         'extends LitElement {\n',
         `extends LitElement {\n

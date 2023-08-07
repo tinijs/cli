@@ -183,10 +183,9 @@ export class UiIconCommand {
         "--icon-image:url('icon.svg')",
         `--icon-image:url('${dataURI}')`
       );
-      content = content.replace(
-        "const ICON = 'icon'",
-        `const ${tagConst} = '${tagName}'`
-      );
+      content = content
+        .replace("const ICON = 'icon'", `const ${tagConst} = '${tagName}'`)
+        .replace('defaultTagName = ICON', `defaultTagName = ${tagConst}`);
       content = content.replace(
         'class IconComponent',
         `class Icon${componentNameClass}Component`
