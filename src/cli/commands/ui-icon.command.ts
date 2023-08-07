@@ -65,10 +65,6 @@ export class UiIconCommand {
         '*.d.ts',
         'index.json',
       ],
-      peerDependencies: {
-        '@tinijs/core': 'latest',
-        lit: 'latest',
-      }
     });
     // license
     const licensePath = resolve('LICENSE');
