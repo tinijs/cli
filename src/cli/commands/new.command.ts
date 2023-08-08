@@ -1,6 +1,6 @@
 import {execSync} from 'child_process';
 import {resolve} from 'path';
-import * as chalk from 'chalk';
+import {green, cyan, gray} from 'chalk';
 
 import {FileService} from '../../lib/services/file.service';
 import {DownloadService} from '../../lib/services/download.service';
@@ -34,22 +34,16 @@ export class NewCommand {
     // exist
     if (await this.fileService.exists(projectPath)) {
       return console.log(
-        `A project with the name "${chalk.green(
+        `\nA project with the name "${green(
           validProjectName
-        )}" is already exist!`
+        )}" is already exist!\n`
       );
     }
     // create
     await this.create(resourceUrl, projectPath);
-    // listing
-    const files = await this.fileService.listDir(projectPath);
-    console.log('Create a new TiniJS project:', chalk.green(validProjectName));
-    console.log('From: ' + chalk.gray(resourceUrl));
-    files.forEach(file =>
-      console.log(
-        file.replace(projectPath, '').replace(/\\/g, '/').substring(1)
-      )
-    );
+    // info
+    console.log('Create a new TiniJS project:', green(validProjectName));
+    console.log('From: ' + gray(resourceUrl));
     // install dependencies
     if (!commandOptions.skipInstall) {
       execSync('npm install --loglevel error', {
@@ -64,15 +58,15 @@ export class NewCommand {
     }
     // instruction
     console.log(`
-${chalk.gray('TiniJS ' + version)}
+${gray('TiniJS ' + version)}
 ✨ Thank you for using TiniJS! ✨
 
 What's next?
-› ${chalk.cyan('cd ' + validProjectName)}
-› Start development: ${chalk.cyan('npm run dev')}
-› Build production: ${chalk.cyan('npm run build')}
-› Preview production: ${chalk.cyan('npm run preview')}
-› For more, please visit: ${chalk.cyan('https://tinijs.dev')}
+› ${cyan('cd ' + validProjectName)}
+› Start development: ${cyan('npm run dev')}
+› Build production: ${cyan('npm run build')}
+› Preview production: ${cyan('npm run preview')}
+› For more, please visit: ${cyan('https://tinijs.dev')}
     `);
   }
 

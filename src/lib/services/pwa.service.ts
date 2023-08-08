@@ -8,7 +8,7 @@ export class PwaService {
 
   private SW_PATH = 'app/sw.ts';
   private MANIFEST_PATH = 'app/manifest.webmanifest';
-  private ICONS_PATH = 'assets/icons';
+  private ICONS_PATH = 'app/assets/icons';
 
   constructor(
     private fileService: FileService,
@@ -56,7 +56,7 @@ export class PwaService {
         this.MANIFEST_PATH,
       ]);
     }
-    // assets/icons
+    // app/assets/icons
     const icons = await this.iconsFolderExists();
     if (!icons) {
       const vendorIconsPath = `${this.VENDOR_PATH}/icons`;
@@ -115,10 +115,14 @@ export class PwaService {
               '**/*.css',
               '**/*.js',
               '**/*.ico',
+              '**/*.svg',
+              '**/*.webp',
               '**/*.jpg',
               '**/*.png',
-              '**/*.webp',
-              '**/*.svg',
+              '**/*.woff',
+              '**/*.woff2',
+              '**/*.ttf',
+              '**/*.otf',
             ],
           },
         } as Options)
