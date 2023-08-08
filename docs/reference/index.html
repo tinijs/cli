@@ -87,6 +87,7 @@
 								<li><a href="#command-preview"><code>preview</code></a></li>
 								<li><a href="#command-pwa"><code>pwa</code></a></li>
 								<li><a href="#command-test"><code>test</code></a></li>
+								<li><a href="#command-ui"><code>ui</code></a></li>
 								<li><a href="#command-help"><code>help</code></a></li>
 								<li><a href="#command-*"><code>*</code></a></li>
 							</ul>
@@ -145,13 +146,14 @@
 					<ul>
 						<li><a href="#command-build"><code>tini build --target [value]</code></a></li>
 						<li><a href="#command-clean"><code>tini clean|c --includes [value] --excludes [value]</code></a></li>
-						<li><a href="#command-dev"><code>tini dev|serve</code></a></li>
+						<li><a href="#command-dev"><code>tini dev|serve --watch</code></a></li>
 						<li><a href="#command-docs"><code>tini docs|home</code></a></li>
 						<li><a href="#command-generate"><code>tini generate|create|g &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
 						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git</code></a></li>
 						<li><a href="#command-preview"><code>tini preview --port [value] --host [value] --i18n</code></a></li>
 						<li><a href="#command-pwa"><code>tini pwa &lt;subCommand&gt; --tag [value]</code></a></li>
 						<li><a href="#command-test"><code>tini test</code></a></li>
+						<li><a href="#command-ui"><code>tini ui &lt;subCommand&gt; [params...] --icons [value] --components [value]</code></a></li>
 						<li><a href="#command-help"><code>tini help</code></a></li>
 						<li><a href="#command-*"><code>tini *</code></a></li>
 					</ul>
@@ -183,9 +185,13 @@ tini c --includes [value] --excludes [value]
 					</a></h3>
 					<p>Start the dev server.</p>
 					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini dev
-tini serve
+					<pre><code class="language-sh">tini dev --watch
+tini serve --watch
 </code></pre>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code>-w, --watch</code>: Watch mode only.</li>
+					</ul>
 					<h3><a name="command-docs"><p><code>docs</code></p>
 					</a></h3>
 					<p>Open documentation.</p>
@@ -237,9 +243,9 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 </code></pre>
 					<p><strong>Options:</strong></p>
 					<ul>
-						<li><code>-p, --port [value]</code>: Custom port</li>
-						<li><code>-h, --host [value]</code>: Custom host</li>
-						<li><code>-i, --i18n</code>: Enable i18n</li>
+						<li><code>-p, --port [value]</code>: Custom port.</li>
+						<li><code>-h, --host [value]</code>: Custom host.</li>
+						<li><code>-i, --i18n</code>: Enable superstatic i18n.</li>
 					</ul>
 					<h3><a name="command-pwa"><p><code>pwa</code></p>
 					</a></h3>
@@ -261,6 +267,22 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					<p><strong>Usage:</strong></p>
 					<pre><code class="language-sh">tini <span class="hljs-built_in">test</span>
 </code></pre>
+					<h3><a name="command-ui"><p><code>ui</code></p>
+					</a></h3>
+					<p>Tools for developing and using Tini.</p>
+					<p><strong>Usage:</strong></p>
+					<pre><code class="language-sh">tini ui &lt;subCommand&gt; [params...] --icons [value] --components [value]
+</code></pre>
+					<p><strong>Parameters:</strong></p>
+					<ul>
+						<li><code>&lt;subCommand&gt;</code>: The <code>&lt;subCommand&gt;</code> parameter.</li>
+						<li><code>[params...]</code>: The <code>[params...]</code> parameter.</li>
+					</ul>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code>-i, --icons [value]</code>: Icons pack.</li>
+						<li><code>-c, --components [value]</code>: Additional components packs.</li>
+					</ul>
 					<h3><a name="command-help"><p><code>help</code></p>
 					</a></h3>
 					<p>Display help.</p>
@@ -369,6 +391,9 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/uiiconcommand.html" class="tsd-kind-icon">Ui<wbr>Icon<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/uiservice.html" class="tsd-kind-icon">Ui<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/uiusecommand.html" class="tsd-kind-icon">Ui<wbr>Use<wbr>Command</a>
@@ -491,13 +516,10 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<a href="globals.html#xasttext" class="tsd-kind-icon">Xast<wbr>Text</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#any" class="tsd-kind-icon">ANY</a>
+						<a href="globals.html#app_dir" class="tsd-kind-icon">APP_<wbr>DIR</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#app_html_file" class="tsd-kind-icon">APP_<wbr>HTML_<wbr>FILE</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#app_ts_file" class="tsd-kind-icon">APP_<wbr>TS_<wbr>FILE</a>
+						<a href="globals.html#blocks_dir" class="tsd-kind-icon">BLOCKS_<wbr>DIR</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#changelogs_dir" class="tsd-kind-icon">CHANGELOGS_<wbr>DIR</a>
@@ -519,9 +541,6 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#styles_dir" class="tsd-kind-icon">STYLES_<wbr>DIR</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#template_file" class="tsd-kind-icon">TEMPLATE_<wbr>FILE</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#ui_package_name" class="tsd-kind-icon">UI_<wbr>PACKAGE_<wbr>NAME</a>
