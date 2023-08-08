@@ -208,13 +208,16 @@ export class `
         );
       }
       // inject bases
-      const styling = souls.reduce((result, soul) => {
-        result[soul] = [
-          ...useBasesContents.styling[soul],
-          soulContents.styling[soul],
-        ];
-        return result;
-      }, {} as Record<string, string[]>);
+      const styling = souls.reduce(
+        (result, soul) => {
+          result[soul] = [
+            ...useBasesContents.styling[soul],
+            soulContents.styling[soul],
+          ];
+          return result;
+        },
+        {} as Record<string, string[]>
+      );
       code = code.replace(
         'export class ',
         `@Theming({

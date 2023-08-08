@@ -352,8 +352,8 @@ export class `
         'extends LitElement {\n',
         `extends LitElement {\n
   static styles = [${useBaseContents.styles.join(', ')}${
-          !useBaseMatching ? '' : ','
-        }${componentName}Style];
+    !useBaseMatching ? '' : ','
+  }${componentName}Style];
 
   protected updated() {
     ${componentName}Script(this);

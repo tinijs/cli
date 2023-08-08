@@ -125,7 +125,7 @@ export class PwaService {
               '**/*.otf',
             ],
           },
-        } as Options)
+        }) as Options
     );
   }
 }
