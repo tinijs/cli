@@ -183,6 +183,7 @@ export class Cli {
     this.uiDevCommand = new UiDevCommand(
       this.tiniModule.fileService,
       this.tiniModule.projectService,
+      this.tiniModule.typescriptService,
       this.tiniModule.uiService
     );
     this.uiIconCommand = new UiIconCommand(

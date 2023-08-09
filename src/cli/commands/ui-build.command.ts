@@ -1,4 +1,3 @@
-import {ModuleKind, ScriptTarget} from 'typescript';
 import {compileString} from 'sass';
 import {resolve} from 'path';
 import {camelCase, capitalCase} from 'change-case';
@@ -13,18 +12,7 @@ import {BuildService} from '../../lib/services/build.service';
 import {UiService} from '../../lib/services/ui.service';
 
 export const APP_DIR = 'app';
-export const COMPONENTS_DIR = 'components';
-export const BLOCKS_DIR = 'blocks';
-export const STYLES_DIR = 'styles';
 export const UI_PACKAGE_NAME = '@tinijs/ui';
-export const TS_CONFIG = {
-  declaration: true,
-  sourceMap: true,
-  module: ModuleKind.ESNext,
-  target: ScriptTarget.ESNext,
-  experimentalDecorators: true,
-  useDefineForClassFields: false,
-};
 
 export class UiBuildCommand {
   constructor(
@@ -43,9 +31,12 @@ export class UiBuildCommand {
     // clean
     await this.fileService.cleanDir(destPath);
     // build
+    let buildType = 'common';
     if (packageName === UI_PACKAGE_NAME) {
+      buildType = 'bare';
       await this.buildBare(destPath);
     } else if (soulName) {
+      buildType = 'soul';
       await this.buildSoul(destPath, soulName);
     } else {
       await this.buildCommon(destPath);
@@ -68,13 +59,20 @@ export class UiBuildCommand {
       license,
       keywords,
       files: [
-        '**/*.ts',
+        '**/*.d.ts',
         '**/*.js',
         '**/*.js.map',
         '**/*.scss',
         '**/*.css',
         '**/*.css.map',
+        ...(buildType !== 'common' ? [] : ['**/*.ts']),
       ],
+      ...(buildType === 'common'
+        ? {}
+        : {
+            main: 'public-api.js',
+            types: 'public-api.d.ts',
+          }),
     });
     // license
     const licensePath = resolve('LICENSE');
@@ -109,13 +107,13 @@ export class UiBuildCommand {
   private async buildCommon(destPath: string) {
     // components
     await this.fileService.copyDir(
-      resolve(COMPONENTS_DIR),
-      resolve(destPath, COMPONENTS_DIR)
+      resolve(this.uiService.COMPONENTS_DIR),
+      resolve(destPath, this.uiService.COMPONENTS_DIR)
     );
     // blocks
     await this.fileService.copyDir(
-      resolve(BLOCKS_DIR),
-      resolve(destPath, BLOCKS_DIR)
+      resolve(this.uiService.BLOCKS_DIR),
+      resolve(destPath, this.uiService.BLOCKS_DIR)
     );
     // app
     const stagingPath = await this.buildService.buildStaging();
@@ -123,9 +121,11 @@ export class UiBuildCommand {
   }
 
   private async buildSoul(destPath: string, soulName: string) {
-    const paths = await this.fileService.listDir(resolve(STYLES_DIR, soulName));
+    const paths = await this.fileService.listDir(
+      resolve(this.uiService.STYLES_DIR, soulName)
+    );
     const stylesPathProcessor = (path: string) =>
-      path.split(`/${STYLES_DIR}/${soulName}/`).pop() as string;
+      path.split(`/${this.uiService.STYLES_DIR}/${soulName}/`).pop() as string;
 
     /*
      * 1. ts
@@ -134,8 +134,8 @@ export class UiBuildCommand {
     const tsPaths = paths.filter(path => path.endsWith('.ts'));
     await this.typescriptService.transpileAndOutputFiles(
       tsPaths,
-      TS_CONFIG,
-      `${destPath}/${STYLES_DIR}`,
+      this.uiService.TS_CONFIG,
+      `${destPath}/${this.uiService.STYLES_DIR}`,
       stylesPathProcessor
     );
 
@@ -154,13 +154,13 @@ export class UiBuildCommand {
       const dirPaths = filePath.split('/');
       dirPaths.pop();
       await this.fileService.createDir(
-        resolve(destPath, STYLES_DIR, ...dirPaths)
+        resolve(destPath, this.uiService.STYLES_DIR, ...dirPaths)
       );
       // .css
       if (path.endsWith('.css')) {
         await this.fileService.copyFile(
           path,
-          resolve(destPath, STYLES_DIR, filePath)
+          resolve(destPath, this.uiService.STYLES_DIR, filePath)
         );
       }
       // .scss
@@ -169,10 +169,16 @@ export class UiBuildCommand {
         const content = await this.fileService.readText(path);
         const {css, sourceMap} = compileString(content, {
           sourceMap: true,
-          loadPaths: [resolve(STYLES_DIR, soulName, ...dirPaths)],
+          loadPaths: [
+            resolve(this.uiService.STYLES_DIR, soulName, ...dirPaths),
+          ],
         });
         await this.fileService.createFile(
-          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css')),
+          resolve(
+            destPath,
+            this.uiService.STYLES_DIR,
+            filePath.replace('.scss', '.css')
+          ),
           css +
             '\n' +
             `/*# sourceMappingURL=${fileName.replace('.scss', '.css.map')} */`
@@ -180,7 +186,11 @@ export class UiBuildCommand {
         const useSourceMap = (sourceMap || {}) as any;
         useSourceMap.sources = [fileName.replace('.scss', '.css')];
         await this.fileService.createFile(
-          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.css.map')),
+          resolve(
+            destPath,
+            this.uiService.STYLES_DIR,
+            filePath.replace('.scss', '.css.map')
+          ),
           JSON.stringify(useSourceMap)
         );
         // .min.css & .min.css.map
@@ -188,7 +198,11 @@ export class UiBuildCommand {
           sourceMap: true,
         }).minify(css);
         await this.fileService.createFile(
-          resolve(destPath, STYLES_DIR, filePath.replace('.scss', '.min.css')),
+          resolve(
+            destPath,
+            this.uiService.STYLES_DIR,
+            filePath.replace('.scss', '.min.css')
+          ),
           minCss +
             '\n' +
             `/*# sourceMappingURL=${fileName.replace(
@@ -199,7 +213,7 @@ export class UiBuildCommand {
         await this.fileService.createFile(
           resolve(
             destPath,
-            STYLES_DIR,
+            this.uiService.STYLES_DIR,
             filePath.replace('.scss', '.min.css.map')
           ),
           (minSourceMap?.toString() || '').replace(
@@ -210,7 +224,7 @@ export class UiBuildCommand {
         // .scss
         await this.fileService.copyFile(
           path,
-          resolve(destPath, STYLES_DIR, filePath)
+          resolve(destPath, this.uiService.STYLES_DIR, filePath)
         );
       }
     }
@@ -218,14 +232,26 @@ export class UiBuildCommand {
     /*
      * 3. Components, Blocks
      */
-    await this.buildSoulComponents(COMPONENTS_DIR, destPath);
-    await this.buildSoulComponents(BLOCKS_DIR, destPath);
+    const componentPublicPaths = await this.buildSoulComponents(
+      this.uiService.COMPONENTS_DIR,
+      destPath
+    );
+    const blockPublicPaths = await this.buildSoulComponents(
+      this.uiService.BLOCKS_DIR,
+      destPath
+    );
+    await this.uiService.savePublicApi(destPath, [
+      ...componentPublicPaths,
+      ...blockPublicPaths,
+    ]);
 
     /*
      * 4. Extract base .ts into .css
      */
     const basePaths = (
-      await this.fileService.listDir(resolve(STYLES_DIR, soulName, 'base'))
+      await this.fileService.listDir(
+        resolve(this.uiService.STYLES_DIR, soulName, 'base')
+      )
     ).filter(path => path.endsWith('.ts'));
     for (let i = 0; i < basePaths.length; i++) {
       const path = basePaths[i];
@@ -238,7 +264,12 @@ export class UiBuildCommand {
       if (!cssContentMatching) continue;
       const cssContent = cssContentMatching[2];
       await this.fileService.createFile(
-        resolve(destPath, STYLES_DIR, 'base', fileName.replace('.ts', '.css')),
+        resolve(
+          destPath,
+          this.uiService.STYLES_DIR,
+          'base',
+          fileName.replace('.ts', '.css')
+        ),
         cssContent
       );
     }
@@ -253,6 +284,8 @@ export class UiBuildCommand {
   }
 
   private async buildSoulComponents(inputDir: string, destPath: string) {
+    const publicPaths: string[] = [];
+
     /*
      * A. Build
      */
@@ -288,7 +321,7 @@ export class UiBuildCommand {
             const name = item.trim();
             if (name) {
               result.imports.push(
-                `import ${name}Base from '../${STYLES_DIR}/base/${name}';`
+                `import ${name}Base from '../${this.uiService.STYLES_DIR}/base/${name}';`
               );
               result.styles.push(`${name}Base`);
             }
@@ -335,8 +368,9 @@ export class UiBuildCommand {
         `
 ${useBaseContents.imports.join('\n')}
 ${useComponentsContents.imports.join('\n')}
-import {${componentName}Style, ${componentName}Script} from '../${STYLES_DIR}/soul/${fileNameOnly}';\n\n` +
-        code;
+import {${componentName}Style, ${componentName}Script} from '../${
+          this.uiService.STYLES_DIR
+        }/soul/${fileNameOnly}';\n\n` + code;
       // inject components
       if (useComponentsMatching) {
         code = code.replace(
@@ -378,6 +412,8 @@ export class`
         resolve(destPath, inputDir, filePath.replace('.ts', '.bundle.ts')),
         codeWithDefine
       );
+      // public path
+      publicPaths.push(`./${inputDir}/${filePath.replace('.ts', '')}`);
     }
 
     /*
@@ -389,10 +425,13 @@ export class`
       ).filter(path => !path.endsWith('.bundle.ts'));
       await this.typescriptService.transpileAndOutputFiles(
         outComponentsPaths,
-        TS_CONFIG,
+        this.uiService.TS_CONFIG,
         `${destPath}/${inputDir}`,
         componentsPathProcessor
       );
     }
+
+    // result
+    return publicPaths;
   }
 }

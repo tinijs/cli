@@ -12,7 +12,6 @@ import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
 import {UiService} from '../../lib/services/ui.service';
-import {TS_CONFIG} from './ui-build.command';
 
 const CHANGELOGS_DIR = 'changelogs';
 
@@ -56,6 +55,8 @@ export class UiIconCommand {
       homepage,
       license,
       keywords,
+      main: 'public-api.js',
+      types: 'public-api.d.ts',
       files: [
         '*.svg',
         '*.webp',
@@ -151,6 +152,7 @@ export class UiIconCommand {
       version,
       items: [] as Array<[string, string]>,
     };
+    const publicPaths: string[] = [];
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
       // original names
@@ -251,6 +253,8 @@ export const dataURI = URIHead + base64;
       }
       // index.json
       indexJson.items.push([newFileName, base64Content]);
+      // public path
+      publicPaths.push(`./${fileNameOnly}`);
     }
 
     /*
@@ -264,7 +268,7 @@ export const dataURI = URIHead + base64;
       path.split('/').pop() as string;
     await this.typescriptService.transpileAndOutputFiles(
       outComponentsPaths,
-      TS_CONFIG,
+      this.uiService.TS_CONFIG,
       destPath,
       componentsPathProcessor
     );
@@ -340,6 +344,11 @@ export const dataURI = URIHead + base64;
       indexJson,
       true
     );
+
+    /*
+     * VI. public-api.ts
+     */
+    await this.uiService.savePublicApi(destPath, publicPaths);
 
     // result
     return indexJson;

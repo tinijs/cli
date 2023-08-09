@@ -1,5 +1,26 @@
+import {ModuleKind, ScriptTarget} from 'typescript';
+import {resolve} from 'path';
+
+import {FileService} from './file.service';
+import {TypescriptService} from './typescript.service';
+
 export class UiService {
-  constructor() {}
+  public readonly COMPONENTS_DIR = 'components';
+  public readonly BLOCKS_DIR = 'blocks';
+  public readonly STYLES_DIR = 'styles';
+  public readonly TS_CONFIG = {
+    declaration: true,
+    sourceMap: true,
+    module: ModuleKind.ESNext,
+    target: ScriptTarget.ESNext,
+    experimentalDecorators: true,
+    useDefineForClassFields: false,
+  };
+
+  constructor(
+    private fileService: FileService,
+    private typescriptService: TypescriptService
+  ) {}
 
   private readonly SIZES = [
     '--size-xxxs',
@@ -182,5 +203,21 @@ export class AppPreview extends LitElement {
   }
 }
     `;
+  }
+
+  async savePublicApi(destPath: string, publicPaths: string[]) {
+    const tsPath = resolve(destPath, 'public-api.ts');
+    // .ts
+    await this.fileService.createFile(
+      tsPath,
+      publicPaths.map(path => `export * from '${path}';`).join('\n')
+    );
+    // .d.ts, js, js.map
+    await this.typescriptService.transpileAndOutputFiles(
+      [tsPath],
+      this.TS_CONFIG,
+      destPath,
+      path => path.split('/').pop() as string
+    );
   }
 }

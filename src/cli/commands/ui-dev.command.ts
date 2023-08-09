@@ -5,25 +5,20 @@ import {camelCase, capitalCase} from 'change-case';
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
 import {ProjectService} from '../../lib/services/project.service';
+import {TypescriptService} from '../../lib/services/typescript.service';
 import {UiService} from '../../lib/services/ui.service';
-
-import {
-  APP_DIR,
-  BLOCKS_DIR,
-  COMPONENTS_DIR,
-  STYLES_DIR,
-} from './ui-build.command';
 
 export class UiDevCommand {
   constructor(
     private fileService: FileService,
     private projectService: ProjectService,
+    private typescriptService: TypescriptService,
     private uiService: UiService
   ) {}
 
   async run() {
     const {stagingPrefix} = await this.projectService.getOptions();
-    const souls = (await readdir(resolve(STYLES_DIR))).filter(
+    const souls = (await readdir(resolve(this.uiService.STYLES_DIR))).filter(
       item => !~item.indexOf('.')
     );
     const destPath = resolve(`${stagingPrefix}-ui`);
@@ -36,8 +31,27 @@ export class UiDevCommand {
     // build bases
     await this.buildBases(destPath, souls);
     // build components, blocks
-    await this.buildComponents(COMPONENTS_DIR, destPath, souls);
-    await this.buildComponents(BLOCKS_DIR, destPath, souls);
+    const componentPublicPaths = await this.buildComponents(
+      this.uiService.COMPONENTS_DIR,
+      destPath,
+      souls
+    );
+    const blockPublicPaths = await this.buildComponents(
+      this.uiService.BLOCKS_DIR,
+      destPath,
+      souls
+    );
+    await this.uiService.savePublicApi(destPath, [
+      ...componentPublicPaths,
+      ...blockPublicPaths,
+    ]);
+    // package.json
+    await this.fileService.createJson(resolve(destPath, 'package.json'), {
+      name: '@tinijs/ui',
+      version: 'dev',
+      main: 'public-api.js',
+      types: 'public-api.d.ts',
+    });
     // result
     console.log('\n' + OK + 'Build ui package for developing.\n');
   }
@@ -48,9 +62,9 @@ export class UiDevCommand {
     const imports: string[] = [];
     for (let i = 0; i < souls.length; i++) {
       const soul = souls[i];
-      const skins = (await readdir(resolve(STYLES_DIR, soul, 'skins'))).filter(
-        item => item.endsWith('.css')
-      );
+      const skins = (
+        await readdir(resolve(this.uiService.STYLES_DIR, soul, 'skins'))
+      ).filter(item => item.endsWith('.css'));
       skins.forEach(skin =>
         imports.push(`@import '../styles/${soul}/skins/${skin}';`)
       );
@@ -60,7 +74,9 @@ export class UiDevCommand {
   }
 
   private async buildBases(destPath: string, souls: string[]) {
-    const baseNames = (await readdir(resolve(STYLES_DIR, souls[0], 'base')))
+    const baseNames = (
+      await readdir(resolve(this.uiService.STYLES_DIR, souls[0], 'base'))
+    )
       .filter(item => item.endsWith('.ts'))
       .map(item => item.replace('.ts', ''));
     const importArr: string[] = [];
@@ -75,7 +91,7 @@ export class UiDevCommand {
         const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
         const importName = `${soulNameCamel}${baseNameCapital}Base`;
         importArr.push(
-          `import ${importName} from '../${STYLES_DIR}/${soulName}/base/${baseName}';`
+          `import ${importName} from '../${this.uiService.STYLES_DIR}/${soulName}/base/${baseName}';`
         );
         baseExports[soulName] = importName;
       }
@@ -96,6 +112,11 @@ export class UiDevCommand {
     destPath: string,
     souls: string[]
   ) {
+    const publicPaths: string[] = [];
+
+    /*
+     * A. Build
+     */
     const componentPaths = (
       await this.fileService.listDir(resolve(inputDir))
     ).filter(path => path.endsWith('.ts'));
@@ -124,7 +145,7 @@ export class UiDevCommand {
             if (name) {
               souls.forEach(soul => {
                 result.imports.push(
-                  `import ${soul}${nameCapital}Base from '../../${STYLES_DIR}/${soul}/base/${name}';`
+                  `import ${soul}${nameCapital}Base from '../../${this.uiService.STYLES_DIR}/${soul}/base/${name}';`
                 );
                 result.styling[soul] ||= [];
                 result.styling[soul].push(`${soul}${nameCapital}Base`);
@@ -162,7 +183,7 @@ export class UiDevCommand {
       const soulContents = souls.reduce(
         (result, soul) => {
           result.imports.push(
-            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '../../${STYLES_DIR}/${soul}/soul/${componentName}';`
+            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '../../${this.uiService.STYLES_DIR}/${soul}/soul/${componentName}';`
           );
           result.styling[soul] = `${soul}${componentNameCapital}Style`;
           result.scripting[soul] = {
@@ -231,6 +252,26 @@ export class `
         resolve(destPath, inputDir, filePath),
         code
       );
+      // public path
+      publicPaths.push(`./${inputDir}/${filePath.replace('.ts', '')}`);
     }
+
+    /*
+     * B. Transpile
+     */
+    if (componentPaths.length) {
+      const outComponentsPaths = await this.fileService.listDir(
+        resolve(destPath, inputDir)
+      );
+      await this.typescriptService.transpileAndOutputFiles(
+        outComponentsPaths,
+        this.uiService.TS_CONFIG,
+        `${destPath}/${inputDir}`,
+        componentsPathProcessor
+      );
+    }
+
+    // result
+    return publicPaths;
   }
 }
