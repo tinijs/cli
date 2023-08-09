@@ -78,6 +78,8 @@
 						</li>
 						<li><a href="#cli-command-overview">Command overview</a></li>
 						<li><a href="#cli-command-reference">Command reference</a><ul>
+								<li><a href="#command-%5B"><code>[</code></a></li>
+								<li><a href="#command-%5B"><code>[</code></a></li>
 								<li><a href="#command-build"><code>build</code></a></li>
 								<li><a href="#command-clean"><code>clean</code></a></li>
 								<li><a href="#command-dev"><code>dev</code></a></li>
@@ -87,7 +89,6 @@
 								<li><a href="#command-preview"><code>preview</code></a></li>
 								<li><a href="#command-pwa"><code>pwa</code></a></li>
 								<li><a href="#command-test"><code>test</code></a></li>
-								<li><a href="#command-ui"><code>ui</code></a></li>
 								<li><a href="#command-help"><code>help</code></a></li>
 								<li><a href="#command-*"><code>*</code></a></li>
 							</ul>
@@ -144,21 +145,466 @@
 					</a></h2>
 					<p>The CLI for the TiniJS framework.</p>
 					<ul>
+						<li><a href="#command-%5B"><code>tini [         &#39; u i   &lt; s u b C o m m a n d &gt;   [ p a r a m s . . . ] &#39; ,    &#39; T o o l s   f o r   d e v e l o p i n g   a n d   u s i n g   T i n i . &#39; ,    [ &#39; - b ,   - - b u i l d - o n l y &#39; ,   &quot; B u i l d   m o d e   o n l y   o f   t h e   &#39; u s e &#39;   c o m m a n d . &quot; ] ,    [ &#39; - i ,   - - s k i p - h e l p &#39; ,   &quot; S k i p   i n s t r u c t i o n   o f   t h e   &#39; u s e &#39;   c o m m a n d . &quot; ] ,  ]</code></a></li>
+						<li><a href="#command-%5B"><code>tini [         &#39; u i - u s e   &lt; i n p u t s . . . &gt; &#39; ,    &#39; U s e   s o u l s   a n d   s k i n s   i n   a   p r o j e c t . &#39; ,    [ &#39; - b ,   - - b u i l d - o n l y &#39; ,   &quot; B u i l d   m o d e   o n l y   o f   t h e   &#39; u s e &#39;   c o m m a n d . &quot; ] ,    [ &#39; - i ,   - - s k i p - h e l p &#39; ,   &quot; S k i p   i n s t r u c t i o n   o f   t h e   &#39; u s e &#39;   c o m m a n d . &quot; ] ,  ]</code></a></li>
 						<li><a href="#command-build"><code>tini build --target [value]</code></a></li>
 						<li><a href="#command-clean"><code>tini clean|c --includes [value] --excludes [value]</code></a></li>
 						<li><a href="#command-dev"><code>tini dev|serve --watch</code></a></li>
 						<li><a href="#command-docs"><code>tini docs|home</code></a></li>
 						<li><a href="#command-generate"><code>tini generate|create|g &lt;type&gt; &lt;dest&gt; --type-prefixed --nested</code></a></li>
-						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git</code></a></li>
+						<li><a href="#command-new"><code>tini new|start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-ui --skip-git</code></a></li>
 						<li><a href="#command-preview"><code>tini preview --port [value] --host [value] --i18n</code></a></li>
 						<li><a href="#command-pwa"><code>tini pwa &lt;subCommand&gt; --tag [value]</code></a></li>
 						<li><a href="#command-test"><code>tini test</code></a></li>
-						<li><a href="#command-ui"><code>tini ui &lt;subCommand&gt; [params...] --icons [value] --components [value]</code></a></li>
 						<li><a href="#command-help"><code>tini help</code></a></li>
 						<li><a href="#command-*"><code>tini *</code></a></li>
 					</ul>
 					<h2><a name="cli-command-reference"><p>Command reference</p>
 					</a></h2>
+					<h3><a name="command-["><p><code>[</code></p>
+					</a></h3>
+					<p><strong>Usage:</strong></p>
+					<pre><code class="language-sh">tini [         <span class="hljs-string">&#x27; u i   &lt; s u b C o m m a n d &gt;   [ p a r a m s . . . ] &#x27;</span> ,
+         <span class="hljs-string">&#x27; T o o l s   f o r   d e v e l o p i n g   a n d   u s i n g   T i n i . &#x27;</span> ,
+         [ <span class="hljs-string">&#x27; - b ,   - - b u i l d - o n l y &#x27;</span> ,   <span class="hljs-string">&quot; B u i l d   m o d e   o n l y   o f   t h e   &#x27; u s e &#x27;   c o m m a n d . &quot;</span> ] ,
+         [ <span class="hljs-string">&#x27; - i ,   - - s k i p - h e l p &#x27;</span> ,   <span class="hljs-string">&quot; S k i p   i n s t r u c t i o n   o f   t h e   &#x27; u s e &#x27;   c o m m a n d . &quot;</span> ] ,
+     ]
+</code></pre>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&lt;</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>b</code>:</li>
+						<li><code>C</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>&gt;</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>[</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>r</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>]</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>T</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>f</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>r</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>v</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>g</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>g</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>T</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>[</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>b</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>b</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>y</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>B</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>y</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>f</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>]</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>[</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>k</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>S</code>:</li>
+						<li><code>k</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>r</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>f</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>]</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>]</code>:</li>
+					</ul>
+					<h3><a name="command-["><p><code>[</code></p>
+					</a></h3>
+					<p><strong>Usage:</strong></p>
+					<pre><code class="language-sh">tini [         <span class="hljs-string">&#x27; u i - u s e   &lt; i n p u t s . . . &gt; &#x27;</span> ,
+         <span class="hljs-string">&#x27; U s e   s o u l s   a n d   s k i n s   i n   a   p r o j e c t . &#x27;</span> ,
+         [ <span class="hljs-string">&#x27; - b ,   - - b u i l d - o n l y &#x27;</span> ,   <span class="hljs-string">&quot; B u i l d   m o d e   o n l y   o f   t h e   &#x27; u s e &#x27;   c o m m a n d . &quot;</span> ] ,
+         [ <span class="hljs-string">&#x27; - i ,   - - s k i p - h e l p &#x27;</span> ,   <span class="hljs-string">&quot; S k i p   i n s t r u c t i o n   o f   t h e   &#x27; u s e &#x27;   c o m m a n d . &quot;</span> ] ,
+     ]
+</code></pre>
+					<p><strong>Options:</strong></p>
+					<ul>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&lt;</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&gt;</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>U</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>k</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>a</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>r</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>j</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>[</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>b</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>b</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>y</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>B</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>y</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>f</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>]</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>[</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>k</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>-</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>l</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>S</code>:</li>
+						<li><code>k</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>p</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>r</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>i</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>f</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>t</code>:</li>
+						<li><code>h</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code>u</code>:</li>
+						<li><code>s</code>:</li>
+						<li><code>e</code>:</li>
+						<li><code>&#39;</code>:</li>
+						<li><code> </code>:</li>
+						<li><code>c</code>:</li>
+						<li><code>o</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>m</code>:</li>
+						<li><code>a</code>:</li>
+						<li><code>n</code>:</li>
+						<li><code>d</code>:</li>
+						<li><code>.</code>:</li>
+						<li><code>&quot;</code>:</li>
+						<li><code>]</code>:</li>
+						<li><code>,</code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code> </code>:</li>
+						<li><code>]</code>:</li>
+					</ul>
 					<h3><a name="command-build"><p><code>build</code></p>
 					</a></h3>
 					<p>Build the app.</p>
@@ -221,8 +667,8 @@ tini g &lt;<span class="hljs-built_in">type</span>&gt; &lt;dest&gt; --type-prefi
 					</a></h3>
 					<p>Create a new project.</p>
 					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini new &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
-tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
+					<pre><code class="language-sh">tini new &lt;projectName&gt; --latest --tag [value] --skip-install --skip-ui --skip-git
+tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-ui --skip-git
 </code></pre>
 					<p><strong>Parameters:</strong></p>
 					<ul>
@@ -233,6 +679,7 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<li><code>-l, --latest</code>: Install the latest @tinijs/skeleton.</li>
 						<li><code>-t, --tag [value]</code>: Use the custom version of the @tinijs/skeleton.</li>
 						<li><code>-i, --skip-install</code>: Do not install dependency packages.</li>
+						<li><code>-u, --skip-ui</code>: Do not run tini ui use.</li>
 						<li><code>-g, --skip-git</code>: Do not initialize a git repository.</li>
 					</ul>
 					<h3><a name="command-preview"><p><code>preview</code></p>
@@ -267,22 +714,6 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					<p><strong>Usage:</strong></p>
 					<pre><code class="language-sh">tini <span class="hljs-built_in">test</span>
 </code></pre>
-					<h3><a name="command-ui"><p><code>ui</code></p>
-					</a></h3>
-					<p>Tools for developing and using Tini.</p>
-					<p><strong>Usage:</strong></p>
-					<pre><code class="language-sh">tini ui &lt;subCommand&gt; [params...] --icons [value] --components [value]
-</code></pre>
-					<p><strong>Parameters:</strong></p>
-					<ul>
-						<li><code>&lt;subCommand&gt;</code>: The <code>&lt;subCommand&gt;</code> parameter.</li>
-						<li><code>[params...]</code>: The <code>[params...]</code> parameter.</li>
-					</ul>
-					<p><strong>Options:</strong></p>
-					<ul>
-						<li><code>-i, --icons [value]</code>: Icons pack.</li>
-						<li><code>-c, --components [value]</code>: Additional components packs.</li>
-					</ul>
 					<h3><a name="command-help"><p><code>help</code></p>
 					</a></h3>
 					<p>Display help.</p>
@@ -414,7 +845,13 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<a href="interfaces/packagejson.html" class="tsd-kind-icon">Package<wbr>Json</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/soulandskins.html" class="tsd-kind-icon">Soul<wbr>And<wbr>Skins</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/template.html" class="tsd-kind-icon">Template</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/uiconfig.html" class="tsd-kind-icon">Ui<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-is-external">
 						<a href="globals.html#builtinswithoptionalparams" class="tsd-kind-icon">Builtins<wbr>With<wbr>Optional<wbr>Params</a>
@@ -519,13 +956,7 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<a href="globals.html#app_dir" class="tsd-kind-icon">APP_<wbr>DIR</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#blocks_dir" class="tsd-kind-icon">BLOCKS_<wbr>DIR</a>
-					</li>
-					<li class=" tsd-kind-variable">
 						<a href="globals.html#changelogs_dir" class="tsd-kind-icon">CHANGELOGS_<wbr>DIR</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#components_dir" class="tsd-kind-icon">COMPONENTS_<wbr>DIR</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#cleancss" class="tsd-kind-icon">CleanCSS</a>
@@ -537,10 +968,10 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 						<a href="globals.html#info" class="tsd-kind-icon">INFO</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#ok" class="tsd-kind-icon">OK</a>
+						<a href="globals.html#node_modules_dir" class="tsd-kind-icon">NODE_<wbr>MODULES_<wbr>DIR</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#styles_dir" class="tsd-kind-icon">STYLES_<wbr>DIR</a>
+						<a href="globals.html#ok" class="tsd-kind-icon">OK</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#ui_package_name" class="tsd-kind-icon">UI_<wbr>PACKAGE_<wbr>NAME</a>
@@ -559,9 +990,6 @@ tini start &lt;projectName&gt; --latest --tag [value] --skip-install --skip-git
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#missing_arg" class="tsd-kind-icon">MISSING_<wbr>ARG</a>
-					</li>
-					<li class=" tsd-kind-object-literal">
-						<a href="globals.html#ts_config" class="tsd-kind-icon">TS_<wbr>CONFIG</a>
 					</li>
 				</ul>
 			</nav>

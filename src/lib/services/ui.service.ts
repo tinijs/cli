@@ -1,8 +1,15 @@
+import {readdir} from 'fs-extra';
 import {ModuleKind, ScriptTarget} from 'typescript';
 import {resolve} from 'path';
+import {camelCase, capitalCase} from 'change-case';
 
 import {FileService} from './file.service';
 import {TypescriptService} from './typescript.service';
+
+export interface SoulAndSkins {
+  soul: string;
+  skins: string[];
+}
 
 export class UiService {
   public readonly COMPONENTS_DIR = 'components';
@@ -94,7 +101,15 @@ export class UiService {
   ${sizeSpaceUtils}
   ${sizeStepsUtils}
   ${shadeTintColorUtils}
-}    
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--size-text);
+  background: var(--color-background);
+  color: var(--color-foreground);
+}   
 `;
   }
 
@@ -219,5 +234,240 @@ export class AppPreview extends LitElement {
       destPath,
       path => path.split('/').pop() as string
     );
+  }
+
+  async devAndUseCopyGlobalFiles(destPath: string, isDev = false) {}
+
+  async devAndUseBuildSkins(
+    destPath: string,
+    soulAndSkinsList: SoulAndSkins[],
+    isDev = false
+  ) {
+    const imports: string[] = [];
+    for (let i = 0; i < soulAndSkinsList.length; i++) {
+      const {soul, skins} = soulAndSkinsList[i];
+      skins.forEach(skin => {
+        const importPath = isDev
+          ? `../styles/${soul}/skins/${skin}.css`
+          : `../ui-${soul}/${this.STYLES_DIR}/skins/${skin}.css`;
+        imports.push(`@import '${importPath}';`);
+      });
+    }
+    const content = `${imports.join('\n')}\n${this.skinUtils}`;
+    await this.fileService.createFile(resolve(destPath, 'skins.css'), content);
+  }
+
+  async devAndUseBuildBases(
+    samplingPath: string,
+    destPath: string,
+    souls: string[],
+    isDev = false
+  ) {
+    const baseNames = (await readdir(resolve(samplingPath)))
+      .filter(item => item.endsWith('.ts'))
+      .map(item => item.replace(/\.ts|\.d\.ts/g, ''));
+    const importArr: string[] = [];
+    const exportArr: string[] = [];
+    for (let i = 0; i < baseNames.length; i++) {
+      const baseName = baseNames[i];
+      const baseNameCapital = capitalCase(baseName.replace(/\-|\./g, ' '));
+      const baseNameCamel = camelCase(baseNameCapital);
+      const baseExports = {} as Record<string, string>;
+      for (let j = 0; j < souls.length; j++) {
+        const soulName = souls[j];
+        const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
+        const importName = `${soulNameCamel}${baseNameCapital}Base`;
+        const importPath = isDev
+          ? `../${this.STYLES_DIR}/${soulName}/base/${baseName}`
+          : `../ui-${soulName}/${this.STYLES_DIR}/base/${baseName}`;
+        importArr.push(`import ${importName} from '${importPath}';`);
+        baseExports[soulName] = importName;
+      }
+      exportArr.push(
+        `export const ${baseNameCamel}Bases = ${JSON.stringify(
+          baseExports
+        ).replace(/\"/g, '')};`
+      );
+    }
+    await this.fileService.createFile(
+      resolve(destPath, 'bases.ts'),
+      `${importArr.join('\n')}\n\n${exportArr.join('\n')}`
+    );
+  }
+
+  async devAndUseBuildComponents(
+    inputDir: string,
+    destPath: string,
+    souls: string[],
+    isDev = false
+  ) {
+    const publicPaths: string[] = [];
+
+    /*
+     * A. Build
+     */
+    const outputDir = isDev ? inputDir : (inputDir.split('/').pop() as string);
+    const componentPaths = (
+      await this.fileService.listDir(resolve(inputDir))
+    ).filter(path => path.endsWith('.ts'));
+    const componentsPathProcessor = (path: string) =>
+      path.split(`/${inputDir}/`).pop() as string;
+    for (let i = 0; i < componentPaths.length; i++) {
+      const path = componentPaths[i];
+      const filePath = componentsPathProcessor(path);
+      const fileName = filePath.split('/').pop() as string;
+      const fileNameOnly = fileName.replace('.ts', '');
+      const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
+      const componentNameCapital = capitalCase(componentName);
+      // read file
+      let code = await this.fileService.readText(path);
+      const useBasesMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
+      const useComponentsMatching = code.match(
+        /\/\* UseComponents\(([\s\S]*?)\) \*\//
+      );
+      // base imports
+      const useBasesContents = (!useBasesMatching ? '' : useBasesMatching[1])
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const name = item.trim();
+            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            if (name) {
+              souls.forEach(soul => {
+                const importPath = isDev
+                  ? `../../${this.STYLES_DIR}/${soul}/base/${name}`
+                  : `../../ui-${soul}/${this.STYLES_DIR}/base/${name}`;
+                result.imports.push(
+                  `import ${soul}${nameCapital}Base from '${importPath}';`
+                );
+                result.styling[soul] ||= [];
+                result.styling[soul].push(`${soul}${nameCapital}Base`);
+              });
+            }
+            return result;
+          },
+          {
+            imports: [] as string[],
+            styling: {} as Record<string, string[]>,
+          }
+        );
+      // component imports
+      const useComponentsContents = (
+        !useComponentsMatching ? '' : useComponentsMatching[1]
+      )
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const name = item.trim();
+            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameClass = `Tini${nameCapital}Component`;
+            if (name) {
+              result.imports.push(`import {${nameClass}} from './${name}';`);
+              result.components.push(nameClass);
+            }
+            return result;
+          },
+          {
+            imports: [] as string[],
+            components: [] as string[],
+          }
+        );
+      // soul imports
+      const soulContents = souls.reduce(
+        (result, soul) => {
+          const importPath = isDev
+            ? `../../${this.STYLES_DIR}/${soul}/soul/${componentName}`
+            : `../../ui-${soul}/${this.STYLES_DIR}/soul/${componentName}`;
+          result.imports.push(
+            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '${importPath}';`
+          );
+          result.styling[soul] = `${soul}${componentNameCapital}Style`;
+          result.scripting[soul] = {
+            script: `${soul}${componentNameCapital}Script`,
+            unscript: `${soul}${componentNameCapital}Unscript`,
+          };
+          return result;
+        },
+        {
+          imports: [] as string[],
+          styling: {} as Record<string, string>,
+          scripting: {} as Record<string, any>,
+        }
+      );
+      // build content
+      if (useBasesMatching) {
+        code = code.replace(`${useBasesMatching[0]}\n`, '');
+      }
+      if (useComponentsMatching) {
+        code = code.replace(`${useComponentsMatching[0]}\n`, '');
+      }
+      code = code.replace(
+        /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
+        '../'
+      );
+      // imports
+      code =
+        `
+${useBasesContents.imports.join('\n')}
+${useComponentsContents.imports.join('\n')}
+${soulContents.imports.join('\n')}
+import {Theming${
+          !useComponentsMatching ? '' : ', Components'
+        }} from '@tinijs/core';\n\n` + code;
+      // inject components
+      if (useComponentsMatching) {
+        code = code.replace(
+          'export class ',
+          `@Components(${JSON.stringify(
+            useComponentsContents.components
+          ).replace(/\"/g, '')})
+export class `
+        );
+      }
+      // inject bases
+      const styling = souls.reduce(
+        (result, soul) => {
+          result[soul] = [
+            ...useBasesContents.styling[soul],
+            soulContents.styling[soul],
+          ];
+          return result;
+        },
+        {} as Record<string, string[]>
+      );
+      code = code.replace(
+        'export class ',
+        `@Theming({
+  styling: ${JSON.stringify(styling).replace(/\"/g, '')},
+  scripting: ${JSON.stringify(soulContents.scripting).replace(/\"/g, '')},
+})
+export class `
+      );
+      // save file
+      await this.fileService.createFile(
+        resolve(destPath, outputDir, filePath),
+        code
+      );
+      // public path
+      publicPaths.push(`./${outputDir}/${filePath.replace('.ts', '')}`);
+    }
+
+    /*
+     * B. Transpile
+     */
+    if (componentPaths.length) {
+      const outComponentsPaths = (
+        await this.fileService.listDir(resolve(destPath, outputDir))
+      ).filter(path => path.endsWith('.ts') && !path.endsWith('.d.ts'));
+      await this.typescriptService.transpileAndOutputFiles(
+        outComponentsPaths,
+        this.TS_CONFIG,
+        `${destPath}/${outputDir}`,
+        path => path.split(`/${outputDir}/`).pop() as string
+      );
+    }
+
+    // result
+    return publicPaths;
   }
 }

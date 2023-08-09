@@ -42,9 +42,13 @@ export class BuildService {
   }
 
   async copyPublic(srcDir: string, outDir: string) {
+    const inPath = resolve(srcDir, 'public');
     const outPath = resolve(outDir);
-    if (await this.fileService.exists(outPath)) {
-      await this.fileService.copyDir(resolve(srcDir, 'public'), outPath);
+    if (
+      (await this.fileService.exists(inPath)) &&
+      (await this.fileService.exists(outPath))
+    ) {
+      await this.fileService.copyDir(inPath, outPath);
     }
   }
 

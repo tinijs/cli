@@ -97,15 +97,27 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>UiUse<wbr>Command<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="uiusecommand.html" class="tsd-signature-type">UiUseCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>UiUse<wbr>Command<span class="tsd-signature-symbol">(</span>terminalService<span class="tsd-signature-symbol">: </span><a href="terminalservice.html" class="tsd-signature-type">TerminalService</a>, projectService<span class="tsd-signature-symbol">: </span><a href="projectservice.html" class="tsd-signature-type">ProjectService</a>, uiService<span class="tsd-signature-symbol">: </span><a href="uiservice.html" class="tsd-signature-type">UiService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="uiusecommand.html" class="tsd-signature-type">UiUseCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/de61faa/src/cli/commands/ui-use.command.ts#L10">src/cli/commands/ui-use.command.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/cli/commands/ui-use.command.ts#L20">src/cli/commands/ui-use.command.ts:20</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>terminalService: <a href="terminalservice.html" class="tsd-signature-type">TerminalService</a></h5>
+								</li>
+								<li>
+									<h5>projectService: <a href="projectservice.html" class="tsd-signature-type">ProjectService</a></h5>
+								</li>
+								<li>
+									<h5>uiService: <a href="uiservice.html" class="tsd-signature-type">UiService</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="uiusecommand.html" class="tsd-signature-type">UiUseCommand</a></h4>
 						</li>
 					</ul>
@@ -117,28 +129,25 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3>run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>soul<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, skins<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/commandoptions.html" class="tsd-signature-type">CommandOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>inputs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/commandoptions.html" class="tsd-signature-type">CommandOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/de61faa/src/cli/commands/ui-use.command.ts#L13">src/cli/commands/ui-use.command.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/cli/commands/ui-use.command.ts#L27">src/cli/commands/ui-use.command.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>soul: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>skins: <span class="tsd-signature-type">string</span></h5>
+									<h5>inputs: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
 									<h5>options: <a href="../interfaces/commandoptions.html" class="tsd-signature-type">CommandOptions</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>

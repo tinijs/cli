@@ -73,6 +73,13 @@ export class UiBuildCommand {
             main: 'public-api.js',
             types: 'public-api.d.ts',
           }),
+      ...(buildType !== 'bare'
+        ? {}
+        : {
+            scripts: {
+              postinstall: 'tini ui use --build-only',
+            },
+          }),
     });
     // license
     const licensePath = resolve('LICENSE');

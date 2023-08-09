@@ -48,6 +48,7 @@ export class Cli {
     ['-l, --latest', 'Install the latest @tinijs/skeleton.'],
     ['-t, --tag [value]', 'Use the custom version of the @tinijs/skeleton.'],
     ['-i, --skip-install', 'Do not install dependency packages.'],
+    ['-u, --skip-ui', 'Do not run tini ui use.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
   ];
 
@@ -104,14 +105,13 @@ export class Cli {
   ];
 
   /**
-   * @param soul - A soul name.
-   * @param skins - List of skins, separated by comma.
+   * @param inputs - List of soul and skins: soul/skin soul/skin-1,skin-2
    */
   uiUseCommandDef: CommandDef = [
-    'ui-use <soul> <skins>',
-    'Use soul, skins, icons pack or additional components packs in a project.',
-    ['-i, --icons [value]', 'Icons pack.'],
-    ['-c, --components [value]', 'Additional components packs.'],
+    'ui-use <inputs...>',
+    'Use souls and skins in a project.',
+    ['-b, --build-only', 'Build mode only of the use command.'],
+    ['-i, --skip-help', 'Skip instruction of the use command.'],
   ];
 
   /**
@@ -137,8 +137,8 @@ export class Cli {
   uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
     'Tools for developing and using Tini.',
-    ['-i, --icons [value]', 'Icons pack.'],
-    ['-c, --components [value]', 'Additional components packs.'],
+    ['-b, --build-only', 'Build mode only of the use command.'],
+    ['-i, --skip-help', 'Skip instruction of the use command.'],
   ];
 
   constructor() {
@@ -172,7 +172,11 @@ export class Cli {
       this.tiniModule.pwaService
     );
     this.pwaCommand = new PwaCommand(this.pwaInitCommand);
-    this.uiUseCommand = new UiUseCommand();
+    this.uiUseCommand = new UiUseCommand(
+      this.tiniModule.terminalService,
+      this.tiniModule.projectService,
+      this.tiniModule.uiService
+    );
     this.uiBuildCommand = new UiBuildCommand(
       this.tiniModule.fileService,
       this.tiniModule.projectService,
@@ -183,7 +187,6 @@ export class Cli {
     this.uiDevCommand = new UiDevCommand(
       this.tiniModule.fileService,
       this.tiniModule.projectService,
-      this.tiniModule.typescriptService,
       this.tiniModule.uiService
     );
     this.uiIconCommand = new UiIconCommand(
@@ -229,6 +232,7 @@ export class Cli {
         latestOpt,
         tagOpt,
         skipInstallOpt,
+        skipUiOpt,
         skipGitOpt,
       ] = this.newCommandDef;
       commander
@@ -238,6 +242,7 @@ export class Cli {
         .option(...latestOpt)
         .option(...tagOpt)
         .option(...skipInstallOpt)
+        .option(...skipUiOpt)
         .option(...skipGitOpt)
         .description(description)
         .action((projectName, options) =>
@@ -340,12 +345,13 @@ export class Cli {
 
     // ui
     (() => {
-      const [command, description, iconsOpt, componentsOpt] = this.uiCommandDef;
+      const [command, description, buildOnlyOpt, skipHelpOpt] =
+        this.uiCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...iconsOpt)
-        .option(...componentsOpt)
+        .option(...buildOnlyOpt)
+        .option(...skipHelpOpt)
         .action((subCommand, params, options) =>
           this.uiCommand.run(subCommand, params, options)
         );
@@ -353,16 +359,14 @@ export class Cli {
 
     // ui-use
     (() => {
-      const [command, description, iconsOpt, componentsOpt] =
+      const [command, description, buildOnlyOpt, skipHelpOpt] =
         this.uiUseCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...iconsOpt)
-        .option(...componentsOpt)
-        .action((soul, skins, options) =>
-          this.uiUseCommand.run(soul, skins, options)
-        );
+        .option(...buildOnlyOpt)
+        .option(...skipHelpOpt)
+        .action((inputs, options) => this.uiUseCommand.run(inputs, options));
     })();
 
     // ui-build

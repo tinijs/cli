@@ -16,10 +16,10 @@ export class UiCommand {
     private uiIconCommand: UiIconCommand
   ) {}
 
-  run(subCommand: string, params: string[], commandOptions: CommandOptions) {
+  run(subCommand: string, params: string[], options: CommandOptions) {
     switch (subCommand) {
       case 'use':
-        this.uiUseCommand.run(params[0], params[1], commandOptions);
+        this.uiUseCommand.run(params, options);
         break;
       case 'build':
         this.uiBuildCommand.run(params[0], params[1]);

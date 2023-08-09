@@ -44,9 +44,9 @@ export class DevCommand {
       concurrently(
         [
           {
-            command: `npx parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
+            command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
           },
-          {command: 'npx tini dev --watch'},
+          {command: 'tini dev --watch'},
         ],
         {
           prefix: 'none',

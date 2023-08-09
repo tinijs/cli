@@ -1,21 +1,131 @@
-import {MISSING_ARG} from '../../lib/services/message.service';
+import {bold, blue, blueBright, green, gray} from 'chalk';
+import {resolve} from 'path';
+import * as ora from 'ora';
 
-interface CommandOptions {
-  icons?: string;
-  components?: string;
-}
+import {ERROR} from '../../lib/services/message.service';
+import {TerminalService} from '../../lib/services/terminal.service';
+import {ProjectService, Options} from '../../lib/services/project.service';
+import {UiService, SoulAndSkins} from '../../lib/services/ui.service';
 
 export {CommandOptions as UiUseCommandOptions};
 
-export class UiUseCommand {
-  constructor() {}
+interface CommandOptions {
+  buildOnly?: boolean;
+  skipHelp?: boolean;
+}
 
-  run(soul: string, skins: string, options: CommandOptions) {
-    if (!soul) {
-      return console.log(MISSING_ARG('soul'));
+const NODE_MODULES_DIR = 'node_modules';
+const UI_PACKAGE_NAME = '@tinijs/ui';
+
+export class UiUseCommand {
+  constructor(
+    private terminalService: TerminalService,
+    private projectService: ProjectService,
+    private uiService: UiService
+  ) {}
+
+  async run(inputs: string[], options: CommandOptions) {
+    const {ui} = await this.projectService.getOptions();
+    inputs = inputs?.length ? inputs : ui.use;
+    inputs = (inputs || []).filter(item => ~item.indexOf('/'));
+    if (!inputs.length) {
+      return console.log(
+        '\n' +
+          ERROR +
+          `Invalid inputs, valid format: ${blue('soul/skin-1,skin-2')}\n`
+      );
     }
-    if (!skins) {
-      return console.log(MISSING_ARG('skins'));
+    const destPath = resolve(NODE_MODULES_DIR, UI_PACKAGE_NAME);
+    const parsedInputs = this.parseInputs(inputs);
+    const souls = parsedInputs.map(({soul}) => soul);
+
+    /*
+     * A. manual mode (tini ui use)
+     */
+
+    // install packages then run postinstall
+    if (!options.buildOnly) {
+      // update tini.config.json
+      await this.projectService.updateOptions(
+        async options => ({...options, ui: {use: inputs}}) as Options
+      );
+      // install packages
+      return this.installPackages(souls);
     }
+
+    /*
+     * B. @tinijs/ui postinstall or using --build-only
+     */
+
+    // copy global files
+    console.log('\n');
+    const spinner = ora('Building bases, skins and components ...\n').start();
+    this.uiService.devAndUseCopyGlobalFiles(destPath);
+    // build skins
+    this.uiService.devAndUseBuildSkins(destPath, parsedInputs);
+    // build bases
+    this.uiService.devAndUseBuildBases(
+      `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-${souls[0]}/${this.uiService.STYLES_DIR}/base`,
+      destPath,
+      souls
+    );
+    // build components, blocks
+    const componentPublicPaths = await this.uiService.devAndUseBuildComponents(
+      `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-common/${this.uiService.COMPONENTS_DIR}`,
+      destPath,
+      souls
+    );
+    const blockPublicPaths = await this.uiService.devAndUseBuildComponents(
+      `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-common/${this.uiService.BLOCKS_DIR}`,
+      destPath,
+      souls
+    );
+    await this.uiService.savePublicApi(destPath, [
+      ...componentPublicPaths,
+      ...blockPublicPaths,
+    ]);
+    // result
+    spinner.succeed(`Build ${green(UI_PACKAGE_NAME)} successfully!`);
+    parsedInputs.map(({soul, skins}) =>
+      console.log(
+        `  + Soul ${bold(blueBright(soul))}, skins: ${blue(skins.join(', '))}`
+      )
+    );
+    if (!options.skipHelp) this.showInstruction();
+    console.log('\n');
+  }
+
+  private parseInputs(inputs: string[]): SoulAndSkins[] {
+    return inputs.map(item => {
+      const [soul, skins] = item.split('/');
+      return {
+        soul: soul.trim(),
+        skins: skins
+          .split(',')
+          .filter(item => item)
+          .map(item => item.trim()),
+      };
+    });
+  }
+
+  private installPackages(souls: string[]) {
+    const soulPackages = souls
+      .map(soul => `${UI_PACKAGE_NAME}-${soul}`)
+      .join(' ');
+    this.terminalService.exec(
+      `npm i ${soulPackages} ${UI_PACKAGE_NAME}-common ${UI_PACKAGE_NAME}`
+    );
+  }
+
+  private showInstruction() {
+    console.log(
+      '\nNow you can copy the below code to a global style file:\n' +
+        gray("\n    @import '../node_modules/@tinijs/ui/skins.css';\n")
+    );
+    console.log(
+      `For more detail how to import and use Tini UI components. \nPlease visit: ${blue(
+        'https://ui.tinijs.dev'
+      )}`
+    );
   }
 }

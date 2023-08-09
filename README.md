@@ -88,11 +88,11 @@ The CLI for the TiniJS framework.
 - [`tini dev|serve --watch`](#command-dev)
 - [`tini docs|home`](#command-docs)
 - [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
-- [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-git`](#command-new)
+- [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
 - [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
-- [`tini ui <subCommand> [params...] --icons [value] --components [value]`](#command-ui)
+- [`tini ui <subCommand> [params...] --build-only --skip-help`](#command-ui)
 - [`tini help`](#command-help)
 - [`tini *`](#command-*)
 
@@ -190,8 +190,8 @@ Create a new project.
 **Usage:**
 
 ```sh
-tini new <projectName> --latest --tag [value] --skip-install --skip-git
-tini start <projectName> --latest --tag [value] --skip-install --skip-git
+tini new <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git
+tini start <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git
 ```
 
 **Parameters:**
@@ -203,6 +203,7 @@ tini start <projectName> --latest --tag [value] --skip-install --skip-git
 - `-l, --latest`: Install the latest @tinijs/skeleton.
 - `-t, --tag [value]`: Use the custom version of the @tinijs/skeleton.
 - `-i, --skip-install`: Do not install dependency packages.
+- `-u, --skip-ui`: Do not run tini ui use.
 - `-g, --skip-git`: Do not initialize a git repository.
 
 <h3><a name="command-preview"><p><code>preview</code></p>
@@ -260,7 +261,7 @@ Tools for developing and using Tini.
 **Usage:**
 
 ```sh
-tini ui <subCommand> [params...] --icons [value] --components [value]
+tini ui <subCommand> [params...] --build-only --skip-help
 ```
 
 **Parameters:**
@@ -270,8 +271,8 @@ tini ui <subCommand> [params...] --icons [value] --components [value]
 
 **Options:**
 
-- `-i, --icons [value]`: Icons pack.
-- `-c, --components [value]`: Additional components packs.
+- `-b, --build-only`: Build mode only of the use command.
+- `-i, --skip-help`: Skip instruction of the use command.
 
 <h3><a name="command-help"><p><code>help</code></p>
 </a></h3>

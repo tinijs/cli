@@ -32,7 +32,7 @@ export class BuildCommand {
     await this.buildService.buildStaging();
     // build target
     this.terminalService.exec(
-      `npx cross-env NODE_ENV=${process.env.TARGET_ENV} npx parcel build "${stagingPath}/index.html" --dist-dir ${outDir} --no-cache`,
+      `npx cross-env NODE_ENV=${process.env.TARGET_ENV} parcel build "${stagingPath}/index.html" --dist-dir ${outDir} --no-cache`,
       '.',
       'inherit'
     );

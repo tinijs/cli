@@ -7,12 +7,17 @@ export interface Options {
   outDir?: string;
   stagingPrefix?: string;
   componentPrefix?: string;
-  pwa?: PWAPrecaching;
   skipMinifyHTMLLiterals?: boolean;
+  pwa?: PWAPrecaching;
+  ui?: UiConfig;
 }
 
 interface PWAPrecaching {
   globPatterns?: string[];
+}
+
+interface UiConfig {
+  use: string[];
 }
 
 export interface PackageJson {
@@ -40,6 +45,7 @@ export class ProjectService {
     componentPrefix: 'app',
     skipMinifyHTMLLiterals: false,
     pwa: {},
+    ui: {use: ['bootstrap/light']},
   };
 
   constructor(private fileService: FileService) {}
@@ -58,6 +64,10 @@ export class ProjectService {
 
   get version() {
     return require('../../../package.json').version as string;
+  }
+
+  async isTiniConfigExists() {
+    return await this.fileService.exists(this.rcPath);
   }
 
   async isPWAEnabled(appConfig?: ProjectOptions) {
@@ -80,7 +90,9 @@ export class ProjectService {
   }
 
   async updateOptions(modifier: (currentData: Options) => Promise<Options>) {
-    const currentData = await this.fileService.readJson<Options>(this.rcPath);
+    const currentData = !(await this.fileService.exists(this.rcPath))
+      ? ({} as unknown as Options)
+      : await this.fileService.readJson<Options>(this.rcPath);
     const newData = await modifier(currentData);
     await this.fileService.createJson(this.rcPath, newData);
     return this.getOptions();

@@ -9,8 +9,9 @@ import {ProjectService} from '../../lib/services/project.service';
 interface CommandOptions {
   latest?: boolean;
   tag?: string;
-  skipGit?: boolean;
   skipInstall?: boolean;
+  skipUi?: boolean;
+  skipGit?: boolean;
 }
 
 export class NewCommand {
@@ -46,7 +47,14 @@ export class NewCommand {
     console.log('From: ' + gray(resourceUrl));
     // install dependencies
     if (!commandOptions.skipInstall) {
-      execSync('npm install --loglevel error', {
+      execSync('npm i --loglevel=error', {
+        stdio: 'inherit',
+        cwd: projectPath,
+      });
+    }
+    // tini ui use
+    if (!commandOptions.skipUi) {
+      execSync('tini ui use --build-only --skip-help', {
         stdio: 'inherit',
         cwd: projectPath,
       });
