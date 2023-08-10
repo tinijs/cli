@@ -60,11 +60,11 @@ export class UiUseCommand {
     // copy global files
     console.log('\n');
     const spinner = ora('Building bases, skins and components ...\n').start();
-    this.uiService.devAndUseCopyGlobalFiles(destPath);
+    await this.uiService.devAndUseCopyGlobalFiles(destPath);
     // build skins
-    this.uiService.devAndUseBuildSkins(destPath, parsedInputs);
+    await this.uiService.devAndUseBuildSkins(destPath, parsedInputs);
     // build bases
-    this.uiService.devAndUseBuildBases(
+    const basesPublicPath = await this.uiService.devAndUseBuildBases(
       `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-${souls[0]}/${this.uiService.STYLES_DIR}/base`,
       destPath,
       souls
@@ -81,6 +81,7 @@ export class UiUseCommand {
       souls
     );
     await this.uiService.savePublicApi(destPath, [
+      basesPublicPath,
       ...componentPublicPaths,
       ...blockPublicPaths,
     ]);

@@ -22,7 +22,7 @@ export class UiDevCommand {
     // clean dir
     await this.fileService.cleanDir(destPath);
     // copy global files
-    this.uiService.devAndUseCopyGlobalFiles(destPath, true);
+    await this.uiService.devAndUseCopyGlobalFiles(destPath, true);
     // build skins
     await this.uiService.devAndUseBuildSkins(
       destPath,
@@ -30,7 +30,7 @@ export class UiDevCommand {
       true
     );
     // build bases
-    await this.uiService.devAndUseBuildBases(
+    const basesPublicPath = await this.uiService.devAndUseBuildBases(
       `${this.uiService.STYLES_DIR}/${souls[0]}/base`,
       destPath,
       souls,
@@ -50,6 +50,7 @@ export class UiDevCommand {
       true
     );
     await this.uiService.savePublicApi(destPath, [
+      basesPublicPath,
       ...componentPublicPaths,
       ...blockPublicPaths,
     ]);

@@ -65,7 +65,21 @@ export class UiBuildCommand {
         '**/*.scss',
         '**/*.css',
         '**/*.css.map',
-        ...(buildType !== 'common' ? [] : ['**/*.ts']),
+        ...(buildType !== 'common'
+          ? []
+          : [
+              '**/*.ts',
+              '**/*.ico',
+              '**/*.svg',
+              '**/*.webp',
+              '**/*.jpg',
+              '**/*.png',
+              '**/*.woff',
+              '**/*.woff2',
+              '**/*.html',
+              '**/*.md',
+              '**/*.txt',
+            ]),
       ],
       ...(buildType === 'common'
         ? {}

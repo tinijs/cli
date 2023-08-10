@@ -289,10 +289,22 @@ export class AppPreview extends LitElement {
         ).replace(/\"/g, '')};`
       );
     }
+    // save bases.ts
+    const fileName = 'bases.ts';
+    const basesOutPath = resolve(destPath, fileName);
     await this.fileService.createFile(
-      resolve(destPath, 'bases.ts'),
+      basesOutPath,
       `${importArr.join('\n')}\n\n${exportArr.join('\n')}`
     );
+    // transpile bases.ts
+    await this.typescriptService.transpileAndOutputFiles(
+      [basesOutPath],
+      this.TS_CONFIG,
+      destPath,
+      path => path.split('/').pop() as string
+    );
+    // public path
+    return `./${fileName.replace('.ts', '')}`;
   }
 
   async devAndUseBuildComponents(
