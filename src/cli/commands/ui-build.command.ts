@@ -124,7 +124,17 @@ export class UiBuildCommand {
     );
     // app
     const stagingPath = await this.buildService.buildStaging();
-    await this.fileService.copyDir(stagingPath, resolve(destPath, APP_DIR));
+    const appOutPath = resolve(destPath, APP_DIR);
+    await this.fileService.copyDir(stagingPath, appOutPath);
+    const appTSPaths = (await this.fileService.listDir(appOutPath)).filter(
+      path => path.endsWith('.ts')
+    );
+    await this.typescriptService.transpileAndOutputFiles(
+      appTSPaths,
+      this.uiService.TS_CONFIG,
+      appOutPath,
+      path => path.replace(`${appOutPath}/`, '')
+    );
   }
 
   private async buildSoul(destPath: string, soulName: string) {
