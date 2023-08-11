@@ -69,6 +69,8 @@ export class UiBuildCommand {
           ? []
           : [
               '**/*.ts',
+              '!app/**/*.ts',
+              'app/**/*.d.ts',
               '**/*.ico',
               '**/*.svg',
               '**/*.webp',
