@@ -103,13 +103,22 @@ export class UiService {
   ${shadeTintColorUtils}
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
   font-family: var(--font-body);
   font-size: var(--size-text);
   background: var(--color-background);
   color: var(--color-foreground);
-}   
+}
 `;
   }
 
