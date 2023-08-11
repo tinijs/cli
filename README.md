@@ -35,6 +35,12 @@
 
 ## Install
 
+- Create a TiniJS app:
+
+`npx @tinijs/cli new my-app --latest`
+
+- Or, install it globally:
+
 `npm i -g @tinijs/cli`
 
 For more, please visit: <https://tinijs.dev>

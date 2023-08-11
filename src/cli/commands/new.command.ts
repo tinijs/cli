@@ -25,7 +25,7 @@ export class NewCommand {
     const version = this.projectService.version;
     const tag = commandOptions.latest
       ? 'latest'
-      : commandOptions.tag || version;
+      : commandOptions.tag || `v${version}`;
     const resourceUrl = `https://github.com/tinijs/skeleton/archive/refs/tags/${tag}.zip`;
     const validProjectName = projectName
       .toLowerCase()
