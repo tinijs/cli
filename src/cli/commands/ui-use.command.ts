@@ -92,7 +92,11 @@ export class UiUseCommand {
         `  + Soul ${bold(blueBright(soul))}, skins: ${blue(skins.join(', '))}`
       )
     );
-    if (!options.skipHelp) this.showInstruction();
+    if (!options.skipHelp) {
+      const firstSoul = parsedInputs[0].soul;
+      const firstSkin = parsedInputs[0].skins[0];
+      this.showInstruction(`${firstSoul}/${firstSkin}`);
+    }
     console.log('\n');
   }
 
@@ -118,10 +122,14 @@ export class UiUseCommand {
     );
   }
 
-  private showInstruction() {
+  private showInstruction(firstSoulSkin: string) {
     console.log(
       '\nNow you can copy the below code to a global style file:\n' +
         gray("\n    @import '../node_modules/@tinijs/ui/skins.css';\n")
+    );
+    console.log('To make a theme the default one, edit the body tag:\n');
+    console.log(
+      '\n    ' + gray(`<body data-theme="${green(firstSoulSkin)}">`) + '\n'
     );
     console.log(
       `For more detail how to import and use Tini UI components. \nPlease visit: ${blue(
