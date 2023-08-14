@@ -58,8 +58,8 @@ export class UiService {
     '--color-foreground',
   ];
   private readonly COMMON_SIZE_FACTORS = [
-    0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.25, 1.5, 1.75, 2,
-    3, 4, 5,
+    0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1, 1.25, 1.5, 1.75,
+    2, 3, 4, 5,
   ];
   private readonly EXTRA_SIZE_FACTORS = [6, 7, 8, 9, 10];
 
