@@ -49,10 +49,26 @@ export class UiDevCommand {
       souls,
       true
     );
+    const customComponentPublicPaths =
+      await this.uiService.devAndUseBuildComponents(
+        `custom-${this.uiService.COMPONENTS_DIR}`,
+        destPath,
+        souls,
+        true
+      );
+    const customBlockPublicPaths =
+      await this.uiService.devAndUseBuildComponents(
+        `custom-${this.uiService.BLOCKS_DIR}`,
+        destPath,
+        souls,
+        true
+      );
     await this.uiService.savePublicApi(destPath, [
       basesPublicPath,
       ...componentPublicPaths,
       ...blockPublicPaths,
+      ...customComponentPublicPaths,
+      ...customBlockPublicPaths,
     ]);
     // package.json
     await this.fileService.createJson(resolve(destPath, 'package.json'), {

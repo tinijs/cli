@@ -80,6 +80,7 @@ export class UiUseCommand {
       destPath,
       souls
     );
+    // TODO: support custom components and blocks
     await this.uiService.savePublicApi(destPath, [
       basesPublicPath,
       ...componentPublicPaths,

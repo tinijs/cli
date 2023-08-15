@@ -324,13 +324,17 @@ export class AppPreview extends LitElement {
   ) {
     const publicPaths: string[] = [];
 
+    // check input dir
+    const inputPath = resolve(inputDir);
+    if (!(await this.fileService.exists(inputPath))) return publicPaths;
+
     /*
      * A. Build
      */
     const outputDir = isDev ? inputDir : (inputDir.split('/').pop() as string);
-    const componentPaths = (
-      await this.fileService.listDir(resolve(inputDir))
-    ).filter(path => path.endsWith('.ts'));
+    const componentPaths = (await this.fileService.listDir(inputPath)).filter(
+      path => path.endsWith('.ts')
+    );
     const componentsPathProcessor = (path: string) =>
       path.split(`/${inputDir}/`).pop() as string;
     for (let i = 0; i < componentPaths.length; i++) {

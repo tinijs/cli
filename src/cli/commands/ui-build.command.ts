@@ -263,7 +263,7 @@ export class UiBuildCommand {
     }
 
     /*
-     * 3. Components, Blocks
+     * 3. components/custom-components, blocks/custom-blocks
      */
     const componentPublicPaths = await this.buildSoulComponents(
       this.uiService.COMPONENTS_DIR,
@@ -273,9 +273,19 @@ export class UiBuildCommand {
       this.uiService.BLOCKS_DIR,
       destPath
     );
+    const customComponentPublicPaths = await this.buildSoulComponents(
+      `custom-${this.uiService.COMPONENTS_DIR}`,
+      destPath
+    );
+    const customBlockPublicPaths = await this.buildSoulComponents(
+      `custom-${this.uiService.BLOCKS_DIR}`,
+      destPath
+    );
     await this.uiService.savePublicApi(destPath, [
       ...componentPublicPaths,
       ...blockPublicPaths,
+      ...customComponentPublicPaths,
+      ...customBlockPublicPaths,
     ]);
 
     /*
@@ -319,12 +329,16 @@ export class UiBuildCommand {
   private async buildSoulComponents(inputDir: string, destPath: string) {
     const publicPaths: string[] = [];
 
+    // check input dir
+    const inputPath = resolve(inputDir);
+    if (!(await this.fileService.exists(inputPath))) return publicPaths;
+
     /*
      * A. Build
      */
-    const componentPaths = (
-      await this.fileService.listDir(resolve(inputDir))
-    ).filter(path => path.endsWith('.ts'));
+    const componentPaths = (await this.fileService.listDir(inputPath)).filter(
+      path => path.endsWith('.ts')
+    );
     const componentsPathProcessor = (path: string) =>
       path.split(`/${inputDir}/`).pop() as string;
     for (let i = 0; i < componentPaths.length; i++) {
