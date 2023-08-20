@@ -93,7 +93,7 @@ export class UiBuildCommand {
         ? {}
         : {
             scripts: {
-              postinstall: 'tini ui use --build-only',
+              postinstall: 'cd ../../../ && tini ui use --build-only',
             },
           }),
     });
