@@ -417,7 +417,10 @@ ${useBaseContents.imports.join('\n')}
 ${useComponentsContents.imports.join('\n')}
 import {${componentName}Style, ${componentName}Script} from '../${
           this.uiService.STYLES_DIR
-        }/soul/${fileNameOnly}';\n\n` + code;
+        }/soul/${fileNameOnly}';
+${
+  !useComponentsMatching ? '' : "import {Components} from '@tinijs/core';"
+}\n\n` + code;
       // inject components
       if (useComponentsMatching) {
         code = code.replace(
@@ -437,7 +440,7 @@ export class `
   }${componentName}Style];
 
   protected updated() {
-    ${componentName}Script(this);
+    if (${componentName}Script) ${componentName}Script(this);
   }\n\n`
       );
       const codeWithDefine =
