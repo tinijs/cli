@@ -183,11 +183,12 @@ export default ${className};\n`;
   name: '${tagName}',
 })
 export class ${className} extends TiniComponent {
-  static styles = css\`\`;
 
   protected render() {
     return html\`<div class="page"><slot></slot></div>\`;
   }
+
+  static styles = css\`\`;
 }\n`;
   }
 
@@ -198,11 +199,12 @@ export class ${className} extends TiniComponent {
   name: '${tagName}',
 })
 export class ${className} extends TiniComponent {
-  static styles = css\`\`;
 
   protected render() {
     return html\`<p>${className}</p>\`;
   }
+
+  static styles = css\`\`;
 }\n`;
   }
 
@@ -215,8 +217,6 @@ export const ${constName} = '${tagName}';
 @Component()
 export class ${className} extends TiniComponent {
   static readonly defaultTagName = ${constName};
-
-  static styles = css\`\`;
 
   @Input() property?: string;
   @Output() customEvent!: EventEmitter<{payload: any}>;
@@ -232,6 +232,8 @@ export class ${className} extends TiniComponent {
   protected render() {
     return html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
   }
+
+  static styles = css\`\`;
 }\n`;
   }
 
