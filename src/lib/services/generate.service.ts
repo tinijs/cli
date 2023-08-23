@@ -209,14 +209,11 @@ export class ${className} extends TiniComponent {
   }
 
   private contentForComponent(className: string, tagName: string) {
-    const constName = tagName.replace(/-/g, '_').toUpperCase();
     return `import {Component, TiniComponent, Input, Output, EventEmitter, html, css} from '@tinijs/core';
-
-export const ${constName} = '${tagName}';
 
 @Component()
 export class ${className} extends TiniComponent {
-  static readonly defaultTagName = ${constName};
+  static readonly defaultTagName = '${tagName}';
 
   @Input() property?: string;
   @Output() customEvent!: EventEmitter<{payload: any}>;

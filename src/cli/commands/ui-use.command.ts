@@ -64,28 +64,23 @@ export class UiUseCommand {
     // build skins
     await this.uiService.devAndUseBuildSkins(destPath, parsedInputs);
     // build bases
-    const basesPublicPath = await this.uiService.devAndUseBuildBases(
+    await this.uiService.devAndUseBuildBases(
       `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-${souls[0]}/${this.uiService.STYLES_DIR}/base`,
       destPath,
       souls
     );
     // build components, blocks
-    const componentPublicPaths = await this.uiService.devAndUseBuildComponents(
+    await this.uiService.devAndUseBuildComponents(
       `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-common/${this.uiService.COMPONENTS_DIR}`,
       destPath,
       souls
     );
-    const blockPublicPaths = await this.uiService.devAndUseBuildComponents(
+    await this.uiService.devAndUseBuildComponents(
       `${NODE_MODULES_DIR}/${UI_PACKAGE_NAME}-common/${this.uiService.BLOCKS_DIR}`,
       destPath,
       souls
     );
     // TODO: support custom components and blocks
-    await this.uiService.savePublicApi(destPath, [
-      basesPublicPath,
-      ...componentPublicPaths,
-      ...blockPublicPaths,
-    ]);
     // result
     spinner.succeed(`Build ${green(UI_PACKAGE_NAME)} successfully!`);
     parsedInputs.map(({soul, skins}) =>

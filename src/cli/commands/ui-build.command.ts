@@ -83,12 +83,6 @@ export class UiBuildCommand {
               '**/*.txt',
             ]),
       ],
-      ...(buildType === 'common'
-        ? {}
-        : {
-            main: 'public-api.js',
-            types: 'public-api.d.ts',
-          }),
       ...(buildType !== 'bare'
         ? {}
         : {
@@ -265,28 +259,16 @@ export class UiBuildCommand {
     /*
      * 3. components/custom-components, blocks/custom-blocks
      */
-    const componentPublicPaths = await this.buildSoulComponents(
-      this.uiService.COMPONENTS_DIR,
-      destPath
-    );
-    const blockPublicPaths = await this.buildSoulComponents(
-      this.uiService.BLOCKS_DIR,
-      destPath
-    );
-    const customComponentPublicPaths = await this.buildSoulComponents(
+    await this.buildSoulComponents(this.uiService.COMPONENTS_DIR, destPath);
+    await this.buildSoulComponents(this.uiService.BLOCKS_DIR, destPath);
+    await this.buildSoulComponents(
       `custom-${this.uiService.COMPONENTS_DIR}`,
       destPath
     );
-    const customBlockPublicPaths = await this.buildSoulComponents(
+    await this.buildSoulComponents(
       `custom-${this.uiService.BLOCKS_DIR}`,
       destPath
     );
-    await this.uiService.savePublicApi(destPath, [
-      ...componentPublicPaths,
-      ...blockPublicPaths,
-      ...customComponentPublicPaths,
-      ...customBlockPublicPaths,
-    ]);
 
     /*
      * 4. Extract base .ts into .css
@@ -327,11 +309,9 @@ export class UiBuildCommand {
   }
 
   private async buildSoulComponents(inputDir: string, destPath: string) {
-    const publicPaths: string[] = [];
-
     // check input dir
     const inputPath = resolve(inputDir);
-    if (!(await this.fileService.exists(inputPath))) return publicPaths;
+    if (!(await this.fileService.exists(inputPath))) return;
 
     /*
      * A. Build
@@ -462,8 +442,6 @@ export class`
         resolve(destPath, inputDir, filePath.replace('.ts', '.bundle.ts')),
         codeWithDefine
       );
-      // public path
-      publicPaths.push(`./${inputDir}/${filePath.replace('.ts', '')}`);
     }
 
     /*
@@ -480,8 +458,5 @@ export class`
         componentsPathProcessor
       );
     }
-
-    // result
-    return publicPaths;
   }
 }

@@ -37,45 +37,34 @@ export class UiDevCommand {
       true
     );
     // build components, blocks
-    const componentPublicPaths = await this.uiService.devAndUseBuildComponents(
+    await this.uiService.devAndUseBuildComponents(
       this.uiService.COMPONENTS_DIR,
       destPath,
       souls,
       true
     );
-    const blockPublicPaths = await this.uiService.devAndUseBuildComponents(
+    await this.uiService.devAndUseBuildComponents(
       this.uiService.BLOCKS_DIR,
       destPath,
       souls,
       true
     );
-    const customComponentPublicPaths =
-      await this.uiService.devAndUseBuildComponents(
-        `custom-${this.uiService.COMPONENTS_DIR}`,
-        destPath,
-        souls,
-        true
-      );
-    const customBlockPublicPaths =
-      await this.uiService.devAndUseBuildComponents(
-        `custom-${this.uiService.BLOCKS_DIR}`,
-        destPath,
-        souls,
-        true
-      );
-    await this.uiService.savePublicApi(destPath, [
-      basesPublicPath,
-      ...componentPublicPaths,
-      ...blockPublicPaths,
-      ...customComponentPublicPaths,
-      ...customBlockPublicPaths,
-    ]);
+    await this.uiService.devAndUseBuildComponents(
+      `custom-${this.uiService.COMPONENTS_DIR}`,
+      destPath,
+      souls,
+      true
+    );
+    await this.uiService.devAndUseBuildComponents(
+      `custom-${this.uiService.BLOCKS_DIR}`,
+      destPath,
+      souls,
+      true
+    );
     // package.json
     await this.fileService.createJson(resolve(destPath, 'package.json'), {
       name: '@tinijs/ui',
-      version: '0.0.0',
-      main: 'public-api.js',
-      types: 'public-api.d.ts',
+      version: '0.0.0'
     });
     // result
     console.log('\n' + OK + 'Build ui package for developing.\n');

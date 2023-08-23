@@ -55,8 +55,6 @@ export class UiIconCommand {
       homepage,
       license,
       keywords,
-      main: 'public-api.js',
-      types: 'public-api.d.ts',
       files: [
         '*.svg',
         '*.webp',
@@ -152,7 +150,6 @@ export class UiIconCommand {
       version,
       items: [] as Array<[string, string]>,
     };
-    const publicPaths: string[] = [];
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
       // original names
@@ -169,10 +166,6 @@ export class UiIconCommand {
       const componentNameClass = nameArr
         .map(name => capitalCase(name))
         .join('');
-      const componentNameConst = nameArr
-        .map(name => name.toUpperCase())
-        .join('_');
-      const tagConst = `ICON_${componentNameConst}`;
       const tagName = `icon-${fileNameOnly}`;
 
       /*
@@ -185,9 +178,10 @@ export class UiIconCommand {
         "--icon-image:url('icon.svg')",
         `--icon-image:url('${dataURI}')`
       );
-      content = content
-        .replace("const ICON = 'icon'", `const ${tagConst} = '${tagName}'`)
-        .replace('defaultTagName = ICON', `defaultTagName = ${tagConst}`);
+      content = content.replace(
+        'defaultTagName = ICON',
+        `defaultTagName = '${tagName}'`
+      );
       content = content.replace(
         'class IconComponent',
         `class Icon${componentNameClass}Component`
@@ -196,7 +190,7 @@ export class UiIconCommand {
         "import {customElement} from 'lit/decorators.js';\n" +
         content.replace(
           'export class ',
-          `@customElement(${tagConst})
+          `@customElement('${tagName}')
 export class `
         );
 
@@ -253,8 +247,6 @@ export const dataURI = URIHead + base64;
       }
       // index.json
       indexJson.items.push([newFileName, base64Content]);
-      // public path
-      publicPaths.push(`./${fileNameOnly}`);
     }
 
     /*
@@ -344,11 +336,6 @@ export const dataURI = URIHead + base64;
       indexJson,
       true
     );
-
-    /*
-     * VI. public-api.ts
-     */
-    await this.uiService.savePublicApi(destPath, publicPaths);
 
     // result
     return indexJson;
