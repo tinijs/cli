@@ -64,7 +64,7 @@ export class UiDevCommand {
     // package.json
     await this.fileService.createJson(resolve(destPath, 'package.json'), {
       name: '@tinijs/ui',
-      version: '0.0.0'
+      version: '0.0.0',
     });
     // result
     console.log('\n' + OK + 'Build ui package for developing.\n');

@@ -95,12 +95,14 @@ export class Cli {
   pwaInitCommandDef: CommandDef = [
     'pwa-init',
     'Turn a TiniJS app into a PWA.',
+    ['-i, --skip-install', 'Do not install @tinijs/pwa (install manually).'],
     ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
   ];
 
   pwaCommandDef: CommandDef = [
     'pwa <subCommand>',
     'Working with PWA apps.',
+    ['-i, --skip-install', 'Do not install @tinijs/pwa (install manually).'],
     ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
   ];
 
@@ -323,10 +325,11 @@ export class Cli {
 
     // pwa
     (() => {
-      const [command, description, tagOpt] = this.pwaCommandDef;
+      const [command, description, skipInstallOpt, tagOpt] = this.pwaCommandDef;
       commander
         .command(command as string)
         .description(description)
+        .option(...skipInstallOpt)
         .option(...tagOpt)
         .action((subCommand, options) =>
           this.pwaCommand.run(subCommand, options)
@@ -335,10 +338,12 @@ export class Cli {
 
     // pwa-init
     (() => {
-      const [command, description, tagOpt] = this.pwaInitCommandDef;
+      const [command, description, skipInstallOpt, tagOpt] =
+        this.pwaInitCommandDef;
       commander
         .command(command as string)
         .description(description)
+        .option(...skipInstallOpt)
         .option(...tagOpt)
         .action(options => this.pwaInitCommand.run(options));
     })();

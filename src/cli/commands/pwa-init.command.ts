@@ -5,6 +5,7 @@ import {ProjectService} from '../../lib/services/project.service';
 import {PwaService} from '../../lib/services/pwa.service';
 
 export interface CommandOptions {
+  skipInstall?: boolean;
   tag?: string;
 }
 
@@ -20,7 +21,9 @@ export class PwaInitCommand {
     }
     // install packages
     const version = commandOptions.tag || this.projectService.version;
-    this.pwaService.installPackages(version);
+    if (!commandOptions.skipInstall) {
+      this.pwaService.installPackages(version);
+    }
     // copy assets
     await this.pwaService.copyAssets();
     // modify files
@@ -29,7 +32,9 @@ export class PwaInitCommand {
     console.log(
       '\n' +
         OK +
-        `Adding @tinijs/pwa@${version} successfully, for more detail: ` +
+        `Add ${
+          commandOptions.skipInstall ? 'PWA' : `@tinijs/pwa@${version}`
+        } successfully, for more detail: ` +
         bold(blueBright('https://tinijs.dev/docs/pwa')) +
         '\n'
     );
