@@ -398,9 +398,8 @@ ${useComponentsContents.imports.join('\n')}
 import {${componentName}Style, ${componentName}Script} from '../${
           this.uiService.STYLES_DIR
         }/soul/${fileNameOnly}';
-${
-  !useComponentsMatching ? '' : "import {Components} from '@tinijs/core';"
-}\n\n` + code;
+${!useComponentsMatching ? '' : "import {Components} from 'tinijs';"}\n\n` +
+        code;
       // inject components
       if (useComponentsMatching) {
         code = code.replace(

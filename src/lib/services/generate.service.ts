@@ -177,7 +177,8 @@ export default ${className};\n`;
   }
 
   private contentForLayout(className: string, tagName: string) {
-    return `import {Layout, TiniComponent, html, css} from '@tinijs/core';
+    return `import {html, css} from 'lit';
+import {Layout, TiniComponent} from '@tinijs/core';
 
 @Layout({
   name: '${tagName}',
@@ -193,7 +194,8 @@ export class ${className} extends TiniComponent {
   }
 
   private contentForPage(className: string, tagName: string) {
-    return `import {Page, TiniComponent, html, css} from '@tinijs/core';
+    return `import {html, css} from 'lit';
+import {Page, TiniComponent} from '@tinijs/core';
 
 @Page({
   name: '${tagName}',
@@ -209,7 +211,8 @@ export class ${className} extends TiniComponent {
   }
 
   private contentForComponent(className: string, tagName: string) {
-    return `import {Component, TiniComponent, Input, Output, EventEmitter, html, css} from '@tinijs/core';
+    return `import {html, css} from 'lit';
+import {Component, TiniComponent, Input, Output, EventEmitter} from '@tinijs/core';
 
 @Component()
 export class ${className} extends TiniComponent {
