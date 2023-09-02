@@ -114,10 +114,10 @@ export class UiBuildCommand {
   }
 
   private async buildBare(destPath: string) {
-    // skin utils
+    // utilities
     await this.fileService.createFile(
-      resolve(destPath, 'skin-utils.css'),
-      this.uiService.skinUtils
+      resolve(destPath, 'utilities.css'),
+      this.uiService.cssUtils
     );
   }
 
@@ -300,11 +300,11 @@ export class UiBuildCommand {
     }
 
     /*
-     * 5. Skin utils
+     * 5. Utilities
      */
     await this.fileService.createFile(
-      resolve(destPath, 'skin-utils.css'),
-      this.uiService.skinUtils
+      resolve(destPath, 'utilities.css'),
+      this.uiService.cssUtils
     );
   }
 

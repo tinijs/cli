@@ -11,6 +11,37 @@ export interface SoulAndSkins {
   skins: string[];
 }
 
+interface ColorDef {
+  base: string;
+  contrast: string;
+  shade: string;
+  tint: string;
+}
+
+interface GradientDef extends ColorDef {
+  color: string;
+}
+
+enum CommonColorsNames {
+  Gray = 'gray',
+  Zinc = 'zinc',
+  Brown = 'brown',
+  Amber = 'amber',
+  Yellow = 'yellow',
+  Orange = 'orange',
+  Lime = 'lime',
+  Green = 'green',
+  Teal = 'teal',
+  Cyan = 'cyan',
+  Blue = 'blue',
+  Navy = 'navy',
+  Indigo = 'indigo',
+  Violet = 'violet',
+  Purple = 'purple',
+  Pink = 'pink',
+  Red = 'red',
+}
+
 export class UiService {
   public readonly COMPONENTS_DIR = 'components';
   public readonly BLOCKS_DIR = 'blocks';
@@ -29,78 +60,295 @@ export class UiService {
     private typescriptService: TypescriptService
   ) {}
 
-  private readonly SIZES = [
-    '--size-xxxs',
-    '--size-xxs',
-    '--size-xs',
-    '--size-ss',
-    '--size-sm',
-    '--size-md',
-    '--size-ml',
-    '--size-lg',
-    '--size-sl',
-    '--size-xl',
-    '--size-xxl',
-    '--size-xxxl',
-  ];
-  private readonly COLORS = [
-    '--color-primary',
-    '--color-secondary',
-    '--color-tertiary',
-    '--color-success',
-    '--color-warning',
-    '--color-danger',
-    '--color-dark',
-    '--color-medium',
-    '--color-light',
-    '--color-background',
-    '--color-middleground',
-    '--color-foreground',
-  ];
-  private readonly COMMON_SIZE_FACTORS = [
-    0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1, 1.25, 1.5,
-    1.75, 2, 3, 4, 5,
-  ];
-  private readonly EXTRA_SIZE_FACTORS = [6, 7, 8, 9, 10];
+  private readonly COMMON_COLORS_MAP = {
+    [CommonColorsNames.Gray]: {
+      base: '#b5bed9',
+      contrast: '#000000',
+      shade: '#a3aed0',
+      tint: '#c9d0e3',
+    },
+    [CommonColorsNames.Zinc]: {
+      base: '#71717a',
+      contrast: '#ffffff',
+      shade: '#52525b',
+      tint: '#a1a1aa',
+    },
+    [CommonColorsNames.Brown]: {
+      base: '#795c34',
+      contrast: '#ffffff',
+      shade: '#4b371c',
+      tint: '#9a7b4f',
+    },
+    [CommonColorsNames.Amber]: {
+      base: '#fbbf24',
+      contrast: '#000000',
+      shade: '#f59e0b',
+      tint: '#fcd34d',
+    },
+    [CommonColorsNames.Yellow]: {
+      base: '#fbcf33',
+      contrast: '#000000',
+      shade: '#eab308',
+      tint: '#fde047',
+    },
+    [CommonColorsNames.Orange]: {
+      base: '#fb923c',
+      contrast: '#ffffff',
+      shade: '#f97316',
+      tint: '#fdba74',
+    },
+    [CommonColorsNames.Lime]: {
+      base: '#98ec2d',
+      contrast: '#000000',
+      shade: '#82d616',
+      tint: '#bef264',
+    },
+    [CommonColorsNames.Green]: {
+      base: '#4ade80',
+      contrast: '#ffffff',
+      shade: '#22c55e',
+      tint: '#86efac',
+    },
+    [CommonColorsNames.Teal]: {
+      base: '#2dd4bf',
+      contrast: '#ffffff',
+      shade: '#14b8a6',
+      tint: '#5eead4',
+    },
+    [CommonColorsNames.Cyan]: {
+      base: '#21d4fd',
+      contrast: '#000000',
+      shade: '#17c1e8',
+      tint: '#67e8f9',
+    },
+    [CommonColorsNames.Blue]: {
+      base: '#42a5f5',
+      contrast: '#ffffff',
+      shade: '#2196f3',
+      tint: '#64b5f6',
+    },
+    [CommonColorsNames.Navy]: {
+      base: '#1b3bbb',
+      contrast: '#ffffff',
+      shade: '#24388a',
+      tint: '#3652ba',
+    },
+    [CommonColorsNames.Indigo]: {
+      base: '#818cf8',
+      contrast: '#ffffff',
+      shade: '#6366f1',
+      tint: '#a5b4fc',
+    },
+    [CommonColorsNames.Violet]: {
+      base: '#422afb',
+      contrast: '#ffffff',
+      shade: '#3311db',
+      tint: '#7551ff',
+    },
+    [CommonColorsNames.Purple]: {
+      base: '#c084fc',
+      contrast: '#ffffff',
+      shade: '#a855f7',
+      tint: '#d8b4fe',
+    },
+    [CommonColorsNames.Pink]: {
+      base: '#f472b6',
+      contrast: '#ffffff',
+      shade: '#ff0080',
+      tint: '#f9a8d4',
+    },
+    [CommonColorsNames.Red]: {
+      base: '#f87171',
+      contrast: '#ffffff',
+      shade: '#f53939',
+      tint: '#fca5a5',
+    },
+  } as Record<string, ColorDef>;
 
-  get skinUtils() {
-    const sizeTextUtils = this.sizeUtilGenerator(
-      ['--size-text'],
-      [...this.COMMON_SIZE_FACTORS, ...this.EXTRA_SIZE_FACTORS]
-    );
-    const sizeRadiusUtils = this.sizeUtilGenerator(
-      ['--size-radius'],
-      this.COMMON_SIZE_FACTORS
-    );
-    const sizeBorderUtils = this.sizeUtilGenerator(
-      ['--size-border'],
-      this.COMMON_SIZE_FACTORS
-    );
-    const sizeOutlineUtils = this.sizeUtilGenerator(
-      ['--size-outline'],
-      this.COMMON_SIZE_FACTORS
-    );
-    const sizeSpaceUtils = this.sizeUtilGenerator(
-      ['--size-space'],
-      [...this.COMMON_SIZE_FACTORS, ...this.EXTRA_SIZE_FACTORS]
-    );
-    const sizeStepsUtils = this.sizeUtilGenerator(
-      this.SIZES,
-      this.COMMON_SIZE_FACTORS
-    );
-    const shadeTintColorUtils = this.shadeTintUtilGenerator(
-      this.COLORS,
-      [90, 80, 70, 60]
-    );
+  private readonly COMMON_GRADIENTS_MAP = {
+    'vital-ocean': {
+      color: CommonColorsNames.Blue,
+      base: 'linear-gradient(90deg, #1CB5E0 0%, #000851 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #0d93b8 0%, #00031e 100%)',
+      tint: 'linear-gradient(90deg, #31cdf8 0%, #051181 100%)',
+    },
+    'kale-salad': {
+      color: CommonColorsNames.Teal,
+      base: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(90deg, #0098c2 0%, #68c972 100%)',
+      tint: 'linear-gradient(90deg, #14c6f7 0%, #a5faae 100%)',
+    },
+    'disco-club': {
+      color: CommonColorsNames.Pink,
+      base: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #d43151 0%, #2a46d2 100%)',
+      tint: 'linear-gradient(90deg, #fb5a7a 0%, #5570f8 100%)',
+    },
+    'shady-lane': {
+      color: CommonColorsNames.Indigo,
+      base: 'linear-gradient(90deg, #3F2B96 0%, #A8C0FF 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #291a6c 0%, #7f97d4 100%)',
+      tint: 'linear-gradient(90deg, #5741bb 0%, #bbcdfb 100%)',
+    },
+    'retro-wagon': {
+      color: CommonColorsNames.Lime,
+      base: 'linear-gradient(90deg, #FDBB2D 0%, #22C1C3 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #d39819 0%, #119194 100%)',
+      tint: 'linear-gradient(90deg, #fac044 0%, #3be3e6 100%)',
+    },
+    'fresco-crush': {
+      color: CommonColorsNames.Brown,
+      base: 'linear-gradient(90deg, #FDBB2D 0%, #3A1C71 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #ce9416 0%, #210d47 100%)',
+      tint: 'linear-gradient(90deg, #fdc345 0%, #533094 100%)',
+    },
+    'cucumber-water': {
+      color: CommonColorsNames.Gray,
+      base: 'linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(90deg, #b0d7b6 0%, #a3b5d2 100%)',
+      tint: 'linear-gradient(90deg, #f2fbf3 0%, #eaf0fb 100%)',
+    },
+    'sea-salt': {
+      color: CommonColorsNames.Navy,
+      base: 'linear-gradient(90deg, #4b6cb7 0%, #182848 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #2f4b8f 0%, #091224 100%)',
+      tint: 'linear-gradient(90deg, #698ad6 0%, #304672 100%)',
+    },
+    'par-four': {
+      color: CommonColorsNames.Green,
+      base: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #789205 0%, #00472c 100%)',
+      tint: 'linear-gradient(90deg, #bbdc28 0%, #0bc57d 100%)',
+    },
+    'ooey-gooey': {
+      color: CommonColorsNames.Blue,
+      base: 'linear-gradient(90deg, #0700b8 0%, #00ff88 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #04006e 0%, #00af5e 100%)',
+      tint: 'linear-gradient(90deg, #140dec 0%, #17fa90 100%)',
+    },
+    'bloody-mimosa': {
+      color: CommonColorsNames.Red,
+      base: 'linear-gradient(90deg, #d53369 0%, #daae51 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #a41b49 0%, #ad8631 100%)',
+      tint: 'linear-gradient(90deg, #f85189 0%, #facf72 100%)',
+    },
+    'lovely-lilly': {
+      color: CommonColorsNames.Indigo,
+      base: 'linear-gradient(90deg, #efd5ff 0%, #515ada 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(90deg, #c0a1d3 0%, #343cb2 100%)',
+      tint: 'linear-gradient(90deg, #f6e8fe 0%, #727af6 100%)',
+    },
+    'aqua-spray': {
+      color: CommonColorsNames.Blue,
+      base: 'linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(90deg, #0091b1 0%, #202ba7 100%)',
+      tint: 'linear-gradient(90deg, #1ad2fb 0%, #5e6bf9 100%)',
+    },
+    'mello-yellow': {
+      color: CommonColorsNames.Lime,
+      base: 'linear-gradient(90deg, #f8ff00 0%, #3ad59f 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(90deg, #a5aa01 0%, #1fa173 100%)',
+      tint: 'linear-gradient(90deg, #f7ff1c 0%, #5ffac4 100%)',
+    },
+    'dusty-cactus': {
+      color: CommonColorsNames.Yellow,
+      base: 'linear-gradient(90deg, #fcff9e 0%, #c67700 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(90deg, #cbce6d 0%, #774700 100%)',
+      tint: 'linear-gradient(90deg, #fdffb8 0%, #fea115 100%)',
+    },
+    'premium-dark': {
+      color: CommonColorsNames.Zinc,
+      base: 'linear-gradient(to right, #434343 0%, black 100%)',
+      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      shade: 'linear-gradient(to right, #272424 0%, black 100%)',
+      tint: 'linear-gradient(to right, #767676 0%, #272424 100%)',
+    },
+    'perfect-white': {
+      color: CommonColorsNames.Gray,
+      base: 'linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
+      shade: 'linear-gradient(-225deg, #afd0c6 0%, #d0b2ca 100%)',
+      tint: 'linear-gradient(-225deg, #f5fcfa 0%, #fbf5fa 100%)',
+    },
+  } as Record<string, GradientDef>;
+
+  private readonly SCALES = [
+    '--scale-xxxs',
+    '--scale-xxs',
+    '--scale-xs',
+    '--scale-ss',
+    '--scale-sm',
+    '--scale-md',
+    '--scale-ml',
+    '--scale-lg',
+    '--scale-sl',
+    '--scale-xl',
+    '--scale-xxl',
+    '--scale-xxxl',
+  ];
+
+  private readonly FACTORS = [
+    0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1, 1.25, 1.5,
+    1.75, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  ];
+
+  private readonly OUTLINES_MAP = {
+    zero: 0,
+    tiny: 0.25,
+    small: 0.5,
+    base: 1,
+    big: 2,
+    huge: 2.5,
+    massive: 3,
+  } as Record<string, number>;
+
+  private readonly BORDERS_MAP = this.OUTLINES_MAP;
+
+  private readonly RADIUSES_MAP = {
+    ...this.OUTLINES_MAP,
+    quarter: '25%',
+    half: '50%',
+    'three-quarters': '75%',
+    full: '100%',
+    max: '100vmax',
+  } as Record<string, string | number>;
+
+  get cssUtils() {
+    const commonColorUtils = this.commonColorUtilGenerator();
+    const commonGradientUtils = this.commonGradientUtilGenerator();
+    const scalesUtils = this.factorUtilGenerator(this.SCALES);
+    const sizeTextUtils = this.factorUtilGenerator(['--size-text']);
+    const sizeSpaceUtils = this.factorUtilGenerator(['--size-space']);
+    const sizeOutlineUtils = this.outlineUtilGenerator();
+    const sizeBorderUtils = this.borderUtilGenerator();
+    const sizeRadiusUtils = this.radiusUtilGenerator();
+    const shadowUtils = '--shadow-none: none;';
     return `
 [data-theme] {
+  ${commonColorUtils}
+  ${commonGradientUtils}
+  ${scalesUtils}
   ${sizeTextUtils}
-  ${sizeRadiusUtils}
-  ${sizeBorderUtils}
-  ${sizeOutlineUtils}
   ${sizeSpaceUtils}
-  ${sizeStepsUtils}
-  ${shadeTintColorUtils}
+  ${sizeOutlineUtils}
+  ${sizeBorderUtils}
+  ${sizeRadiusUtils}
+  ${shadowUtils}
 }
 
 *,
@@ -122,53 +370,88 @@ body {
 `;
   }
 
-  private sizeUtilGenerator(keys: string[], sizes: number[]) {
+  private factorUtilGenerator(keys: string[]) {
     return keys
       .map(key =>
-        sizes
-          .map(
-            size =>
-              `${key}-${size
-                .toString()
-                .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${size});`
-          )
-          .join('\n  ')
+        this.FACTORS.map(
+          factor =>
+            `${key}-${factor
+              .toString()
+              .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${factor});`
+        ).join('\n  ')
       )
       .join('\n  ');
   }
 
-  private shadeTintUtilGenerator(liteKeys: string[], shades: number[]) {
-    return ['shade', 'tint'].reduce((result, kind) => {
-      const group = liteKeys
-        .map(liteKey => {
-          const key = `${liteKey}-${kind}`;
-          return shades
-            .map(
-              (shade, i) =>
-                `${key}-${i + 2}: color-mix(in oklab, var(${key}) ${shade}%, ${
-                  kind === 'shade' ? 'black' : 'white'
-                });`
-            )
-            .join('\n  ');
-        })
-        .join('\n  ');
-      result += group + '\n  ';
-      return result;
-    }, '' as string);
+  private borderUtilGenerator() {
+    return Object.keys(this.BORDERS_MAP)
+      .map(
+        name =>
+          `--size-border-${name}: calc(var(--size-border) * ${this.BORDERS_MAP[name]});`
+      )
+      .join('\n  ');
+  }
+
+  private outlineUtilGenerator() {
+    return Object.keys(this.OUTLINES_MAP)
+      .map(
+        name =>
+          `--size-outline-${name}: calc(var(--size-outline) * ${this.OUTLINES_MAP[name]});`
+      )
+      .join('\n  ');
+  }
+
+  private radiusUtilGenerator() {
+    return Object.keys(this.RADIUSES_MAP)
+      .map(name => {
+        const value =
+          typeof this.RADIUSES_MAP[name] === 'string'
+            ? (this.RADIUSES_MAP[name] as string)
+            : `calc(var(--size-radius) * ${this.RADIUSES_MAP[name]})`;
+        return `--size-radius-${name}: ${value};`;
+      })
+      .join('\n  ');
+  }
+
+  private commonColorUtilGenerator() {
+    return Object.keys(this.COMMON_COLORS_MAP)
+      .map(name => {
+        const color = this.COMMON_COLORS_MAP[name];
+        return `--color-${name}: ${color.base};
+  --color-${name}-contrast: ${color.contrast};
+  --color-${name}-shade: ${color.shade};
+  --color-${name}-tint: ${color.tint};`;
+      })
+      .join('\n  ');
+  }
+
+  private commonGradientUtilGenerator() {
+    return Object.keys(this.COMMON_GRADIENTS_MAP)
+      .map(name => {
+        const gradient = this.COMMON_GRADIENTS_MAP[name];
+        return `--color-${name}: var(--color-${gradient.color});
+  --color-${name}-contrast: var(--color-${gradient.color}-contrast);
+  --gradient-${name}: ${gradient.base};
+  --gradient-${name}-contrast: ${gradient.contrast};
+  --gradient-${name}-shade: ${gradient.shade};
+  --gradient-${name}-tint: ${gradient.tint};`;
+      })
+      .join('\n  ');
   }
 
   get iconTemplate() {
-    return `import {LitElement, html, css} from 'lit';
+    return `import {html, css, PropertyValues} from 'lit';
 import {property} from 'lit/decorators.js';
-import {classMap, ClassInfo} from 'lit/directives/class-map.js';
-import {partMap, PartInfo, generateColorVaries, generateGradientVaries, generateSizeVaries} from 'tinijs';
-export class IconComponent extends LitElement {
+import {classMap} from 'lit/directives/class-map.js';
+import {styleMap} from 'lit/directives/style-map.js';
+import {TiniElement, partMap, PartInfo, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
+export class IconComponent extends TiniElement {
   static readonly defaultTagName = ICON;
-  static styles = css\`:host{--icon-width:var(--size-md-2x);--icon-height:var(--size-md-2x);--icon-color:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.recolor{background:var(--icon-color);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({name, color}) => \`.scheme-\${name} {--icon-color: \${color};}\`)}\${generateGradientVaries(({name, gradient}) => \`.scheme-\${name} {--icon-color: \${gradient};}\`)}\${generateSizeVaries(size => \`.size-\${size} {--icon-width: var(--size-\${size}-2x);--icon-height: var(--size-\${size}-2x);}\`)}\`;
-  @property({type: String, reflect: true}) declare size?: string;
+  static styles = css\`:host{--icon-width:var(--scale-md-2x);--icon-height:var(--scale-md-2x);--icon-scheme:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.scheme{background:var(--icon-scheme);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({fullName, color}) => \`.\${fullName} {--icon-scheme: \${color};}\`)}\${generateGradientVaries(({fullName, gradient}) => \`.\${fullName} {--icon-scheme: \${gradient};}\`)}\${generateScaleVaries(({name, fullName}) => \`.\${fullName} {--icon-width: var(--scale-\${name}-2x);--icon-height: var(--scale-\${name}-2x);}\`)}\`;
+  @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
-  private rootClassesParts: ClassInfo | PartInfo = {}; willUpdate() { this.rootClassesParts = {root: true, recolor: !!this.scheme, [\`size-\${this.size}\`]: !!this.size, [\`scheme-\${this.scheme}\`]: !!this.scheme}; }
-  protected render() { return html\`<i part=\${partMap(this.rootClassesParts)} class=\${classMap(this.rootClassesParts)}></i>\`; }
+  willUpdate(changedValues: PropertyValues) { super.willUpdate(changedValues); this.extendRootClassesParts({scheme: !!this.scheme, [\`\${VaryGroups.Scale}-\${this.scale}\`]: !!this.scale, [\`\${VaryGroups.Scheme}-\${this.scheme}\`]: !!this.scheme}); }
+  protected render() { return html\`<i part=\${partMap(this.rootClassesParts)} class=\${classMap(this.rootClassesParts)} style=\${styleMap(this.rootStyles)}></i>\`; }
 }
     `;
   }
@@ -183,7 +466,7 @@ export class IconComponent extends LitElement {
     <script type="module" src="___preview.app.ts"></script>
     <style>
       :root {
-        --size-md-2x: 32px;
+        --scale-md-2x: 32px;
       }
       body {
         margin: 0;
@@ -245,7 +528,7 @@ export class AppPreview extends LitElement {
         imports.push(`@import '${importPath}';`);
       });
     }
-    const content = `${imports.join('\n')}\n${this.skinUtils}`;
+    const content = `${imports.join('\n')}\n${this.cssUtils}`;
     await this.fileService.createFile(resolve(destPath, 'skins.css'), content);
   }
 

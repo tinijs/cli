@@ -362,8 +362,8 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
   private injectPWA(content: string) {
     const wbCode = `
     if ('serviceWorker' in navigator) {
-      this.$workbox = new Workbox('/sw.js');
-      this.$workbox.register();
+      this.workbox = new Workbox('/sw.js');
+      this.workbox.register();
     }
   `;
     // import workbox-window
