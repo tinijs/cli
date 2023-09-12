@@ -186,6 +186,11 @@ export class UiIconCommand {
         'class IconComponent',
         `class Icon${componentNameClass}Component`
       );
+      const contentWithReactWrapper =
+        this.uiService.buildIconContentWithReactWrapper(
+          content,
+          componentNameClass
+        );
       const contentWithDefine =
         "import {customElement} from 'lit/decorators.js';\n" +
         content.replace(
@@ -199,7 +204,7 @@ export class `
        */
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.ts`),
-        content
+        contentWithReactWrapper
       );
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.include.ts`),

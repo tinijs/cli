@@ -439,6 +439,21 @@ body {
       .join('\n  ');
   }
 
+  buildIconContentWithReactWrapper(content: string, nameClass: string) {
+    const className = `Icon${nameClass}Component`;
+    const reactTagName = className.replace('Component', '');
+    return `import React from 'react';
+import {createComponent} from '@lit-labs/react';
+
+${content}
+
+export const ${reactTagName} = createComponent({
+  tagName: ${className}.defaultTagName,
+  elementClass: ${className},
+  react: React,
+});\n`;
+  }
+
   get iconTemplate() {
     return `import {html, css, PropertyValues} from 'lit';
 import {property} from 'lit/decorators.js';
