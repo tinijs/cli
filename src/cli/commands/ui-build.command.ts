@@ -328,6 +328,8 @@ export class UiBuildCommand {
       const fileNameOnly = fileName.replace('.ts', '');
       const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
       const componentNameConst = fileNameOnly.replace(/\-/g, '_').toUpperCase();
+      const className = `Tini${capitalCase(componentName)}Component`;
+      const reactTagName = className.replace('Component', '');
       // dir
       const dirPaths = filePath.split('/');
       dirPaths.pop();
@@ -339,6 +341,9 @@ export class UiBuildCommand {
       const useBaseMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
       const useComponentsMatching = code.match(
         /\/\* UseComponents\(([\s\S]*?)\) \*\//
+      );
+      const reactEventsMatching = code.match(
+        /\/\* ReactEvents\(([\s\S]*?)\) \*\//
       );
       // base imports
       const useBaseContents = (!useBaseMatching ? '' : useBaseMatching[1])
@@ -380,12 +385,33 @@ export class UiBuildCommand {
             components: [] as string[],
           }
         );
+      // react events
+      const reactEventsContents = (
+        !reactEventsMatching ? '' : reactEventsMatching[1]
+      )
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const value = item.trim();
+            if (value) {
+              const [originalName, reactName] = value.split(':');
+              result.events[reactName] = originalName;
+            }
+            return result;
+          },
+          {
+            events: {} as Record<string, string>,
+          }
+        );
       // build content
       if (useBaseMatching) {
         code = code.replace(`${useBaseMatching[0]}\n`, '');
       }
       if (useComponentsMatching) {
         code = code.replace(`${useComponentsMatching[0]}\n`, '');
+      }
+      if (reactEventsMatching) {
+        code = code.replace(`${reactEventsMatching[0]}\n`, '');
       }
       code = code.replace(
         /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
@@ -411,17 +437,39 @@ export class `
         );
       }
       // inject bases
+      const updatedMethodStr = 'updated() {';
+      const hasUpdatedMethod = ~code.indexOf(updatedMethodStr);
+      const scriptingCode = `if (${componentName}Script) ${componentName}Script(this);`;
+      const newUpdatedMethod = `protected ${updatedMethodStr}\n    ${scriptingCode}\n  }\n\n`;
       code = code.replace(
-        'extends LitElement {\n',
-        `extends LitElement {\n
+        'extends TiniElement {\n',
+        `extends TiniElement {\n
   static styles = [${useBaseContents.styles.join(', ')}${
     !useBaseMatching ? '' : ','
   }${componentName}Style];
 
-  protected updated() {
-    if (${componentName}Script) ${componentName}Script(this);
-  }\n\n`
+  ${hasUpdatedMethod ? '' : newUpdatedMethod}`
       );
+      if (hasUpdatedMethod) {
+        code = code.replace(
+          updatedMethodStr,
+          updatedMethodStr + '\n    ' + scriptingCode + '\n'
+        );
+      }
+      const codeWithReactWrapper = `import React from 'react';
+import {createComponent} from '@lit-labs/react';
+
+${code}
+
+export const ${reactTagName} = createComponent({
+  tagName: ${className}.defaultTagName,
+  elementClass: ${className},
+  react: React,${
+    !Object.keys(reactEventsContents.events).length
+      ? ''
+      : `\n  events: ${JSON.stringify(reactEventsContents.events)}`
+  }
+});\n`;
       const codeWithDefine =
         "import {customElement} from 'lit/decorators.js';\n" +
         code.replace(
@@ -431,7 +479,7 @@ export class`
         );
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath),
-        code
+        codeWithReactWrapper
       );
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath.replace('.ts', '.include.ts')),

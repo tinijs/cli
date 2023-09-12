@@ -30,7 +30,7 @@ export class UiDevCommand {
       true
     );
     // build bases
-    const basesPublicPath = await this.uiService.devAndUseBuildBases(
+    await this.uiService.devAndUseBuildBases(
       `${this.uiService.STYLES_DIR}/${souls[0]}/base`,
       destPath,
       souls,

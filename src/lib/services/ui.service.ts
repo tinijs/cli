@@ -623,11 +623,16 @@ export class AppPreview extends LitElement {
       const fileNameOnly = fileName.replace('.ts', '');
       const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
       const componentNameCapital = capitalCase(componentName);
+      const className = `Tini${capitalCase(componentName)}Component`;
+      const reactTagName = className.replace('Component', '');
       // read file
       let code = await this.fileService.readText(path);
       const useBasesMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
       const useComponentsMatching = code.match(
         /\/\* UseComponents\(([\s\S]*?)\) \*\//
+      );
+      const reactEventsMatching = code.match(
+        /\/\* ReactEvents\(([\s\S]*?)\) \*\//
       );
       // base imports
       const useBasesContents = (!useBasesMatching ? '' : useBasesMatching[1])
@@ -676,6 +681,24 @@ export class AppPreview extends LitElement {
             components: [] as string[],
           }
         );
+      // react events
+      const reactEventsContents = (
+        !reactEventsMatching ? '' : reactEventsMatching[1]
+      )
+        .split(',')
+        .reduce(
+          (result, item) => {
+            const value = item.trim();
+            if (value) {
+              const [originalName, reactName] = value.split(':');
+              result.events[reactName] = originalName;
+            }
+            return result;
+          },
+          {
+            events: {} as Record<string, string>,
+          }
+        );
       // soul imports
       const soulContents = souls.reduce(
         (result, soul) => {
@@ -704,6 +727,9 @@ export class AppPreview extends LitElement {
       }
       if (useComponentsMatching) {
         code = code.replace(`${useComponentsMatching[0]}\n`, '');
+      }
+      if (reactEventsMatching) {
+        code = code.replace(`${reactEventsMatching[0]}\n`, '');
       }
       code = code.replace(
         /(\.\.\/styles\/([\s\S]*?)\/)|(\.\.\/styles\/)/g,
@@ -747,10 +773,24 @@ export class `
 })
 export class `
       );
+      const codeWithReactWrapper = `import React from 'react';
+import {createComponent} from '@lit-labs/react';
+
+${code}
+
+export const ${reactTagName} = createComponent({
+  tagName: ${className}.defaultTagName,
+  elementClass: ${className},
+  react: React,${
+    !Object.keys(reactEventsContents.events).length
+      ? ''
+      : `\n  events: ${JSON.stringify(reactEventsContents.events)}`
+  }
+});\n`;
       // save file
       await this.fileService.createFile(
         resolve(destPath, outputDir, filePath),
-        code
+        codeWithReactWrapper
       );
     }
 
