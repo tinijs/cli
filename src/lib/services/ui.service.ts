@@ -140,10 +140,10 @@ export class UiService {
       tint: '#a5b4fc',
     },
     [CommonColorsNames.Violet]: {
-      base: '#422afb',
+      base: '#7f00ff',
       contrast: '#ffffff',
-      shade: '#3311db',
-      tint: '#7551ff',
+      shade: '#710193',
+      tint: '#8f00ff',
     },
     [CommonColorsNames.Purple]: {
       base: '#c084fc',
