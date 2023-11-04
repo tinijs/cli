@@ -204,6 +204,10 @@ export class `
        */
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.ts`),
+        content
+      );
+      await this.fileService.createFile(
+        resolve(destPath, `${fileNameOnly}.react.ts`),
         contentWithReactWrapper
       );
       await this.fileService.createFile(

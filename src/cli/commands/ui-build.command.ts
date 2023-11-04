@@ -326,8 +326,8 @@ export class UiBuildCommand {
       const filePath = componentsPathProcessor(path);
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
-      const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
-      const componentNameConst = fileNameOnly.replace(/\-/g, '_').toUpperCase();
+      const componentName = camelCase(fileNameOnly.replace(/-/g, ' '));
+      const componentNameConst = fileNameOnly.replace(/-/g, '_').toUpperCase();
       const className = `Tini${capitalCase(componentName)}Component`;
       const reactTagName = className.replace('Component', '');
       // dir
@@ -372,7 +372,7 @@ export class UiBuildCommand {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
             const nameClass = `Tini${nameCapital}Component`;
             if (name) {
               result.imports.push(`import {${nameClass}} from './${name}';`);
@@ -432,7 +432,7 @@ ${!useComponentsMatching ? '' : "import {Components} from 'tinijs';"}\n\n` +
           'export class ',
           `@Components(${JSON.stringify(
             useComponentsContents.components
-          ).replace(/\"/g, '')})
+          ).replace(/"/g, '')})
 export class `
         );
       }
@@ -457,7 +457,7 @@ export class `
         );
       }
       const codeWithReactWrapper = `import React from 'react';
-import {createComponent} from '@lit-labs/react';
+import {createComponent} from '@lit/react';
 
 ${code}
 
@@ -479,6 +479,10 @@ export class`
         );
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath),
+        code
+      );
+      await this.fileService.createFile(
+        resolve(destPath, inputDir, filePath.replace('.ts', '.react.ts')),
         codeWithReactWrapper
       );
       await this.fileService.createFile(

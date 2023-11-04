@@ -377,7 +377,7 @@ body {
           factor =>
             `${key}-${factor
               .toString()
-              .replace(/\.|\,/g, '_')}x: calc(var(${key}) * ${factor});`
+              .replace(/\.|,/g, '_')}x: calc(var(${key}) * ${factor});`
         ).join('\n  ')
       )
       .join('\n  ');
@@ -443,7 +443,7 @@ body {
     const className = `Icon${nameClass}Component`;
     const reactTagName = className.replace('Component', '');
     return `import React from 'react';
-import {createComponent} from '@lit-labs/react';
+import {createComponent} from '@lit/react';
 
 ${content}
 
@@ -560,12 +560,12 @@ export class AppPreview extends LitElement {
     const exportArr: string[] = [];
     for (let i = 0; i < baseNames.length; i++) {
       const baseName = baseNames[i];
-      const baseNameCapital = capitalCase(baseName.replace(/\-|\./g, ' '));
+      const baseNameCapital = capitalCase(baseName.replace(/-|\./g, ' '));
       const baseNameCamel = camelCase(baseNameCapital);
       const baseExports = {} as Record<string, string>;
       for (let j = 0; j < souls.length; j++) {
         const soulName = souls[j];
-        const soulNameCamel = camelCase(soulName.replace(/\-|\./g, ' '));
+        const soulNameCamel = camelCase(soulName.replace(/-|\./g, ' '));
         const importName = `${soulNameCamel}${baseNameCapital}Base`;
         const importPath = isDev
           ? `../${this.STYLES_DIR}/${soulName}/base/${baseName}`
@@ -576,7 +576,7 @@ export class AppPreview extends LitElement {
       exportArr.push(
         `export const ${baseNameCamel}Bases = ${JSON.stringify(
           baseExports
-        ).replace(/\"/g, '')};`
+        ).replace(/"/g, '')};`
       );
     }
     // save bases.ts
@@ -621,7 +621,7 @@ export class AppPreview extends LitElement {
       const filePath = componentsPathProcessor(path);
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
-      const componentName = camelCase(fileNameOnly.replace(/\-/g, ' '));
+      const componentName = camelCase(fileNameOnly.replace(/-/g, ' '));
       const componentNameCapital = capitalCase(componentName);
       const className = `Tini${capitalCase(componentName)}Component`;
       const reactTagName = className.replace('Component', '');
@@ -640,7 +640,7 @@ export class AppPreview extends LitElement {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
             if (name) {
               souls.forEach(soul => {
                 const importPath = isDev
@@ -668,7 +668,7 @@ export class AppPreview extends LitElement {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/\-|\./g, ' '));
+            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
             const nameClass = `Tini${nameCapital}Component`;
             if (name) {
               result.imports.push(`import {${nameClass}} from './${name}';`);
@@ -750,7 +750,7 @@ import {Theming${
           'export class ',
           `@Components(${JSON.stringify(
             useComponentsContents.components
-          ).replace(/\"/g, '')})
+          ).replace(/"/g, '')})
 export class `
         );
       }
@@ -768,13 +768,13 @@ export class `
       code = code.replace(
         'export class ',
         `@Theming({
-  styling: ${JSON.stringify(styling).replace(/\"/g, '')},
-  scripting: ${JSON.stringify(soulContents.scripting).replace(/\"/g, '')},
+  styling: ${JSON.stringify(styling).replace(/"/g, '')},
+  scripting: ${JSON.stringify(soulContents.scripting).replace(/"/g, '')},
 })
 export class `
       );
       const codeWithReactWrapper = `import React from 'react';
-import {createComponent} from '@lit-labs/react';
+import {createComponent} from '@lit/react';
 
 ${code}
 
@@ -790,6 +790,10 @@ export const ${reactTagName} = createComponent({
       // save file
       await this.fileService.createFile(
         resolve(destPath, outputDir, filePath),
+        code
+      );
+      await this.fileService.createFile(
+        resolve(destPath, outputDir, filePath.replace('.ts', '.react.ts')),
         codeWithReactWrapper
       );
     }
