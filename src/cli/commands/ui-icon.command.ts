@@ -95,10 +95,10 @@ export class UiIconCommand {
     }: {packageName: string; version: string; spinner: ora.Ora}
   ) {
     // icon template
-    const templateContent = this.uiService.iconTemplate;
+    const templateCode = this.uiService.iconTemplate;
     // preview app
-    const appHtmlContent = this.uiService.iconPreviewHTMLTemplate;
-    const appTsContent = this.uiService.iconPreviewTSTemplate;
+    const appHtmlCode = this.uiService.iconPreviewHTMLTemplate;
+    const appTsCode = this.uiService.iconPreviewTSTemplate;
     // retrieve history
     const changelogDirPath = resolve(CHANGELOGS_DIR, packageName);
     const historyFilePath = `${changelogDirPath}/history.json`;
@@ -166,72 +166,43 @@ export class UiIconCommand {
       const componentNameClass = nameArr
         .map(name => capitalCase(name))
         .join('');
+      const className = `Icon${componentNameClass}Component`;
       const tagName = `icon-${fileNameOnly}`;
+      const reactTagName = `Icon${componentNameClass}`;
 
       /*
-       * 1. Read content
+       * 1. Read code
        */
 
-      const {base64Content, base64Digest, URIHead, dataURI} =
+      const {base64Content, base64Digest, dataURI} =
         await this.extractBase64Data(path);
-      let content = templateContent.replace(
-        "--icon-image:url('icon.svg')",
-        `--icon-image:url('${dataURI}')`
-      );
-      content = content.replace(
-        'defaultTagName = ICON',
-        `defaultTagName = '${tagName}'`
-      );
-      content = content.replace(
-        'class IconComponent',
-        `class Icon${componentNameClass}Component`
-      );
-      const contentWithReactWrapper =
-        this.uiService.buildIconContentWithReactWrapper(
-          content,
-          componentNameClass
-        );
-      const contentWithDefine =
-        "import {customElement} from 'lit/decorators.js';\n" +
-        content.replace(
-          'export class ',
-          `@customElement('${tagName}')
-export class `
-        );
+      const code = templateCode
+        .replace(
+          "--icon-image:url('icon.svg')",
+          `--icon-image:url('${dataURI}')`
+        )
+        .replace('defaultTagName = ICON', `defaultTagName = '${tagName}'`)
+        .replace('class IconComponent', `class ${className}`);
+      const reactCode = `import React from 'react';
+import {createComponent} from '@lit/react';
+import {${className}} from './${fileNameOnly}';
+export const ${reactTagName} = createComponent({
+  react: React,
+  elementClass: ${className},
+  tagName: ${className}.defaultTagName,
+});
+`;
 
       /*
        * 2. Output .ts and copy image file
        */
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.ts`),
-        content
+        code
       );
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.react.ts`),
-        contentWithReactWrapper
-      );
-      await this.fileService.createFile(
-        resolve(destPath, `${fileNameOnly}.include.ts`),
-        contentWithDefine
-      );
-      await this.fileService.createFile(
-        resolve(destPath, `${fileNameOnly}.bundle.ts`),
-        contentWithDefine
-      );
-      await this.fileService.createFile(
-        resolve(destPath, `${fileNameOnly}.source.ts`),
-        fileExt !== 'svg'
-          ? `export const dataURI = '${dataURI}';`
-          : `export const base64 = '${base64Content}';
-export const code = atob(base64);
-export const URIHead = '${URIHead}';
-export const dataURI = URIHead + base64;
-`
-      );
-      // copy image file
-      await this.fileService.copyFile(
-        resolve(path),
-        resolve(destPath, newFileName)
+        reactCode
       );
 
       /*
@@ -279,28 +250,37 @@ export const dataURI = URIHead + base64;
      */
 
     const appTSImports = [] as string[];
+    const appTSComponents = [] as string[];
     const appTSTags = [] as string[];
     indexJson.items.forEach(item => {
       const nameArr = item[0].split('.');
-      const ext = nameArr.pop() as string;
-      const name = nameArr.join('.');
+      const name = nameArr.slice(0, nameArr.length - 1).join('.');
+      const className = `Icon${capitalCase(name.replace(/\.|-/g, ' ')).replace(
+        / /g,
+        ''
+      )}Component`;
       const tag = `icon-${name}`;
-      appTSImports.push(`import './${name}.include';`);
+      appTSImports.push(`import {${className}} from './${name}';`);
+      appTSComponents.push(className);
       appTSTags.push(`<div class="icon"><${tag}></${tag}></div>`);
     });
-    const appTSContentWithImports =
+    const appTSCodeWithImports =
       `${appTSImports.join('\n')}\n` +
-      appTsContent.replace(
-        '<main></main>',
-        `<main>${appTSTags.join('')}</main>`
-      );
+      appTsCode
+        .replace(
+          "@customElement('app-preview')",
+          `useComponents([${appTSComponents.join(
+            ','
+          )}]);\n\n@customElement('app-preview')`
+        )
+        .replace('<main></main>', `<main>${appTSTags.join('')}</main>`);
     await this.fileService.createFile(
       resolve(destPath, '___preview.app.ts'),
-      appTSContentWithImports
+      appTSCodeWithImports
     );
     await this.fileService.createFile(
       resolve(destPath, 'index.html'),
-      appHtmlContent
+      appHtmlCode
     );
 
     /*

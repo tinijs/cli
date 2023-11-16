@@ -439,27 +439,12 @@ body {
       .join('\n  ');
   }
 
-  buildIconContentWithReactWrapper(content: string, nameClass: string) {
-    const className = `Icon${nameClass}Component`;
-    const reactTagName = className.replace('Component', '');
-    return `import React from 'react';
-import {createComponent} from '@lit/react';
-
-${content}
-
-export const ${reactTagName} = createComponent({
-  tagName: ${className}.defaultTagName,
-  elementClass: ${className},
-  react: React,
-});\n`;
-  }
-
   get iconTemplate() {
     return `import {html, css, PropertyValues} from 'lit';
 import {property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {styleMap} from 'lit/directives/style-map.js';
-import {TiniElement, partMap, PartInfo, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
+import {TiniElement, partMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
 export class IconComponent extends TiniElement {
   static readonly defaultTagName = ICON;
   static styles = css\`:host{--icon-width:var(--scale-md-2x);--icon-height:var(--scale-md-2x);--icon-scheme:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.scheme{background:var(--icon-scheme);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({fullName, color}) => \`.\${fullName} {--icon-scheme: \${color};}\`)}\${generateGradientVaries(({fullName, gradient}) => \`.\${fullName} {--icon-scheme: \${gradient};}\`)}\${generateScaleVaries(({name, fullName}) => \`.\${fullName} {--icon-width: var(--scale-\${name}-2x);--icon-height: var(--scale-\${name}-2x);}\`)}\`;
@@ -499,6 +484,7 @@ export class IconComponent extends TiniElement {
   get iconPreviewTSTemplate() {
     return `import {LitElement, html, css} from 'lit';
 import {customElement} from 'lit/decorators.js';
+import {useComponents} from 'tinijs';
 
 @customElement('app-preview')
 export class AppPreview extends LitElement {

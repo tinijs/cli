@@ -326,10 +326,14 @@ export class UiBuildCommand {
       const filePath = componentsPathProcessor(path);
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
+      const nameArr = fileNameOnly.split('-');
       const componentName = camelCase(fileNameOnly.replace(/-/g, ' '));
-      const componentNameConst = fileNameOnly.replace(/-/g, '_').toUpperCase();
-      const className = `Tini${capitalCase(componentName)}Component`;
-      const reactTagName = className.replace('Component', '');
+      const componentNameClass = nameArr
+        .map(name => capitalCase(name))
+        .join('');
+      const className = `Tini${componentNameClass}Component`;
+      const tagName = `tini-${fileNameOnly}`;
+      const reactTagName = `Tini${componentNameClass}`;
       // dir
       const dirPaths = filePath.split('/');
       dirPaths.pop();
@@ -456,42 +460,34 @@ export class `
           updatedMethodStr + '\n    ' + scriptingCode + '\n'
         );
       }
-      const codeWithReactWrapper = `import React from 'react';
+      const reactCode = `import React from 'react';
 import {createComponent} from '@lit/react';
-
-${code}
-
+import {${className}} from './${fileNameOnly}';
 export const ${reactTagName} = createComponent({
-  tagName: ${className}.defaultTagName,
+  react: React,
   elementClass: ${className},
-  react: React,${
+  tagName: ${className}.defaultTagName,${
     !Object.keys(reactEventsContents.events).length
       ? ''
       : `\n  events: ${JSON.stringify(reactEventsContents.events)}`
   }
 });\n`;
-      const codeWithDefine =
-        "import {customElement} from 'lit/decorators.js';\n" +
-        code.replace(
-          'export class',
-          `@customElement(TINI_${componentNameConst})
-export class`
-        );
+      const bundleCode = `import {customElement} from 'lit/decorators.js';
+import {${className} as _${className}} from './${fileNameOnly}';
+@customElement('${tagName}')
+export class ${className} extends _${className} {}
+`;
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath),
         code
       );
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath.replace('.ts', '.react.ts')),
-        codeWithReactWrapper
-      );
-      await this.fileService.createFile(
-        resolve(destPath, inputDir, filePath.replace('.ts', '.include.ts')),
-        codeWithDefine
+        reactCode
       );
       await this.fileService.createFile(
         resolve(destPath, inputDir, filePath.replace('.ts', '.bundle.ts')),
-        codeWithDefine
+        bundleCode
       );
     }
 
