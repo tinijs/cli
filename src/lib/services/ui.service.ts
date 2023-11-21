@@ -18,9 +18,7 @@ interface ColorDef {
   tint: string;
 }
 
-interface GradientDef extends ColorDef {
-  color: string;
-}
+type GradientDef = ColorDef;
 
 enum CommonColorsNames {
   Gray = 'gray',
@@ -167,119 +165,102 @@ export class UiService {
 
   private readonly COMMON_GRADIENTS_MAP = {
     'vital-ocean': {
-      color: CommonColorsNames.Blue,
       base: 'linear-gradient(90deg, #1CB5E0 0%, #000851 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #0d93b8 0%, #00031e 100%)',
       tint: 'linear-gradient(90deg, #31cdf8 0%, #051181 100%)',
     },
     'kale-salad': {
-      color: CommonColorsNames.Teal,
       base: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #0098c2 0%, #68c972 100%)',
       tint: 'linear-gradient(90deg, #14c6f7 0%, #a5faae 100%)',
     },
     'disco-club': {
-      color: CommonColorsNames.Pink,
       base: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #d43151 0%, #2a46d2 100%)',
       tint: 'linear-gradient(90deg, #fb5a7a 0%, #5570f8 100%)',
     },
     'shady-lane': {
-      color: CommonColorsNames.Indigo,
       base: 'linear-gradient(90deg, #3F2B96 0%, #A8C0FF 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #291a6c 0%, #7f97d4 100%)',
       tint: 'linear-gradient(90deg, #5741bb 0%, #bbcdfb 100%)',
     },
     'retro-wagon': {
-      color: CommonColorsNames.Lime,
       base: 'linear-gradient(90deg, #FDBB2D 0%, #22C1C3 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #d39819 0%, #119194 100%)',
       tint: 'linear-gradient(90deg, #fac044 0%, #3be3e6 100%)',
     },
     'fresco-crush': {
-      color: CommonColorsNames.Brown,
       base: 'linear-gradient(90deg, #FDBB2D 0%, #3A1C71 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #ce9416 0%, #210d47 100%)',
       tint: 'linear-gradient(90deg, #fdc345 0%, #533094 100%)',
     },
     'cucumber-water': {
-      color: CommonColorsNames.Gray,
       base: 'linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #b0d7b6 0%, #a3b5d2 100%)',
       tint: 'linear-gradient(90deg, #f2fbf3 0%, #eaf0fb 100%)',
     },
     'sea-salt': {
-      color: CommonColorsNames.Navy,
       base: 'linear-gradient(90deg, #4b6cb7 0%, #182848 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #2f4b8f 0%, #091224 100%)',
       tint: 'linear-gradient(90deg, #698ad6 0%, #304672 100%)',
     },
     'par-four': {
-      color: CommonColorsNames.Green,
       base: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #789205 0%, #00472c 100%)',
       tint: 'linear-gradient(90deg, #bbdc28 0%, #0bc57d 100%)',
     },
     'ooey-gooey': {
-      color: CommonColorsNames.Blue,
       base: 'linear-gradient(90deg, #0700b8 0%, #00ff88 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #04006e 0%, #00af5e 100%)',
       tint: 'linear-gradient(90deg, #140dec 0%, #17fa90 100%)',
     },
     'bloody-mimosa': {
-      color: CommonColorsNames.Red,
       base: 'linear-gradient(90deg, #d53369 0%, #daae51 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #a41b49 0%, #ad8631 100%)',
       tint: 'linear-gradient(90deg, #f85189 0%, #facf72 100%)',
     },
     'lovely-lilly': {
-      color: CommonColorsNames.Indigo,
       base: 'linear-gradient(90deg, #efd5ff 0%, #515ada 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #c0a1d3 0%, #343cb2 100%)',
       tint: 'linear-gradient(90deg, #f6e8fe 0%, #727af6 100%)',
     },
     'aqua-spray': {
-      color: CommonColorsNames.Blue,
       base: 'linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(90deg, #0091b1 0%, #202ba7 100%)',
       tint: 'linear-gradient(90deg, #1ad2fb 0%, #5e6bf9 100%)',
     },
     'mello-yellow': {
-      color: CommonColorsNames.Lime,
       base: 'linear-gradient(90deg, #f8ff00 0%, #3ad59f 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #a5aa01 0%, #1fa173 100%)',
       tint: 'linear-gradient(90deg, #f7ff1c 0%, #5ffac4 100%)',
     },
     'dusty-cactus': {
-      color: CommonColorsNames.Yellow,
       base: 'linear-gradient(90deg, #fcff9e 0%, #c67700 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #cbce6d 0%, #774700 100%)',
       tint: 'linear-gradient(90deg, #fdffb8 0%, #fea115 100%)',
     },
     'premium-dark': {
-      color: CommonColorsNames.Zinc,
       base: 'linear-gradient(to right, #434343 0%, black 100%)',
       contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
       shade: 'linear-gradient(to right, #272424 0%, black 100%)',
       tint: 'linear-gradient(to right, #767676 0%, #272424 100%)',
     },
     'perfect-white': {
-      color: CommonColorsNames.Gray,
       base: 'linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%)',
       contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(-225deg, #afd0c6 0%, #d0b2ca 100%)',
@@ -429,9 +410,7 @@ body {
     return Object.keys(this.COMMON_GRADIENTS_MAP)
       .map(name => {
         const gradient = this.COMMON_GRADIENTS_MAP[name];
-        return `--color-${name}: var(--color-${gradient.color});
-  --color-${name}-contrast: var(--color-${gradient.color}-contrast);
-  --gradient-${name}: ${gradient.base};
+        return `--gradient-${name}: ${gradient.base};
   --gradient-${name}-contrast: ${gradient.contrast};
   --gradient-${name}-shade: ${gradient.shade};
   --gradient-${name}-tint: ${gradient.tint};`;
@@ -450,7 +429,7 @@ export class IconComponent extends TiniElement {
   static styles = css\`:host{--icon-width:var(--scale-md-2x);--icon-height:var(--scale-md-2x);--icon-scheme:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.scheme{background:var(--icon-scheme);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({fullName, color}) => \`.\${fullName} {--icon-scheme: \${color};}\`)}\${generateGradientVaries(({fullName, gradient}) => \`.\${fullName} {--icon-scheme: \${gradient};}\`)}\${generateScaleVaries(({name, fullName}) => \`.\${fullName} {--icon-width: var(--scale-\${name}-2x);--icon-height: var(--scale-\${name}-2x);}\`)}\`;
   @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
-  willUpdate(changedValues: PropertyValues) { super.willUpdate(changedValues); this.extendRootClassesParts({scheme: !!this.scheme, [\`\${VaryGroups.Scale}-\${this.scale}\`]: !!this.scale, [\`\${VaryGroups.Scheme}-\${this.scheme}\`]: !!this.scheme}); }
+  willUpdate(changedValues: PropertyValues) { super.willUpdate(changedValues); this.extendRootClassesParts({info: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
   protected render() { return html\`<i part=\${partMap(this.rootClassesParts)} class=\${classMap(this.rootClassesParts)} style=\${styleMap(this.rootStyles)}></i>\`; }
 }
     `;
