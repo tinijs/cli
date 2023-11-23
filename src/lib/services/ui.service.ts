@@ -738,15 +738,14 @@ export class `
 })
 export class `
       );
-      const codeWithReactWrapper = `import React from 'react';
+      const reactCode = `import React from 'react';
 import {createComponent} from '@lit/react';
-
-${code}
-
+import {${className}} from './${fileNameOnly}';
+export {${className}};
 export const ${reactTagName} = createComponent({
-  tagName: ${className}.defaultTagName,
+  react: React,
   elementClass: ${className},
-  react: React,${
+  tagName: ${className}.defaultTagName,${
     !Object.keys(reactEventsContents.events).length
       ? ''
       : `\n  events: ${JSON.stringify(reactEventsContents.events)}`
@@ -759,7 +758,7 @@ export const ${reactTagName} = createComponent({
       );
       await this.fileService.createFile(
         resolve(destPath, outputDir, filePath.replace('.ts', '.react.ts')),
-        codeWithReactWrapper
+        reactCode
       );
     }
 

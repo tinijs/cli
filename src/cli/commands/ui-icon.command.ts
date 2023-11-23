@@ -186,6 +186,7 @@ export class UiIconCommand {
       const reactCode = `import React from 'react';
 import {createComponent} from '@lit/react';
 import {${className}} from './${fileNameOnly}';
+export {${className}};
 export const ${reactTagName} = createComponent({
   react: React,
   elementClass: ${className},
