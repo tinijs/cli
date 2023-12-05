@@ -1,7 +1,7 @@
 import {readdir} from 'fs-extra';
 import {ModuleKind, ScriptTarget} from 'typescript';
 import {resolve} from 'path';
-import {camelCase, capitalCase} from 'change-case';
+import {camelCase, pascalCase} from 'change-case';
 
 import {FileService} from './file.service';
 import {TypescriptService} from './typescript.service';
@@ -430,7 +430,7 @@ export class IconComponent extends TiniElement {
   @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
   willUpdate(changedValues: PropertyValues) { super.willUpdate(changedValues); this.extendRootClassesParts({info: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
-  protected render() { return html\`<i part=\${partMap(this.rootClassesParts)} class=\${classMap(this.rootClassesParts)} style=\${styleMap(this.rootStyles)}></i>\`; }
+  protected render() { return html\`<i part=\${partMap(this.activeRootClassesParts)} class=\${classMap(this.activeRootClassesParts)} style=\${styleMap(this.activeRootStyles)}></i>\`; }
 }
     `;
   }
@@ -525,13 +525,13 @@ export class AppPreview extends LitElement {
     const exportArr: string[] = [];
     for (let i = 0; i < baseNames.length; i++) {
       const baseName = baseNames[i];
-      const baseNameCapital = capitalCase(baseName.replace(/-|\./g, ' '));
-      const baseNameCamel = camelCase(baseNameCapital);
+      const baseNameCamel = camelCase(baseName.replace(/-|\./g, ' '));
+      const baseNamePascal = pascalCase(baseNameCamel);
       const baseExports = {} as Record<string, string>;
       for (let j = 0; j < souls.length; j++) {
         const soulName = souls[j];
         const soulNameCamel = camelCase(soulName.replace(/-|\./g, ' '));
-        const importName = `${soulNameCamel}${baseNameCapital}Base`;
+        const importName = `${soulNameCamel}${baseNamePascal}Base`;
         const importPath = isDev
           ? `../${this.STYLES_DIR}/${soulName}/base/${baseName}`
           : `../ui-${soulName}/${this.STYLES_DIR}/base/${baseName}`;
@@ -586,9 +586,9 @@ export class AppPreview extends LitElement {
       const filePath = componentsPathProcessor(path);
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
-      const componentName = camelCase(fileNameOnly.replace(/-/g, ' '));
-      const componentNameCapital = capitalCase(componentName);
-      const className = `Tini${capitalCase(componentName)}Component`;
+      const componentName = camelCase(fileNameOnly.replace(/-|\./g, ' '));
+      const componentNamePascal = pascalCase(componentName);
+      const className = `Tini${componentNamePascal}Component`;
       const reactTagName = className.replace('Component', '');
       // read file
       let code = await this.fileService.readText(path);
@@ -605,17 +605,17 @@ export class AppPreview extends LitElement {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
+            const namePascal = pascalCase(name.replace(/-|\./g, ' '));
             if (name) {
               souls.forEach(soul => {
                 const importPath = isDev
                   ? `../../${this.STYLES_DIR}/${soul}/base/${name}`
                   : `../../ui-${soul}/${this.STYLES_DIR}/base/${name}`;
                 result.imports.push(
-                  `import ${soul}${nameCapital}Base from '${importPath}';`
+                  `import ${soul}${namePascal}Base from '${importPath}';`
                 );
                 result.styling[soul] ||= [];
-                result.styling[soul].push(`${soul}${nameCapital}Base`);
+                result.styling[soul].push(`${soul}${namePascal}Base`);
               });
             }
             return result;
@@ -633,8 +633,8 @@ export class AppPreview extends LitElement {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
-            const nameClass = `Tini${nameCapital}Component`;
+            const namePascal = pascalCase(name.replace(/-|\./g, ' '));
+            const nameClass = `Tini${namePascal}Component`;
             if (name) {
               result.imports.push(`import {${nameClass}} from './${name}';`);
               result.components.push(nameClass);
@@ -668,15 +668,15 @@ export class AppPreview extends LitElement {
       const soulContents = souls.reduce(
         (result, soul) => {
           const importPath = isDev
-            ? `../../${this.STYLES_DIR}/${soul}/soul/${componentName}`
-            : `../../ui-${soul}/${this.STYLES_DIR}/soul/${componentName}`;
+            ? `../../${this.STYLES_DIR}/${soul}/soul/${fileNameOnly}`
+            : `../../ui-${soul}/${this.STYLES_DIR}/soul/${fileNameOnly}`;
           result.imports.push(
-            `import {${componentName}Style as ${soul}${componentNameCapital}Style, ${componentName}Script as ${soul}${componentNameCapital}Script, ${componentName}Unscript as ${soul}${componentNameCapital}Unscript} from '${importPath}';`
+            `import {${componentName}Style as ${soul}${componentNamePascal}Style, ${componentName}Script as ${soul}${componentNamePascal}Script, ${componentName}Unscript as ${soul}${componentNamePascal}Unscript} from '${importPath}';`
           );
-          result.styling[soul] = `${soul}${componentNameCapital}Style`;
+          result.styling[soul] = `${soul}${componentNamePascal}Style`;
           result.scripting[soul] = {
-            script: `${soul}${componentNameCapital}Script`,
-            unscript: `${soul}${componentNameCapital}Unscript`,
+            script: `${soul}${componentNamePascal}Script`,
+            unscript: `${soul}${componentNamePascal}Unscript`,
           };
           return result;
         },
@@ -723,7 +723,7 @@ export class `
       const styling = souls.reduce(
         (result, soul) => {
           result[soul] = [
-            ...useBasesContents.styling[soul],
+            ...(useBasesContents.styling[soul] || []),
             soulContents.styling[soul],
           ];
           return result;

@@ -1,6 +1,6 @@
 import {compileString} from 'sass';
 import {resolve} from 'path';
-import {camelCase, capitalCase} from 'change-case';
+import {camelCase, pascalCase} from 'change-case';
 const CleanCSS = require('clean-css');
 import {bold, blueBright} from 'chalk';
 
@@ -326,11 +326,8 @@ export class UiBuildCommand {
       const filePath = componentsPathProcessor(path);
       const fileName = filePath.split('/').pop() as string;
       const fileNameOnly = fileName.replace('.ts', '');
-      const nameArr = fileNameOnly.split('-');
-      const componentName = camelCase(fileNameOnly.replace(/-/g, ' '));
-      const componentNameClass = nameArr
-        .map(name => capitalCase(name))
-        .join('');
+      const componentName = camelCase(fileNameOnly.replace(/-|\./g, ' '));
+      const componentNameClass = pascalCase(componentName);
       const className = `Tini${componentNameClass}Component`;
       const tagName = `tini-${fileNameOnly}`;
       const reactTagName = `Tini${componentNameClass}`;
@@ -376,8 +373,8 @@ export class UiBuildCommand {
         .reduce(
           (result, item) => {
             const name = item.trim();
-            const nameCapital = capitalCase(name.replace(/-|\./g, ' '));
-            const nameClass = `Tini${nameCapital}Component`;
+            const namePascal = pascalCase(name.replace(/-|\./g, ' '));
+            const nameClass = `Tini${namePascal}Component`;
             if (name) {
               result.imports.push(`import {${nameClass}} from './${name}';`);
               result.components.push(nameClass);
