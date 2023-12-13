@@ -213,7 +213,7 @@ export class UiService {
     'retro-wagon': {
       base: 'linear-gradient(90deg, #fdbb2d 0%, #22c1c3 100%)',
       subtle: 'linear-gradient(90deg, #fdbb2d33 0%, #22c1c333 100%)',
-      contrast: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)',
+      contrast: 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
       shade: 'linear-gradient(90deg, #d39819 0%, #119194 100%)',
       tint: 'linear-gradient(90deg, #fac044 0%, #3be3e6 100%)',
     },
@@ -459,7 +459,6 @@ body {
     return `import {html, css, PropertyValues} from 'lit';
 import {property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
-import {styleMap} from 'lit/directives/style-map.js';
 import {TiniElement, partMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
 export class IconComponent extends TiniElement {
   static readonly defaultTagName = ICON;
@@ -467,8 +466,8 @@ export class IconComponent extends TiniElement {
   static styles = css\`:host{--icon-width:var(--scale-md-2x);--icon-height:var(--scale-md-2x);--icon-scheme:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.scheme{background:var(--icon-scheme);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({fullName, color}) => \`.\${fullName} {--icon-scheme: \${color};}\`)}\${generateGradientVaries(({fullName, gradient}) => \`.\${fullName} {--icon-scheme: \${gradient};}\`)}\${generateScaleVaries(({name, fullName}) => \`.\${fullName} {--icon-width: var(--scale-\${name}-2x);--icon-height: var(--scale-\${name}-2x);}\`)}\`;
   @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
-  willUpdate(changedValues: PropertyValues) { super.willUpdate(changedValues); this.extendRootClassesParts({info: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
-  protected render() { return html\`<i part=\${partMap(this.activeRootClassesParts)} class=\${classMap(this.activeRootClassesParts)} style=\${styleMap(this.activeRootStyles)}></i>\`; }
+  willUpdate() { this.extendRootClasses({raw: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
+  protected render() { return html\`<i class=\${classMap(this.rootClasses)} part=\${partMap(this.rootClasses)}></i>\`; }
 }
     `;
   }
@@ -630,6 +629,7 @@ export class AppPreview extends LitElement {
       const reactTagName = className.replace('Component', '');
       // read file
       let code = await this.fileService.readText(path);
+      const rawMatching = code.match(/\/\* Raw\(([\s\S]*?)\) \*\//);
       const useBasesMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
       const useComponentsMatching = code.match(
         /\/\* UseComponents\(([\s\S]*?)\) \*\//
@@ -637,6 +637,10 @@ export class AppPreview extends LitElement {
       const reactEventsMatching = code.match(
         /\/\* ReactEvents\(([\s\S]*?)\) \*\//
       );
+      // raw contents
+      const rawContents = (!rawMatching ? '' : rawMatching[1])
+        .split(',')
+        .map(item => item.trim());
       // base imports
       const useBasesContents = (!useBasesMatching ? '' : useBasesMatching[1])
         .split(',')
@@ -725,6 +729,9 @@ export class AppPreview extends LitElement {
         }
       );
       // build content
+      if (rawMatching) {
+        code = code.replace(`${rawMatching[0]}\n`, '');
+      }
       if (useBasesMatching) {
         code = code.replace(`${useBasesMatching[0]}\n`, '');
       }
@@ -739,14 +746,20 @@ export class AppPreview extends LitElement {
         '../'
       );
       // imports
+      const tinijsImportNames = [
+        ...(rawMatching ? [] : ['Theming']),
+        ...(!useComponentsMatching ? [] : ['Components']),
+      ];
       code =
         `
 ${useBasesContents.imports.join('\n')}
 ${useComponentsContents.imports.join('\n')}
-${soulContents.imports.join('\n')}
-import {Theming${
-          !useComponentsMatching ? '' : ', Components'
-        }} from 'tinijs';\n\n` + code;
+${rawMatching ? '' : soulContents.imports.join('\n')}
+${
+  !tinijsImportNames.length
+    ? ''
+    : `import {${tinijsImportNames.join(', ')}} from 'tinijs';`
+}\n\n` + code;
       // inject components
       if (useComponentsMatching) {
         code = code.replace(
@@ -768,21 +781,25 @@ export class `
         },
         {} as Record<string, string[]>
       );
-      code = code.replace(
-        'export class ',
-        `@Theming({
+      code = rawMatching
+        ? code
+        : code.replace(
+            'export class ',
+            `@Theming({
   styling: ${JSON.stringify(styling).replace(/"/g, '')},
   scripting: ${JSON.stringify(soulContents.scripting).replace(/"/g, '')},
 })
 export class `
-      );
+          );
       const reactCode = `import React from 'react';
 import {createComponent} from '@lit/react';
 import {${className}} from './${fileNameOnly}';
 export {${className}};
 export const ${reactTagName} = createComponent({
   react: React,
-  elementClass: ${className},
+  elementClass: ${className}${
+    rawContents[1] !== 'react-any-props' ? '' : ' as any'
+  },
   tagName: ${className}.defaultTagName,${
     !Object.keys(reactEventsContents.events).length
       ? ''

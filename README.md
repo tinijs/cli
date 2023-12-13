@@ -48,7 +48,7 @@ For more, please visit: <https://tinijs.dev>
 ## Development
 
 - Create a home for TiniJS: `mkdir TiniJS && cd TiniJS`
-- Fork the repo: `git clone https://github.com/tinijs/cli.git`
+- Fork the repo
 - Install dependencies: `cd cli && npm i`
 - Make changes & build locally: `npm run build`
 - Preview a command: `tini <command> [options]`

@@ -339,6 +339,7 @@ export class UiBuildCommand {
       );
       // output .ts
       let code = await this.fileService.readText(path);
+      const rawMatching = code.match(/\/\* Raw\(([\s\S]*?)\) \*\//);
       const useBaseMatching = code.match(/\/\* UseBases\(([\s\S]*?)\) \*\//);
       const useComponentsMatching = code.match(
         /\/\* UseComponents\(([\s\S]*?)\) \*\//
@@ -346,6 +347,10 @@ export class UiBuildCommand {
       const reactEventsMatching = code.match(
         /\/\* ReactEvents\(([\s\S]*?)\) \*\//
       );
+      // raw contents
+      const rawContents = (!rawMatching ? '' : rawMatching[1])
+        .split(',')
+        .map(item => item.trim());
       // base imports
       const useBaseContents = (!useBaseMatching ? '' : useBaseMatching[1])
         .split(',')
@@ -405,6 +410,9 @@ export class UiBuildCommand {
           }
         );
       // build content
+      if (rawMatching) {
+        code = code.replace(`${rawMatching[0]}\n`, '');
+      }
       if (useBaseMatching) {
         code = code.replace(`${useBaseMatching[0]}\n`, '');
       }
@@ -438,13 +446,14 @@ export class `
         );
       }
       // inject bases
+      const superClassName = rawContents[0] || 'TiniElement';
       const updatedMethodStr = 'updated() {';
       const hasUpdatedMethod = ~code.indexOf(updatedMethodStr);
       const scriptingCode = `if (${componentName}Script) ${componentName}Script(this);`;
       const newUpdatedMethod = `protected ${updatedMethodStr}\n    ${scriptingCode}\n  }\n\n`;
       code = code.replace(
-        'extends TiniElement {\n',
-        `extends TiniElement {\n
+        `extends ${superClassName} {\n`,
+        `extends ${superClassName} {\n
   static styles = [${useBaseContents.styles.join(', ')}${
     !useBaseMatching ? '' : ','
   }${componentName}Style];
@@ -463,7 +472,9 @@ import {${className}} from './${fileNameOnly}';
 export {${className}};
 export const ${reactTagName} = createComponent({
   react: React,
-  elementClass: ${className},
+  elementClass: ${className}${
+    rawContents[1] !== 'react-any-props' ? '' : ' as any'
+  },
   tagName: ${className}.defaultTagName,${
     !Object.keys(reactEventsContents.events).length
       ? ''
