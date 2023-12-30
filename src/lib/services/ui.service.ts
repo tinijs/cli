@@ -462,7 +462,7 @@ import {classMap} from 'lit/directives/class-map.js';
 import {TiniElement, partMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
 export class IconComponent extends TiniElement {
   static readonly defaultTagName = ICON;
-  readonly componentName = 'icon';
+  static readonly componentName = 'icon';
   static styles = css\`:host{--icon-width:var(--scale-md-2x);--icon-height:var(--scale-md-2x);--icon-scheme:none;--icon-image:url('icon.svg');display:inline-block}i{display:flex;align-items:center;justify-content:center;background-image:var(--icon-image);background-repeat:no-repeat;background-size:contain;background-position:center;width:var(--icon-width);height:var(--icon-height)}.scheme{background:var(--icon-scheme);-webkit-mask-image:var(--icon-image);-webkit-mask-size:var(--icon-width) var(--icon-height);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:var(--icon-image);mask-size:var(--icon-width) var(--icon-height);mask-repeat:no-repeat;mask-position:center}\${generateColorVaries(({fullName, color}) => \`.\${fullName} {--icon-scheme: \${color};}\`)}\${generateGradientVaries(({fullName, gradient}) => \`.\${fullName} {--icon-scheme: \${gradient};}\`)}\${generateScaleVaries(({name, fullName}) => \`.\${fullName} {--icon-width: var(--scale-\${name}-2x);--icon-height: var(--scale-\${name}-2x);}\`)}\`;
   @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
@@ -595,6 +595,8 @@ export class AppPreview extends LitElement {
       destPath,
       path => path.split('/').pop() as string
     );
+    // remove bases.ts
+    await this.fileService.removeFiles([basesOutPath]);
     // public path
     return `./${fileName.replace('.ts', '')}`;
   }
@@ -747,8 +749,8 @@ export class AppPreview extends LitElement {
       );
       // imports
       const tinijsImportNames = [
-        ...(rawMatching ? [] : ['Theming']),
-        ...(!useComponentsMatching ? [] : ['Components']),
+        ...(rawMatching ? [] : ['TiniElementTheming']),
+        ...(!useComponentsMatching ? [] : ['TiniElementComponents']),
       ];
       code =
         `
@@ -764,7 +766,7 @@ ${
       if (useComponentsMatching) {
         code = code.replace(
           'export class ',
-          `@Components(${JSON.stringify(
+          `@TiniElementComponents(${JSON.stringify(
             useComponentsContents.components
           ).replace(/"/g, '')})
 export class `
@@ -785,7 +787,7 @@ export class `
         ? code
         : code.replace(
             'export class ',
-            `@Theming({
+            `@TiniElementTheming({
   styling: ${JSON.stringify(styling).replace(/"/g, '')},
   scripting: ${JSON.stringify(soulContents.scripting).replace(/"/g, '')},
 })
@@ -824,12 +826,15 @@ export const ${reactTagName} = createComponent({
       const outComponentsPaths = (
         await this.fileService.listDir(resolve(destPath, outputDir))
       ).filter(path => path.endsWith('.ts') && !path.endsWith('.d.ts'));
+      // transpile
       await this.typescriptService.transpileAndOutputFiles(
         outComponentsPaths,
         this.TS_CONFIG,
         `${destPath}/${outputDir}`,
         path => path.split(`/${outputDir}/`).pop() as string
       );
+      // remove .ts files
+      await this.fileService.removeFiles(outComponentsPaths);
     }
   }
 }

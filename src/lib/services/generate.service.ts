@@ -212,10 +212,10 @@ export class ${className} extends TiniComponent {
 
   private contentForComponent(className: string, tagName: string) {
     return `import {html, css} from 'lit';
-import {Component, TiniComponent, Input, Output, EventEmitter} from '@tinijs/core';
+import {Component, TiniComponent, OnCreate, Input, Output, EventEmitter} from '@tinijs/core';
 
 @Component()
-export class ${className} extends TiniComponent {
+export class ${className} extends TiniComponent implements OnCreate {
   static readonly defaultTagName = '${tagName}';
 
   @Input() property?: string;

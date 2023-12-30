@@ -12,6 +12,7 @@ import {gray, cyan, red, bold, magenta, green} from 'chalk';
 import {stat} from 'fs-extra';
 import {getManifest} from 'workbox-build';
 import {build as esBuild} from 'esbuild';
+import {nanoid} from 'nanoid';
 
 import {FileService} from '../../lib/services/file.service';
 import {
@@ -234,8 +235,26 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
     appConfig: ProjectOptions
   ) {
     const templateMatching = content.match(/(return html`)([\s\S]*?)(`;)/);
-    // dev or no return html`...`
-    if (isDev || !templateMatching) return content;
+    // no return html`...`
+    if (!templateMatching) return content;
+    // process generic component
+    if (appConfig.precompileGeneric === 'lite') {
+      const genericMatchingArr = content.match(/<tini-generic([\s\S]*?)>/g);
+      genericMatchingArr?.forEach(genericMatching => {
+        if (~genericMatching.indexOf('precomputed=')) return;
+        content = content.replace(
+          genericMatching,
+          genericMatching.replace(
+            '<tini-generic',
+            `<tini-generic precomputed="${nanoid(7)}"`
+          )
+        );
+      });
+    } else if (appConfig.precompileGeneric === 'full') {
+      // TODO: full precompile
+    }
+    // dev mode
+    if (isDev) return content;
     // minify
     const matchedTemplate = templateMatching[0];
     let minifiedTemplate: string;
@@ -361,13 +380,12 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
 
   private injectPWA(content: string) {
     const wbCode = `
-    if ('serviceWorker' in navigator) {
-      this.workbox = new Workbox('/sw.js');
-      this.workbox.register();
-    }
-  `;
-    // import workbox-window
-    content = "import {Workbox} from 'workbox-window';\n" + content;
+      (this as typeof this & AppWithWorkbox).workbox = registerServiceWorker();
+    `;
+    // registerServiceWorker
+    content =
+      "import {AppWithWorkbox, registerServiceWorker} from '@tinijs/pwa';\n" +
+      content;
     // add code
     const anchorMatching = content.match(/(onCreate\()([\s\S]*?)(\{)/);
     if (anchorMatching) {

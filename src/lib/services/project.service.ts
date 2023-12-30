@@ -8,6 +8,7 @@ export interface Options {
   stagingPrefix?: string;
   componentPrefix?: string;
   skipMinifyHTMLLiterals?: boolean;
+  precompileGeneric?: 'none' | 'lite' | 'full';
   pwa?: PWAPrecaching;
   ui?: UiConfig;
 }
@@ -44,6 +45,7 @@ export class ProjectService {
     stagingPrefix: '.tini',
     componentPrefix: 'app',
     skipMinifyHTMLLiterals: false,
+    precompileGeneric: 'lite',
     pwa: {},
     ui: {use: ['bootstrap/light']},
   };

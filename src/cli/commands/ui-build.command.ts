@@ -433,13 +433,14 @@ ${useComponentsContents.imports.join('\n')}
 import {${componentName}Style, ${componentName}Script} from '../${
           this.uiService.STYLES_DIR
         }/soul/${fileNameOnly}';
-${!useComponentsMatching ? '' : "import {Components} from 'tinijs';"}\n\n` +
-        code;
+${
+  !useComponentsMatching ? '' : "import {TiniElementComponents} from 'tinijs';"
+}\n\n` + code;
       // inject components
       if (useComponentsMatching) {
         code = code.replace(
           'export class ',
-          `@Components(${JSON.stringify(
+          `@TiniElementComponents(${JSON.stringify(
             useComponentsContents.components
           ).replace(/"/g, '')})
 export class `
