@@ -39,23 +39,17 @@ export class UiUseCommand {
     const parsedInputs = this.parseInputs(inputs);
     const souls = parsedInputs.map(({soul}) => soul);
 
-    /*
-     * A. manual mode (tini ui use)
-     */
-
-    // install packages then run postinstall
+    // install packages (@tinijs/ui postinstall or using --build-only implicitly)
     if (!options.buildOnly) {
-      // update tini.config.json
+      this.installPackages(souls);
+    }
+
+    // update tini.config.json
+    if (await this.projectService.isTiniConfigExists()) {
       await this.projectService.updateOptions(
         async options => ({...options, ui: {use: inputs}}) as Options
       );
-      // install packages
-      return this.installPackages(souls);
     }
-
-    /*
-     * B. @tinijs/ui postinstall or using --build-only
-     */
 
     // copy global files
     console.log('\n');

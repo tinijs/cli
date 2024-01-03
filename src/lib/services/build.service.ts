@@ -239,14 +239,19 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
     if (!templateMatching) return content;
     // process generic component
     if (appConfig.precompileGeneric === 'lite') {
-      const genericMatchingArr = content.match(/<tini-generic([\s\S]*?)>/g);
+      const genericMatchingArr = content.match(
+        /<tini-generic(-unscoped)?([\s\S]*?)>/g
+      );
       genericMatchingArr?.forEach(genericMatching => {
         if (~genericMatching.indexOf('precomputed=')) return;
+        const tag = ~genericMatching.indexOf('-unscoped')
+          ? 'tini-generic-unscoped'
+          : 'tini-generic';
         content = content.replace(
           genericMatching,
           genericMatching.replace(
-            '<tini-generic',
-            `<tini-generic precomputed="${nanoid(7)}"`
+            `<${tag}`,
+            `<${tag} precomputed="${nanoid(7)}"`
           )
         );
       });
