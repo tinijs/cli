@@ -392,16 +392,19 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
       "import {AppWithWorkbox, registerServiceWorker} from '@tinijs/pwa';\n" +
       content;
     // add code
-    const anchorMatching = content.match(/(onCreate\()([\s\S]*?)(\{)/);
+    const anchorMatching = content.match(/onCreate\(([\s\S]*?)\{/);
     if (anchorMatching) {
       const anchorStr = anchorMatching[0];
       content = content.replace(anchorStr, anchorStr + `\n${wbCode}`);
     } else {
-      const anchorStr = 'export class AppRoot extends TiniComponent {';
-      content = content.replace(
-        anchorStr,
-        anchorStr + `\n  onCreate() {${wbCode}}`
-      );
+      const appRootMatching = content.match(/export class AppRoot([\s\S]*?)\{/);
+      if (appRootMatching) {
+        const anchorStr = appRootMatching[0];
+        content = content.replace(
+          anchorStr,
+          anchorStr + `\n  onCreate() {${wbCode}}`
+        );
+      }
     }
     return content;
   }

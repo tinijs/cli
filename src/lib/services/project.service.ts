@@ -73,7 +73,7 @@ export class ProjectService {
   }
 
   async isPWAEnabled(appConfig?: ProjectOptions) {
-    const {srcDir, pwa} = appConfig ? appConfig : await this.getOptions();
+    const {srcDir, pwa} = appConfig || (await this.getOptions());
     const swExists = await this.fileService.exists(resolve(srcDir, 'sw.ts'));
     return swExists && pwa?.globPatterns;
   }

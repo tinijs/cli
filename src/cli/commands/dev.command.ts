@@ -4,7 +4,10 @@ import {resolve} from 'path';
 import {bold, blueBright} from 'chalk';
 
 import {FileService} from '../../lib/services/file.service';
-import {ProjectService} from '../../lib/services/project.service';
+import {
+  ProjectService,
+  ProjectOptions,
+} from '../../lib/services/project.service';
 import {BuildService} from '../../lib/services/build.service';
 
 interface CommandOptions {
@@ -19,8 +22,8 @@ export class DevCommand {
   ) {}
 
   async run(commandOptions: CommandOptions) {
-    const {srcDir, outDir, stagingPrefix} =
-      await this.projectService.getOptions();
+    const tiniConfig = await this.projectService.getOptions();
+    const {srcDir, outDir, stagingPrefix} = tiniConfig;
     const stagingPath = this.buildService.resolveStagingPath(
       srcDir,
       stagingPrefix
@@ -54,21 +57,31 @@ export class DevCommand {
           restartTries: 3,
         }
       );
-      // copy public dir
-      this.copyPublic(srcDir, outDir);
+      // other assets
+      this.buildOthers(tiniConfig);
       // running
-      console.log(
-        '\n' + bold(blueBright('Server running at http://localhost:3000'))
+      setTimeout(
+        () =>
+          console.log(
+            '\n' + bold(blueBright('Server running at http://localhost:3000'))
+          ),
+        2000
       );
     }
   }
 
-  private copyPublic(srcDir: string, outDir: string) {
+  private buildOthers(tiniConfig: ProjectOptions) {
     setTimeout(async () => {
+      const {srcDir, outDir} = tiniConfig;
       if (await this.fileService.exists(resolve(outDir))) {
+        // copy public dir
         await this.buildService.copyPublic(srcDir, outDir);
+        // build pwa
+        if (await this.projectService.isPWAEnabled(tiniConfig)) {
+          await this.buildService.buildPWA(tiniConfig);
+        }
       } else {
-        this.copyPublic(srcDir, outDir);
+        this.buildOthers(tiniConfig);
       }
     }, 2000);
   }
