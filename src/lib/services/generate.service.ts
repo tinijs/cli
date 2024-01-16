@@ -27,6 +27,7 @@ export class GenerateService {
   LAYOUT = 'layout';
   PAGE = 'page';
   COMPONENT = 'component';
+  PARTIAL = 'partial';
   HELPER = 'helper';
   CONST = 'const';
   STORE = 'store';
@@ -37,6 +38,7 @@ export class GenerateService {
     [this.LAYOUT]: 'layouts',
     [this.PAGE]: 'pages',
     [this.COMPONENT]: 'components',
+    [this.PARTIAL]: 'partials',
     [this.HELPER]: 'helpers',
     [this.CONST]: 'consts',
     [this.STORE]: 'stores',
@@ -155,6 +157,8 @@ export class GenerateService {
         return this.contentForPage(classNameWithPrefix, tagName);
       case this.COMPONENT:
         return this.contentForComponent(classNameWithPrefix, tagName);
+      case this.PARTIAL:
+        return this.contentForPartial(nameCamel, typeCapital);
       case this.HELPER:
         return this.contentForHelper(nameCamel);
       case this.CONST:
@@ -234,6 +238,23 @@ export class ${className} extends TiniComponent implements OnCreate {
   }
 
   static styles = css\`\`;
+}\n`;
+  }
+
+  private contentForPartial(nameCamel: string, typeCapital: string) {
+    return `import {html} from 'lit';
+
+// Note: remember to registerComponents()
+// if you use other components in this partial
+
+export function ${nameCamel}${typeCapital}({
+  custom = 'foo'
+}: {
+  custom?: string
+} = {}) {
+  return html\`
+    <p>Partial content: $\{custom}</p>
+  \`;
 }\n`;
   }
 
