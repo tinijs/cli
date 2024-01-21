@@ -182,6 +182,7 @@ export default ${className};\n`;
 
   private contentForLayout(className: string, tagName: string) {
     return `import {html, css} from 'lit';
+
 import {Layout, TiniComponent} from '@tinijs/core';
 
 @Layout({
@@ -199,6 +200,7 @@ export class ${className} extends TiniComponent {
 
   private contentForPage(className: string, tagName: string) {
     return `import {html, css} from 'lit';
+
 import {Page, TiniComponent} from '@tinijs/core';
 
 @Page({
@@ -216,6 +218,7 @@ export class ${className} extends TiniComponent {
 
   private contentForComponent(className: string, tagName: string) {
     return `import {html, css} from 'lit';
+
 import {Component, TiniComponent, OnCreate, Input, Output, EventEmitter} from '@tinijs/core';
 
 @Component()
