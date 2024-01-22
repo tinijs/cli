@@ -459,7 +459,7 @@ body {
     return `import {html, css, PropertyValues} from 'lit';
 import {property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
-import {TiniElement, partMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
+import {TiniElement, partAttrMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
 export class IconComponent extends TiniElement {
   static readonly defaultTagName = ICON;
   static readonly componentName = 'icon';
@@ -467,7 +467,7 @@ export class IconComponent extends TiniElement {
   @property({type: String, reflect: true}) declare scale?: string;
   @property({type: String, reflect: true}) declare scheme?: string;
   willUpdate() { this.extendRootClasses({raw: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
-  protected render() { return html\`<i class=\${classMap(this.rootClasses)} part=\${partMap(this.rootClasses)}></i>\`; }
+  protected render() { return html\`<i class=\${classMap(this.rootClasses)} part=\${partAttrMap(this.rootClasses)}></i>\`; }
 }
     `;
   }
