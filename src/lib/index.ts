@@ -9,19 +9,21 @@ import {PwaService} from './services/pwa.service';
 import {TypescriptService} from './services/typescript.service';
 import {BuildService} from './services/build.service';
 import {UiService} from './services/ui.service';
+import {ServerService} from './services/server.service';
 
 export class Lib {
-  public readonly helperService: HelperService;
-  public readonly messageService: MessageService;
-  public readonly fileService: FileService;
-  public readonly downloadService: DownloadService;
-  public readonly terminalService: TerminalService;
-  public readonly projectService: ProjectService;
-  public readonly generateService: GenerateService;
-  public readonly pwaService: PwaService;
-  public readonly typescriptService: TypescriptService;
-  public readonly buildService: BuildService;
-  public readonly uiService: UiService;
+  readonly helperService: HelperService;
+  readonly messageService: MessageService;
+  readonly fileService: FileService;
+  readonly downloadService: DownloadService;
+  readonly terminalService: TerminalService;
+  readonly projectService: ProjectService;
+  readonly generateService: GenerateService;
+  readonly pwaService: PwaService;
+  readonly typescriptService: TypescriptService;
+  readonly buildService: BuildService;
+  readonly uiService: UiService;
+  readonly serverService: ServerService;
 
   constructor() {
     this.helperService = new HelperService();
@@ -39,5 +41,6 @@ export class Lib {
     this.typescriptService = new TypescriptService(this.fileService);
     this.buildService = new BuildService(this.fileService, this.projectService);
     this.uiService = new UiService(this.fileService, this.typescriptService);
+    this.serverService = new ServerService();
   }
 }

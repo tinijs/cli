@@ -1,12 +1,9 @@
 import * as chalk from 'chalk';
 
 import {ERROR} from '../../lib/services/message.service';
-import {
-  PwaInitCommand,
-  CommandOptions as InitCommandOptions,
-} from './pwa-init.command';
+import {PwaInitCommand, PwaInitCommandOptions} from './pwa-init.command';
 
-type CommandOptions = InitCommandOptions;
+type CommandOptions = PwaInitCommandOptions;
 
 export class PwaCommand {
   constructor(private pwaInitCommand: PwaInitCommand) {}

@@ -4,7 +4,7 @@ import {INFO, OK} from '../../lib/services/message.service';
 import {ProjectService} from '../../lib/services/project.service';
 import {PwaService} from '../../lib/services/pwa.service';
 
-export interface CommandOptions {
+export interface PwaInitCommandOptions {
   skipInstall?: boolean;
   tag?: string;
 }
@@ -15,7 +15,7 @@ export class PwaInitCommand {
     private pwaService: PwaService
   ) {}
 
-  async run(commandOptions: CommandOptions) {
+  async run(commandOptions: PwaInitCommandOptions) {
     if (await this.pwaService.assetsExist()) {
       return console.log('\n' + INFO + 'PWA assets are already available!\n');
     }
