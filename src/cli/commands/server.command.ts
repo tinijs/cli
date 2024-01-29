@@ -18,7 +18,7 @@ export class ServerCommand {
         this.serverAddCommand.run(params[0], commandOptions);
         break;
       case 'build':
-        this.serverBuildCommand.run();
+        this.serverBuildCommand.run(params[0]);
         break;
       default:
         console.log(

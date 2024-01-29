@@ -159,7 +159,13 @@ export class Cli {
     ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
-  serverBuildCommandDef: CommandDef = ['server-build', 'Build the backend.'];
+  /**
+   * @param solutionName - The name of the solution.
+   */
+  serverBuildCommandDef: CommandDef = [
+    'server-build <solutionName>',
+    'Build the backend.',
+  ];
 
   serverCommandDef: CommandDef = [
     'server <subCommand> [params...]',
@@ -229,7 +235,11 @@ export class Cli {
       this.uiIconCommand
     );
     this.serverAddCommand = new ServerAddCommand();
-    this.serverBuildCommand = new ServerBuildCommand();
+    this.serverBuildCommand = new ServerBuildCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.terminalService,
+      this.tiniModule.projectService
+    );
     this.serverCommand = new ServerCommand(
       this.serverAddCommand,
       this.serverBuildCommand
@@ -468,7 +478,7 @@ export class Cli {
       commander
         .command(command as string)
         .description(description)
-        .action(() => this.serverBuildCommand.run());
+        .action(solutionName => this.serverBuildCommand.run(solutionName));
     })();
 
     // help
