@@ -2,6 +2,7 @@ import {resolve} from 'path';
 import {blueBright} from 'chalk';
 import {createHash} from 'crypto';
 import * as matter from 'gray-matter';
+import * as toml from 'toml';
 import {decodeHTML} from 'entities';
 import {minify} from 'html-minifier';
 
@@ -103,14 +104,18 @@ export class ServerBuildCommand {
       rawContent = rawContent.replace(/(<p>\+\+\+)|(\+\+\+<\/p>)/g, '+++');
       const matterMatching = rawContent.match(/\+\+\+([\s\S]*?)\+\+\+/);
       if (!matterMatching) continue;
-      const matterData = decodeHTML(matterMatching[1].replace(/\\/g, ''));
+      const matterData = decodeHTML(matterMatching[1].replace(/\\n\\/g, '\n'));
       rawContent = rawContent.replace(matterMatching[0], `---${matterData}---`);
 
       // item
       const digest = createHash('sha256')
         .update(rawContent)
         .digest('base64url');
-      const {content, data} = matter(rawContent);
+      const {content, data} = matter(rawContent, {
+        engines: {
+          toml: toml.parse.bind(toml),
+        },
+      });
       const itemFull = {
         ...(data.moredata || {}),
         ...data,
