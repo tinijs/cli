@@ -1,11 +1,12 @@
 import {resolve} from 'path';
 import {blueBright, green} from 'chalk';
 import {createHash} from 'crypto';
+import {decodeHTML} from 'entities';
+import {minify} from 'html-minifier';
 import * as ora from 'ora';
 import * as matter from 'gray-matter';
 import * as toml from 'toml';
-import {decodeHTML} from 'entities';
-import {minify} from 'html-minifier';
+import * as transliterate from '@sindresorhus/transliterate';
 
 import {ERROR} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
@@ -98,7 +99,7 @@ export class ServerBuildCommand {
 
     // build
     const indexRecord = {} as Record<string, string>;
-    const collectionRecord = {} as Record<string, Record<string, any>>;
+    const collectionRecord = {} as Record<string, any[]>;
     const fulltextSearchRecord = {} as Record<string, Record<string, any>>;
 
     for (let i = 0; i < buildPaths.length; i++) {
@@ -155,16 +156,17 @@ export class ServerBuildCommand {
       indexRecord[`${collection}/${slug}`] = digest;
 
       // collection
-      collectionRecord[collection] ||= {};
+      collectionRecord[collection] ||= [];
       const itemForListing = {
         ...data,
         id: digest,
+        slug,
         moredata: undefined,
         metadata: undefined,
       };
       delete itemForListing.moredata;
       delete itemForListing.metadata;
-      collectionRecord[collection][slug] = itemForListing;
+      collectionRecord[collection].push(itemForListing);
 
       // fulltext search
       fulltextSearchRecord[collection] ||= {};
@@ -238,34 +240,11 @@ export class ServerBuildCommand {
       granularity: 'word',
     });
     const words = Array.from(segmenter.segment(content))
-      .map(segment => this.cleanupText(segment.segment))
+      .map(segment => transliterate(segment.segment))
       .filter(
         word =>
           word && !~'~`!@#$%^&*()+={}[];:\'"<>.,/\\?-_ \t\r\n'.indexOf(word)
       );
     return Array.from(new Set(words)).join(' ');
-  }
-
-  private cleanupText(text: string) {
-    text = this.cleanupTextVI(text);
-    return text;
-  }
-
-  private cleanupTextVI(text: string) {
-    return text
-      .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a')
-      .replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A')
-      .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e')
-      .replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E')
-      .replace(/ì|í|ị|ỉ|ĩ/g, 'i')
-      .replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I')
-      .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o')
-      .replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O')
-      .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u')
-      .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U')
-      .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y')
-      .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y')
-      .replace(/đ/g, 'd')
-      .replace(/Đ/g, 'D');
   }
 }
