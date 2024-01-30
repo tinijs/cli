@@ -49,8 +49,12 @@ export class ServerBuildCommand {
       );
     }
     const stagingDir = `${stagingPrefix}-content`;
+    const tiniContentDir = `${outDir}/tini-content`;
     const srcPath = resolve(stagingDir);
-    const destPath = resolve(outDir);
+    const destPath = resolve(tiniContentDir);
+    // clear the staging and tini-content dir
+    await this.fileService.cleanDir(srcPath);
+    await this.fileService.cleanDir(destPath);
     // 11ty render
     console.log('');
     const spinner = ora('Compile content using 11ty ...\n').start();
@@ -82,15 +86,11 @@ export class ServerBuildCommand {
       }
     );
 
-    // create tini-content dir
-    const tiniContentPath = resolve(destPath, 'tini-content');
-    await this.fileService.createDir(tiniContentPath);
-
     // copy
     spinner.text = 'Copy uploaded content ...';
     await Promise.all(
       copyPaths.map(async path => {
-        const filePath = path.replace(stagingDir, `${outDir}/tini-content`);
+        const filePath = path.replace(stagingDir, tiniContentDir);
         await this.fileService.createDir(filePath.replace(/\/[^\/]+$/, ''));
         return this.fileService.copyFile(path, filePath);
       })
@@ -148,7 +148,7 @@ export class ServerBuildCommand {
       };
       delete itemFull.moredata;
       await this.fileService.createJson(
-        resolve(tiniContentPath, `${digest}.json`),
+        resolve(destPath, `${digest}.json`),
         itemFull,
         true
       );
@@ -182,7 +182,7 @@ export class ServerBuildCommand {
         .update(JSON.stringify(items))
         .digest('base64url');
       await this.fileService.createJson(
-        resolve(tiniContentPath, `${digest}.json`),
+        resolve(destPath, `${digest}.json`),
         items,
         true
       );
@@ -195,7 +195,7 @@ export class ServerBuildCommand {
         .update(JSON.stringify(items))
         .digest('base64url');
       await this.fileService.createJson(
-        resolve(tiniContentPath, `${digest}.json`),
+        resolve(destPath, `${digest}.json`),
         items,
         true
       );
@@ -204,7 +204,7 @@ export class ServerBuildCommand {
 
     // index
     await this.fileService.createJson(
-      resolve(tiniContentPath, 'index.json'),
+      resolve(destPath, 'index.json'),
       indexRecord,
       true
     );
