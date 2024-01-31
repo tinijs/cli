@@ -102,6 +102,7 @@ export class ServerBuildCommand {
     const collectionRecord = {} as Record<string, any[]>;
     const fulltextSearchRecord = {} as Record<string, Record<string, any>>;
 
+    let buildCount = 0;
     for (let i = 0; i < buildPaths.length; i++) {
       const path = buildPaths[i];
       const [collection, slug] = path
@@ -119,16 +120,17 @@ export class ServerBuildCommand {
       if (!matterMatching) continue;
       const matterData = decodeHTML(matterMatching[1].replace(/\\n\\/g, '\n'));
       rawContent = rawContent.replace(matterMatching[0], `---${matterData}---`);
-
-      // item
-      const digest = createHash('sha256')
-        .update(rawContent)
-        .digest('base64url');
       const {content, data} = matter(rawContent, {
         engines: {
           toml: toml.parse.bind(toml),
         },
       });
+      if (data.status && data.status !== 'publish') continue;
+
+      // item
+      const digest = createHash('sha256')
+        .update(rawContent)
+        .digest('base64url');
       const itemFull = {
         ...(data.moredata || {}),
         ...data,
@@ -174,6 +176,9 @@ export class ServerBuildCommand {
         content,
         data
       );
+
+      // count build
+      buildCount++;
     }
 
     spinner.text = 'Write collections, search and index ...';
@@ -213,9 +218,11 @@ export class ServerBuildCommand {
 
     // done
     spinner.succeed(
-      `Success! Copy ${blueBright(copyPaths.length)} items. Build ${blueBright(
+      `Success! Copy ${blueBright(
+        copyPaths.length
+      )} items and build ${blueBright(buildCount)}/${
         buildPaths.length
-      )} items.\n`
+      } items.\n`
     );
   }
 
