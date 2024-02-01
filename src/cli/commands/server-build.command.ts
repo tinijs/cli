@@ -298,11 +298,10 @@ export class ServerBuildCommand {
     data: Record<string, any> = {}
   ) {
     let content = '';
-    if (data.tags) content += '\n' + data.tags.join(' ');
-    if (data.keywords) content += '\n' + data.keywords.join(' ');
+    if (data.tags) content += '\n' + this.extractTagTitles(data.tags).join(' ');
     if (data.title) content += '\n' + data.title;
     if (data.name) content += '\n' + data.name;
-    if (data.description) content += '\n' + data.description;
+    if (data.desc) content += '\n' + data.desc;
     if (data.excerpt) content += '\n' + data.excerpt;
     content +=
       '\n' +
@@ -320,5 +319,27 @@ export class ServerBuildCommand {
           word && !~'~`!@#$%^&*()+={}[];:\'"<>.,/\\?-_ \t\r\n'.indexOf(word)
       );
     return Array.from(new Set(words)).join(' ');
+  }
+
+  private extractTagTitles(
+    tags: (string | Object)[] | Record<string, true | string | Object>
+  ) {
+    const result = [] as string[];
+    if (tags instanceof Array) {
+      tags.forEach(tag =>
+        result.push(typeof tag === 'string' ? tag : (tag as any).title)
+      );
+    } else {
+      for (const [slug, tag] of Object.entries(tags)) {
+        result.push(
+          tag === true
+            ? slug
+            : typeof tag === 'string'
+            ? tag
+            : (tag as any).title
+        );
+      }
+    }
+    return result;
   }
 }
