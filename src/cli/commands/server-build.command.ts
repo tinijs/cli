@@ -7,6 +7,7 @@ import * as ora from 'ora';
 import * as matter from 'gray-matter';
 import * as toml from 'toml';
 import * as transliterate from '@sindresorhus/transliterate';
+import * as slugify from '@sindresorhus/slugify';
 
 import {ERROR} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
@@ -15,6 +16,15 @@ import {
   ProjectService,
   ProjectOptions,
 } from '../../lib/services/project.service';
+
+interface ServerBasicBuildOptions {
+  collectTags?: false | {collection: string; field?: string};
+}
+
+interface ServerBasicTag {
+  slug: string;
+  title: string;
+}
 
 export class ServerBuildCommand {
   constructor(
@@ -101,6 +111,10 @@ export class ServerBuildCommand {
     const indexRecord = {} as Record<string, string>;
     const collectionRecord = {} as Record<string, any[]>;
     const fulltextSearchRecord = {} as Record<string, Record<string, any>>;
+    const collectedTagsRecord = {} as Record<
+      string,
+      Record<string, ServerBasicTag>
+    >;
 
     let buildCount = 0;
     for (let i = 0; i < buildPaths.length; i++) {
@@ -125,7 +139,10 @@ export class ServerBuildCommand {
           toml: toml.parse.bind(toml),
         },
       });
-      if (data.status && data.status !== 'publish' && data.status !== 'archive') continue;
+      if (data.status && data.status !== 'publish' && data.status !== 'archive')
+        continue;
+      const buildOptions = (data.$build || {}) as ServerBasicBuildOptions;
+      delete data.$build;
 
       // item
       const digest = createHash('sha256')
@@ -164,10 +181,8 @@ export class ServerBuildCommand {
         id: digest,
         slug,
         moredata: undefined,
-        metadata: undefined,
       };
       delete itemForListing.moredata;
-      delete itemForListing.metadata;
       collectionRecord[collection].push(itemForListing);
 
       // fulltext search
@@ -176,6 +191,42 @@ export class ServerBuildCommand {
         content,
         data
       );
+
+      // collect tags
+      if (
+        buildOptions.collectTags instanceof Object ||
+        (data.tags && buildOptions.collectTags !== false)
+      ) {
+        const {collection = 'tags', field = 'tags'} =
+          buildOptions.collectTags || {};
+        const [rootField, nestedField] = field.split('.');
+        const rawTags = ((!nestedField
+          ? data[rootField]
+          : data[rootField][nestedField]) || []) as (string | ServerBasicTag)[];
+        if (rawTags.length) {
+          collectedTagsRecord[collection] ||= {};
+          rawTags.forEach(tag => {
+            if (typeof tag !== 'string') {
+              collectedTagsRecord[collection][tag.slug] = tag;
+            } else {
+              const slugMatching = tag.match(/<([\s\S]*?)>/);
+              if (!slugMatching) {
+                const slug = slugify(tag);
+                collectedTagsRecord[collection][slug] = {
+                  slug,
+                  title: tag,
+                };
+              } else {
+                const slug = slugMatching[1].trim();
+                collectedTagsRecord[collection][slug] = {
+                  slug,
+                  title: tag.replace(slugMatching[0], '').trim(),
+                };
+              }
+            }
+          });
+        }
+      }
 
       // count build
       buildCount++;
@@ -207,6 +258,22 @@ export class ServerBuildCommand {
         true
       );
       indexRecord[`${collection}-search`] = digest;
+    }
+
+    // tags
+    if (Object.keys(collectedTagsRecord).length) {
+      for (const [collection, record] of Object.entries(collectedTagsRecord)) {
+        const items = Object.values(record);
+        const digest = createHash('sha256')
+          .update(JSON.stringify(items))
+          .digest('base64url');
+        await this.fileService.createJson(
+          resolve(destPath, `${digest}.json`),
+          items,
+          true
+        );
+        indexRecord[collection] = digest;
+      }
     }
 
     // index
