@@ -125,7 +125,7 @@ export class ServerBuildCommand {
           toml: toml.parse.bind(toml),
         },
       });
-      if (data.status && data.status !== 'publish') continue;
+      if (data.status && data.status !== 'publish' && data.status !== 'archive') continue;
 
       // item
       const digest = createHash('sha256')
