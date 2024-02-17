@@ -29,6 +29,7 @@ export interface PackageJson {
   author?: string;
   license?: string;
   keywords?: string[];
+  scripts?: Record<string, string>;
 }
 
 export type ProjectOptions = {
@@ -80,6 +81,17 @@ export class ProjectService {
 
   getPackageJson() {
     return this.fileService.readJson<PackageJson>(this.packagePath);
+  }
+
+  async updatePackageJson(
+    modifier: (currentData: PackageJson) => Promise<PackageJson>
+  ) {
+    const currentData = await this.fileService.readJson<PackageJson>(
+      this.packagePath
+    );
+    const newData = await modifier(currentData);
+    await this.fileService.createJson(this.packagePath, newData);
+    return this.getPackageJson();
   }
 
   async getOptions() {

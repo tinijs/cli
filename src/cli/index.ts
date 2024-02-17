@@ -234,7 +234,7 @@ export class Cli {
       this.uiDevCommand,
       this.uiIconCommand
     );
-    this.serverAddCommand = new ServerAddCommand();
+    this.serverAddCommand = new ServerAddCommand(this.tiniModule.serverService);
     this.serverBuildCommand = new ServerBuildCommand(
       this.tiniModule.fileService,
       this.tiniModule.terminalService,
