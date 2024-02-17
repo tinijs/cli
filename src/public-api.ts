@@ -12,6 +12,7 @@ export * from './lib/services/pwa.service';
 export * from './lib/services/typescript.service';
 export * from './lib/services/build.service';
 export * from './lib/services/ui.service';
+export * from './lib/services/server.service';
 
 export * from './cli/commands/docs.command';
 export * from './cli/commands/new.command';
@@ -28,3 +29,6 @@ export * from './cli/commands/ui-use.command';
 export * from './cli/commands/ui-build.command';
 export * from './cli/commands/ui-dev.command';
 export * from './cli/commands/ui-icon.command';
+export * from './cli/commands/server.command';
+export * from './cli/commands/server-add.command';
+export * from './cli/commands/server-build.command';

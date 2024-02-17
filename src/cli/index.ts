@@ -16,6 +16,9 @@ import {UiBuildCommand} from './commands/ui-build.command';
 import {UiDevCommand} from './commands/ui-dev.command';
 import {UiIconCommand} from './commands/ui-icon.command';
 import {UiCommand} from './commands/ui.command';
+import {ServerAddCommand} from './commands/server-add.command';
+import {ServerBuildCommand} from './commands/server-build.command';
+import {ServerCommand} from './commands/server.command';
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -34,6 +37,9 @@ export class Cli {
   uiDevCommand: UiDevCommand;
   uiIconCommand: UiIconCommand;
   uiCommand: UiCommand;
+  serverAddCommand: ServerAddCommand;
+  serverBuildCommand: ServerBuildCommand;
+  serverCommand: ServerCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -138,9 +144,34 @@ export class Cli {
 
   uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
-    'Tools for developing and using Tini.',
+    'Tools for developing and using Tini UI.',
     ['-b, --build-only', 'Build mode only of the use command.'],
     ['-i, --skip-help', 'Skip instruction of the use command.'],
+  ];
+
+  /**
+   * @param packageName - The server package name.
+   */
+  serverAddCommandDef: CommandDef = [
+    'server-add <packageName>',
+    'Add a backend solution.',
+    ['-i, --skip-install', 'Do not install the package (install manually).'],
+    ['-t, --tag [value]', 'Use the custom version of the package.'],
+  ];
+
+  /**
+   * @param solutionName - The name of the solution.
+   */
+  serverBuildCommandDef: CommandDef = [
+    'server-build <solutionName>',
+    'Build the backend.',
+  ];
+
+  serverCommandDef: CommandDef = [
+    'server <subCommand> [params...]',
+    'Manage backend solutions.',
+    ['-i, --skip-install', 'Do not install the package (install manually).'],
+    ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
   constructor() {
@@ -202,6 +233,16 @@ export class Cli {
       this.uiBuildCommand,
       this.uiDevCommand,
       this.uiIconCommand
+    );
+    this.serverAddCommand = new ServerAddCommand(this.tiniModule.serverService);
+    this.serverBuildCommand = new ServerBuildCommand(
+      this.tiniModule.fileService,
+      this.tiniModule.terminalService,
+      this.tiniModule.projectService
+    );
+    this.serverCommand = new ServerCommand(
+      this.serverAddCommand,
+      this.serverBuildCommand
     );
   }
 
@@ -401,6 +442,43 @@ export class Cli {
         .command(command as string)
         .description(description)
         .action((packageName, src) => this.uiIconCommand.run(packageName, src));
+    })();
+
+    // server
+    (() => {
+      const [command, description, skipInstallOpt, tagOpt] =
+        this.serverCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .option(...skipInstallOpt)
+        .option(...tagOpt)
+        .action((subCommand, params, options) =>
+          this.serverCommand.run(subCommand, params, options)
+        );
+    })();
+
+    // server-add
+    (() => {
+      const [command, description, skipInstallOpt, tagOpt] =
+        this.serverAddCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .option(...skipInstallOpt)
+        .option(...tagOpt)
+        .action((packageName, options) =>
+          this.serverAddCommand.run(packageName, options)
+        );
+    })();
+
+    // server-build
+    (() => {
+      const [command, description] = this.serverBuildCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .action(solutionName => this.serverBuildCommand.run(solutionName));
     })();
 
     // help
