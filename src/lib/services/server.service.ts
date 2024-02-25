@@ -70,7 +70,14 @@ export class ServerService {
     });
   }
 
-  runAdditional(run: string) {
-    return this.terminalService.exec(run);
+  runAdditional(packageName: string, run: string) {
+    const isNPX = run.startsWith('npx ');
+    const isFile = run.endsWith('.js');
+    const command = isNPX
+      ? run
+      : isFile
+      ? `node ${resolve('node_modules', packageName, run)}`
+      : `npm run ${run}`;
+    return this.terminalService.exec(command);
   }
 }

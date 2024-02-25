@@ -102,7 +102,7 @@ export class ServerBuildCommand {
     await Promise.all(
       copyPaths.map(async path => {
         const filePath = path.replace(stagingDir, tiniContentDir);
-        await this.fileService.createDir(filePath.replace(/\/[^\/]+$/, ''));
+        await this.fileService.createDir(filePath.replace(/\/[^/]+$/, ''));
         return this.fileService.copyFile(path, filePath);
       })
     );
@@ -122,7 +122,7 @@ export class ServerBuildCommand {
       const [collection, slug] = path
         .split(`/${stagingDir}/`)
         .pop()!
-        .replace(/\/[^\/]+$/, '')
+        .replace(/\/[^/]+$/, '')
         .split('/');
 
       spinner.text = `Build: ${green(`${collection}/${slug}`)} ...`;

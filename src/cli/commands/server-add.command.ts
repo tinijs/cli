@@ -20,7 +20,7 @@ export class ServerAddCommand {
       this.serverService.installPackage(packageName, commandOptions.tag);
     }
     // load init instruction
-    const {copy, scripts, run, buildCommand} =
+    const {copy, scripts, buildCommand, run} =
       await this.serverService.loadInitInstruction(packageName);
     // copy assets
     if (copy) {
@@ -32,9 +32,11 @@ export class ServerAddCommand {
     }
     // run additional
     if (run) {
-      this.serverService.runAdditional(run);
+      this.serverService.runAdditional(packageName, run);
     }
     // done
-    console.log('\n' + OK + ` Server ${blueBright(packageName)} added.\n`);
+    console.log(
+      '\n' + OK + `Add server ${blueBright(packageName)} successfully.\n`
+    );
   }
 }
