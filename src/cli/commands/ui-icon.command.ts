@@ -13,6 +13,10 @@ import {ProjectService} from '../../lib/services/project.service';
 import {TypescriptService} from '../../lib/services/typescript.service';
 import {UiService} from '../../lib/services/ui.service';
 
+export interface UIIconCommandOptions {
+  hook?: string;
+}
+
 const CHANGELOGS_DIR = 'changelogs';
 
 export class UiIconCommand {
@@ -23,7 +27,11 @@ export class UiIconCommand {
     private uiService: UiService
   ) {}
 
-  async run(packageName: string, src: string) {
+  async run(
+    packageName: string,
+    src: string,
+    commandOptions: UIIconCommandOptions
+  ) {
     if (!packageName) return console.log(MISSING_ARG('packageName'));
     if (!src) return console.log(MISSING_ARG('src'));
     const spinner = ora('Build icons ...\n').start();
@@ -45,6 +53,7 @@ export class UiIconCommand {
       packageName,
       version,
       spinner,
+      hookPath: commandOptions.hook,
     });
     // package.json
     await this.fileService.createJson(resolve(destPath, 'package.json'), {
@@ -55,15 +64,7 @@ export class UiIconCommand {
       homepage,
       license,
       keywords,
-      files: [
-        '*.svg',
-        '*.webp',
-        '*.png',
-        '*.jpg',
-        '*.js',
-        '*.d.ts',
-        'index.json',
-      ],
+      files: ['*.js', '*.d.ts', 'index.json'],
     });
     // license
     const licensePath = resolve('LICENSE');
@@ -92,7 +93,13 @@ export class UiIconCommand {
       packageName,
       version,
       spinner,
-    }: {packageName: string; version: string; spinner: ora.Ora}
+      hookPath,
+    }: {
+      packageName: string;
+      version: string;
+      spinner: ora.Ora;
+      hookPath?: string;
+    }
   ) {
     // icon template
     const templateCode = this.uiService.iconTemplate;
@@ -129,18 +136,28 @@ export class UiIconCommand {
     );
 
     /*
-     * 0. Built-in src filters
+     * 0. Hook
      */
 
-    let buildFileNameOnly = (originalFileNameOnly: string) =>
-      originalFileNameOnly.replace(/_|\./g, '-');
-
-    // fluent
-    if (packageName === '@tinijs/fluent-icons') {
-      paths = paths.filter(path => path.includes('_24_'));
-      buildFileNameOnly = (originalFileNameOnly: string) =>
-        originalFileNameOnly.replace(/_24_|_|\./g, '-');
+    let hookResult:
+      | {
+          filterPaths?: (paths: string[]) => string[];
+          transformName?: (name: string) => string;
+        }
+      | undefined;
+    if (hookPath) {
+      const {default: hook} = await import(resolve(hookPath));
+      hookResult = hook();
     }
+    if (hookResult?.filterPaths) {
+      paths = hookResult.filterPaths(paths);
+    }
+    const transformFileNameOnly = (originalFileNameOnly: string) => {
+      if (hookResult?.transformName) {
+        originalFileNameOnly = hookResult.transformName(originalFileNameOnly);
+      }
+      return originalFileNameOnly.replace(/_|\./g, '-');
+    };
 
     /*
      * I. Build icons
@@ -150,6 +167,7 @@ export class UiIconCommand {
       version,
       items: [] as Array<[string, string]>,
     };
+    const countNames = {} as Record<string, number>;
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
       // original names
@@ -159,8 +177,14 @@ export class UiIconCommand {
       const originalFileNameOnly = fileNameArr.join('.');
       spinner.text = `Build ${bold(blueBright(fileName))}\n`;
       // new names
-      const fileNameOnly =
-        buildFileNameOnly(originalFileNameOnly).toLowerCase();
+      let fileNameOnly =
+        transformFileNameOnly(originalFileNameOnly).toLowerCase();
+      if (!countNames[fileNameOnly]) {
+        countNames[fileNameOnly] = 1;
+      } else {
+        const count = ++countNames[fileNameOnly];
+        fileNameOnly = `${fileNameOnly}-${count}`;
+      }
       const newFileName = `${fileNameOnly}.${fileExt}`;
       const nameArr = fileNameOnly.split('-');
       const componentNameClass = nameArr
@@ -195,7 +219,7 @@ export const ${reactTagName} = createComponent({
 `;
 
       /*
-       * 2. Output .ts and copy image file
+       * 2. Output .ts and .react.ts
        */
       await this.fileService.createFile(
         resolve(destPath, `${fileNameOnly}.ts`),

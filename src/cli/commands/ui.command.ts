@@ -4,9 +4,9 @@ import {ERROR} from '../../lib/services/message.service';
 import {UiUseCommand, UiUseCommandOptions} from './ui-use.command';
 import {UiBuildCommand} from './ui-build.command';
 import {UiDevCommand} from './ui-dev.command';
-import {UiIconCommand} from './ui-icon.command';
+import {UiIconCommand, UIIconCommandOptions} from './ui-icon.command';
 
-type CommandOptions = UiUseCommandOptions;
+interface CommandOptions extends UiUseCommandOptions, UIIconCommandOptions {}
 
 export class UiCommand {
   constructor(
@@ -28,7 +28,7 @@ export class UiCommand {
         this.uiDevCommand.run();
         break;
       case 'icon':
-        this.uiIconCommand.run(params[0], params[1]);
+        this.uiIconCommand.run(params[0], params[1], options);
         break;
       default:
         console.log(

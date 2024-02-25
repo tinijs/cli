@@ -140,6 +140,7 @@ export class Cli {
   uiIconCommandDef: CommandDef = [
     'ui-icon <packageName> <src>',
     'Build icons pack.',
+    ['-h, --hook [path]', 'Path to a hook.'],
   ];
 
   uiCommandDef: CommandDef = [
@@ -147,6 +148,7 @@ export class Cli {
     'Tools for developing and using Tini UI.',
     ['-b, --build-only', 'Build mode only of the use command.'],
     ['-i, --skip-help', 'Skip instruction of the use command.'],
+    ['-h, --hook [path]', 'Path to a hook.'],
   ];
 
   /**
@@ -391,13 +393,14 @@ export class Cli {
 
     // ui
     (() => {
-      const [command, description, buildOnlyOpt, skipHelpOpt] =
+      const [command, description, buildOnlyOpt, skipHelpOpt, hookOpt] =
         this.uiCommandDef;
       commander
         .command(command as string)
         .description(description)
         .option(...buildOnlyOpt)
         .option(...skipHelpOpt)
+        .option(...hookOpt)
         .action((subCommand, params, options) =>
           this.uiCommand.run(subCommand, params, options)
         );
@@ -437,11 +440,14 @@ export class Cli {
 
     // ui-icon
     (() => {
-      const [command, description] = this.uiIconCommandDef;
+      const [command, description, hookOpt] = this.uiIconCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .action((packageName, src) => this.uiIconCommand.run(packageName, src));
+        .option(...hookOpt)
+        .action((packageName, src, options) =>
+          this.uiIconCommand.run(packageName, src, options)
+        );
     })();
 
     // server
