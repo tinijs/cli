@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve, basename} from 'path';
 import {readFile} from 'fs-extra';
 import {capitalCase} from 'change-case';
 import {bold, blueBright} from 'chalk';
@@ -126,17 +126,42 @@ export class UiIconCommand {
         key => (history.records[key].type = 'remove')
       );
     }
-    // read src
-    let paths = (await this.fileService.listDir(resolve(src))).filter(
-      path =>
-        path.endsWith('.svg') ||
-        path.endsWith('.webp') ||
-        path.endsWith('.png') ||
-        path.endsWith('.jpg')
-    );
 
     /*
-     * 0. Hook
+     * Read src
+     */
+
+    const imageFilter = (path: string) =>
+      path.endsWith('.svg') ||
+      path.endsWith('.webp') ||
+      path.endsWith('.png') ||
+      path.endsWith('.jpg');
+
+    let paths: string[] = [];
+    if (!~src.indexOf(':')) {
+      paths = (await this.fileService.listDir(resolve(src))).filter(
+        imageFilter
+      );
+    } else {
+      const [srcRoot, suffixes] = src.split(':');
+      const suffixArr = suffixes.split(',');
+      for (let i = 0; i < suffixArr.length; i++) {
+        const includeSuffix = ~suffixArr[i].indexOf('+');
+        const [dirName, renameSuffix] = suffixArr[i].split('+');
+        const groupPaths = (
+          await this.fileService.listDir(resolve(srcRoot, dirName))
+        ).filter(imageFilter);
+        paths.push(
+          ...(!includeSuffix
+            ? groupPaths
+            : groupPaths.map(path => `${path}?${renameSuffix || dirName}`))
+        );
+      }
+      paths = paths.sort((a, b) => basename(a).localeCompare(basename(b)));
+    }
+
+    /*
+     * Run hook
      */
 
     let hookResult:
@@ -169,7 +194,7 @@ export class UiIconCommand {
     };
     const countNames = {} as Record<string, number>;
     for (let i = 0; i < paths.length; i++) {
-      const path = paths[i];
+      const [path, variantSuffix] = paths[i].split('?');
       // original names
       const fileName = path.split('/').pop() as string;
       const fileNameArr = fileName.split('.');
@@ -179,6 +204,9 @@ export class UiIconCommand {
       // new names
       let fileNameOnly =
         transformFileNameOnly(originalFileNameOnly).toLowerCase();
+      if (variantSuffix) {
+        fileNameOnly = `${fileNameOnly}-${variantSuffix}`;
+      }
       if (!countNames[fileNameOnly]) {
         countNames[fileNameOnly] = 1;
       } else {
