@@ -36,8 +36,6 @@ export class UiIconCommand {
     if (!src) return console.log(MISSING_ARG('src'));
     const spinner = ora('Build icons ...\n').start();
     // prepare
-    src = src.replace(/^_\//, './node_modules/').replace(/^@\//, './src/');
-    const destPath = resolve('build', packageName);
     const {
       description,
       version,
@@ -46,18 +44,15 @@ export class UiIconCommand {
       license = '',
       keywords = [],
     } = await this.projectService.getPackageJson();
+    src = src.replace(/^_\//, './node_modules/').replace(/^@\//, './src/');
+    const destPath = resolve('build', packageName);
+    const destPathReact = `${destPath}-react`;
     // clean
     await this.fileService.cleanDir(destPath);
-    // build icons
-    const indexJson = await this.buildIcons(src, destPath, {
-      packageName,
-      version,
-      spinner,
-      hookPath: commandOptions.hook,
-    });
+    await this.fileService.cleanDir(destPathReact);
     // package.json
-    await this.fileService.createJson(resolve(destPath, 'package.json'), {
-      name: packageName,
+    const packageJsonName = 'package.json';
+    const packageJsonBaseContent = {
       version,
       description,
       author,
@@ -65,36 +60,66 @@ export class UiIconCommand {
       license,
       keywords,
       files: ['*.js', '*.d.ts', 'index.json'],
+    };
+    await this.fileService.createJson(resolve(destPath, packageJsonName), {
+      name: packageName,
+      ...packageJsonBaseContent,
+    });
+    await this.fileService.createJson(resolve(destPathReact, packageJsonName), {
+      name: `${packageName}-react`,
+      ...packageJsonBaseContent,
     });
     // license
-    const licensePath = resolve('LICENSE');
+    const licenseName = 'LICENSE';
+    const licensePath = resolve(licenseName);
     if (await this.fileService.exists(licensePath)) {
       await this.fileService.copyFile(
         licensePath,
-        resolve(destPath, 'LICENSE')
+        resolve(destPath, licenseName)
+      );
+      await this.fileService.copyFile(
+        licensePath,
+        resolve(destPathReact, licenseName)
       );
     }
     // README.md
-    const readmePath = resolve('README.md');
+    const readmeName = 'README.md';
+    const readmePath = resolve(readmeName);
     if (await this.fileService.exists(readmePath)) {
       await this.fileService.copyFile(
         readmePath,
-        resolve(destPath, 'README.md')
+        resolve(destPath, readmeName)
+      );
+      await this.fileService.copyFile(
+        readmePath,
+        resolve(destPathReact, readmeName)
       );
     }
+    // build icons
+    const indexJson = await this.buildIcons(src, {
+      destPath,
+      destPathReact,
+      packageName,
+      version,
+      spinner,
+      hookPath: commandOptions.hook,
+    });
     // result
     spinner.succeed(`Built ${indexJson.items.length} icons successfully!\n`);
   }
 
   private async buildIcons(
     src: string,
-    destPath: string,
     {
+      destPath,
+      destPathReact,
       packageName,
       version,
       spinner,
       hookPath,
     }: {
+      destPath: string;
+      destPathReact: string;
       packageName: string;
       version: string;
       spinner: ora.Ora;
@@ -237,8 +262,7 @@ export class UiIconCommand {
         .replace('class IconComponent', `class ${className}`);
       const reactCode = `import React from 'react';
 import {createComponent} from '@lit/react';
-import {${className}} from './${fileNameOnly}';
-export {${className}};
+${code}
 export const ${reactTagName} = createComponent({
   react: React,
   elementClass: ${className},
@@ -254,7 +278,7 @@ export const ${reactTagName} = createComponent({
         code
       );
       await this.fileService.createFile(
-        resolve(destPath, `${fileNameOnly}.react.ts`),
+        resolve(destPathReact, `${fileNameOnly}.ts`),
         reactCode
       );
 
@@ -286,15 +310,22 @@ export const ${reactTagName} = createComponent({
      * II. Transpile icons
      */
 
-    const outComponentsPaths = (
-      await this.fileService.listDir(destPath)
-    ).filter(path => path.endsWith('.ts') && !path.endsWith('.bundle.ts'));
     const componentsPathProcessor = (path: string) =>
       path.split('/').pop() as string;
     await this.typescriptService.transpileAndOutputFiles(
-      outComponentsPaths,
+      (await this.fileService.listDir(destPath)).filter(path =>
+        path.endsWith('.ts')
+      ),
       this.uiService.TS_CONFIG,
       destPath,
+      componentsPathProcessor
+    );
+    await this.typescriptService.transpileAndOutputFiles(
+      (await this.fileService.listDir(destPathReact)).filter(path =>
+        path.endsWith('.ts')
+      ),
+      this.uiService.TS_CONFIG,
+      destPathReact,
       componentsPathProcessor
     );
 

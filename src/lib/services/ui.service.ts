@@ -456,7 +456,7 @@ body {
   }
 
   get iconTemplate() {
-    return `import {html, css, PropertyValues} from 'lit';
+    return `import {html, css} from 'lit';
 import {property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {TiniElement, partAttrMap, VaryGroups, generateColorVaries, generateGradientVaries, generateScaleVaries} from 'tinijs';
@@ -468,8 +468,7 @@ export class IconComponent extends TiniElement {
   @property({type: String, reflect: true}) declare scheme?: string;
   willUpdate() { this.extendRootClasses({raw: {scheme: !!this.scheme}, overridable: {[VaryGroups.Scale]: this.scale, [VaryGroups.Scheme]: this.scheme}}); }
   protected render() { return html\`<i class=\${classMap(this.rootClasses)} part=\${partAttrMap(this.rootClasses)}></i>\`; }
-}
-    `;
+}`;
   }
 
   get iconPreviewHTMLTemplate() {
