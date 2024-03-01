@@ -1,5 +1,5 @@
 import {bold, blue, blueBright, green, gray} from 'chalk';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import * as ora from 'ora';
 
 import {ERROR} from '../../lib/services/message.service';
@@ -26,8 +26,9 @@ export class UiUseCommand {
 
   async run(inputs: string[], options: CommandOptions) {
     const {ui} = await this.projectService.getOptions();
-    inputs = inputs?.length ? inputs : ui.use;
-    inputs = (inputs || []).filter(item => ~item.indexOf('/'));
+    inputs = ((inputs?.length ? inputs : ui.use) || []).filter(
+      item => ~item.indexOf('/')
+    );
     if (!inputs.length) {
       return console.log(
         '\n' +

@@ -112,7 +112,7 @@ export class Cli {
     'Tools for developing and using Tini UI.',
     ['-b, --build-only', 'Build mode only of the use command.'],
     ['-i, --skip-help', 'Skip instruction of the use command.'],
-    ['-h, --hook [path]', 'Path to a hook.'],
+    ['-h, --hook [path]', 'Path to a hook file.'],
     ['-o, --output [path]', 'Custom output folder.'],
     ['-r, --react', 'Build for React.'],
   ];

@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {stat} from 'fs-extra';
 
 import {FileService} from './file.service';

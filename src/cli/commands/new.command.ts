@@ -1,5 +1,5 @@
 import {execSync} from 'child_process';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {green, cyan, gray} from 'chalk';
 
 import {FileService} from '../../lib/services/file.service';

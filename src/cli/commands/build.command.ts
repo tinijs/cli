@@ -1,5 +1,5 @@
 import {remove} from 'fs-extra';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 
 import {FileService} from '../../lib/services/file.service';
 import {TerminalService} from '../../lib/services/terminal.service';
@@ -22,10 +22,7 @@ export class BuildCommand {
     const tiniConfig = await this.projectService.getOptions();
     const {srcDir, outDir, stagingDir} = tiniConfig;
     process.env.TARGET_ENV = commandOptions.target || 'production';
-    const stagingPath = this.buildService.resolveStagingPath(
-      srcDir,
-      stagingDir
-    );
+    const stagingPath = this.buildService.getAppStagingDirPath(stagingDir);
     // clean target dir
     await remove(resolve(outDir));
     // build staging

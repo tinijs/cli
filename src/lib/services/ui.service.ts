@@ -1,6 +1,6 @@
 import {readdir} from 'fs-extra';
 import {ModuleKind, ScriptTarget} from 'typescript';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {camelCase, pascalCase} from 'change-case';
 
 import {FileService} from './file.service';

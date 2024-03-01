@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import axios from 'axios';
 import {
   ensureDir,

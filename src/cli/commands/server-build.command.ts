@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {blueBright, green} from 'chalk';
 import {createHash} from 'crypto';
 import {decodeHTML} from 'entities';
@@ -59,9 +59,9 @@ export class ServerBuildCommand {
           )} solution (no content/eleventy.config.js found).\n`
       );
     }
-    const stagingDir = `${stagingDir}-content`;
+    const stagingContentDir = `${stagingDir}/content`;
     const tiniContentDir = `${outDir}/tini-content`;
-    const srcPath = resolve(stagingDir);
+    const srcPath = resolve(stagingContentDir);
     const destPath = resolve(tiniContentDir);
     // clear the staging and tini-content dir
     await this.fileService.cleanDir(srcPath);

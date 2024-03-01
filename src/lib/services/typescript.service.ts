@@ -1,5 +1,5 @@
 import {createCompilerHost, createProgram, CompilerOptions} from 'typescript';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 
 import {FileService} from './file.service';
 

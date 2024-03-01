@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {PackageJson} from 'type-fest';
 
 import {FileService} from './file.service';

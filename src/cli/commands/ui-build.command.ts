@@ -1,5 +1,5 @@
 import {compileString} from 'sass';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {camelCase, pascalCase} from 'change-case';
 const CleanCSS = require('clean-css');
 import {bold, blueBright} from 'chalk';

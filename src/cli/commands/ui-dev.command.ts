@@ -1,5 +1,5 @@
 import {readdir} from 'fs-extra';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 
 import {OK} from '../../lib/services/message.service';
 import {FileService} from '../../lib/services/file.service';
@@ -18,7 +18,7 @@ export class UiDevCommand {
     const souls = (await readdir(resolve(this.uiService.STYLES_DIR))).filter(
       item => !~item.indexOf('.')
     );
-    const destPath = resolve(`${stagingDir}-ui`);
+    const destPath = resolve(stagingDir, 'ui');
     // clean dir
     await this.fileService.cleanDir(destPath);
     // copy global files

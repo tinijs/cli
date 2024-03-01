@@ -1,6 +1,6 @@
 import concurrently from 'concurrently';
 import {watch} from 'chokidar';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {bold, blueBright} from 'chalk';
 
 import {FileService} from '../../lib/services/file.service';
@@ -24,10 +24,7 @@ export class DevCommand {
   async run(commandOptions: CommandOptions) {
     const tiniConfig = await this.projectService.getOptions();
     const {srcDir, outDir, stagingDir} = tiniConfig;
-    const stagingPath = this.buildService.resolveStagingPath(
-      srcDir,
-      stagingDir
-    );
+    const stagingPath = this.buildService.getAppStagingDirPath(stagingDir);
     // watch mode
     if (commandOptions.watch) {
       watch(srcDir, {ignoreInitial: true})

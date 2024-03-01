@@ -1,5 +1,5 @@
 import {remove} from 'fs-extra';
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {minifyHTMLLiterals} from 'minify-html-literals';
 import {compileStringAsync} from 'sass';
 import {
@@ -26,14 +26,14 @@ export class BuildService {
     private projectService: ProjectService
   ) {}
 
-  resolveStagingPath(srcDir: string, stagingDir: string) {
-    return resolve(`${stagingDir}-${srcDir}`);
+  getAppStagingDirPath(stagingDir: string) {
+    return resolve(stagingDir, 'app');
   }
 
   async buildStaging() {
     const {srcDir, stagingDir} = await this.projectService.getOptions();
     const srcPath = resolve(srcDir);
-    const stagingPath = this.resolveStagingPath(srcDir, stagingDir);
+    const stagingPath = this.getAppStagingDirPath(stagingDir);
     await this.fileService.cleanDir(stagingPath);
     const paths = await this.fileService.listDir(srcPath);
     for (let i = 0; i < paths.length; i++) {

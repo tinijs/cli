@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {FileService} from './file.service';
 import {TerminalService} from './terminal.service';
 import {ProjectService, Options} from './project.service';

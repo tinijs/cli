@@ -1,4 +1,4 @@
-import {resolve, basename} from 'path';
+import {resolve, basename} from 'pathe';
 import {readFile} from 'fs-extra';
 import {capitalCase} from 'change-case';
 import {bold, blueBright} from 'chalk';

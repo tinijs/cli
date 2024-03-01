@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import {camelCase, capitalCase, pascalCase, paramCase} from 'change-case';
 
 import {ProjectService} from './project.service';

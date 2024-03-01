@@ -1,4 +1,4 @@
-import {resolve} from 'path';
+import {resolve} from 'pathe';
 import * as chalk from 'chalk';
 import * as inquirer from 'inquirer';
 import * as picomatch from 'picomatch';
