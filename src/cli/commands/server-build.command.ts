@@ -1,21 +1,23 @@
 import {resolve} from 'pathe';
-import {blueBright, green} from 'chalk';
+import chalk from 'chalk';
 import {createHash} from 'crypto';
 import {decodeHTML} from 'entities';
 import {minify} from 'html-minifier';
-import * as ora from 'ora';
-import * as matter from 'gray-matter';
-import * as toml from 'toml';
-import * as transliterate from '@sindresorhus/transliterate';
-import * as slugify from '@sindresorhus/slugify';
+import ora from 'ora';
+import matter from 'gray-matter';
+import toml from 'toml';
+import transliterate from '@sindresorhus/transliterate';
+import slugify from '@sindresorhus/slugify';
 
-import {ERROR} from '../../lib/services/message.service';
-import {FileService} from '../../lib/services/file.service';
-import {TerminalService} from '../../lib/services/terminal.service';
+import {ERROR} from '../../lib/services/message.service.js';
+import {FileService} from '../../lib/services/file.service.js';
+import {TerminalService} from '../../lib/services/terminal.service.js';
 import {
   ProjectService,
   ProjectOptions,
-} from '../../lib/services/project.service';
+} from '../../lib/services/project.service.js';
+
+const {green, blueBright} = chalk;
 
 interface ServerBasicBuildOptions {
   collectTags?: false | {collection: string; field?: string};

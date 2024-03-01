@@ -1,10 +1,12 @@
-import {remove} from 'fs-extra';
+import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 
-import {FileService} from '../../lib/services/file.service';
-import {TerminalService} from '../../lib/services/terminal.service';
-import {ProjectService} from '../../lib/services/project.service';
-import {BuildService} from '../../lib/services/build.service';
+import {FileService} from '../../lib/services/file.service.js';
+import {TerminalService} from '../../lib/services/terminal.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+import {BuildService} from '../../lib/services/build.service.js';
+
+const {remove} = fsExtra;
 
 interface CommandOptions {
   target?: string;

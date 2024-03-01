@@ -1,15 +1,17 @@
 import {compileString} from 'sass';
 import {resolve} from 'pathe';
 import {camelCase, pascalCase} from 'change-case';
-const CleanCSS = require('clean-css');
-import {bold, blueBright} from 'chalk';
+import CleanCSS from 'clean-css';
+import chalk from 'chalk';
 
-import {OK} from '../../lib/services/message.service';
-import {FileService} from '../../lib/services/file.service';
-import {ProjectService} from '../../lib/services/project.service';
-import {TypescriptService} from '../../lib/services/typescript.service';
-import {BuildService} from '../../lib/services/build.service';
-import {UiService} from '../../lib/services/ui.service';
+import {OK} from '../../lib/services/message.service.js';
+import {FileService} from '../../lib/services/file.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+import {TypescriptService} from '../../lib/services/typescript.service.js';
+import {BuildService} from '../../lib/services/build.service.js';
+import {UiService} from '../../lib/services/ui.service.js';
+
+const {blueBright, bold} = chalk;
 
 export const APP_DIR = 'app';
 export const UI_PACKAGE_NAME = '@tinijs/ui';

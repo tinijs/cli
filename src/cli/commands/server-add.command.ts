@@ -1,7 +1,9 @@
-import {blueBright} from 'chalk';
+import chalk from 'chalk';
 
-import {ERROR, OK} from '../../lib/services/message.service';
-import {ServerService} from '../../lib/services/server.service';
+import {ERROR, OK} from '../../lib/services/message.service.js';
+import {ServerService} from '../../lib/services/server.service.js';
+
+const {blueBright} = chalk;
 
 export interface ServerAddCommandOptions {
   skipInstall?: boolean;

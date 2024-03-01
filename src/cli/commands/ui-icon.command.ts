@@ -1,16 +1,20 @@
 import {resolve, basename} from 'pathe';
-import {readFile} from 'fs-extra';
+import fsExtra from 'fs-extra';
 import {capitalCase} from 'change-case';
-import {bold, blueBright} from 'chalk';
-import * as ora from 'ora';
-import {sanitize} from 'isomorphic-dompurify';
+import chalk from 'chalk';
+import ora, {Ora} from 'ora';
+import isomorphicDompurify from 'isomorphic-dompurify';
 import {optimize} from 'svgo';
 
-import {MISSING_ARG} from '../../lib/services/message.service';
-import {FileService} from '../../lib/services/file.service';
-import {ProjectService} from '../../lib/services/project.service';
-import {TypescriptService} from '../../lib/services/typescript.service';
-import {UiService} from '../../lib/services/ui.service';
+import {MISSING_ARG} from '../../lib/services/message.service.js';
+import {FileService} from '../../lib/services/file.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+import {TypescriptService} from '../../lib/services/typescript.service.js';
+import {UiService} from '../../lib/services/ui.service.js';
+
+const {blueBright, bold} = chalk;
+const {readFile} = fsExtra;
+const {sanitize} = isomorphicDompurify;
 
 export interface UIIconCommandOptions {
   output?: string;
@@ -50,7 +54,7 @@ export class UiIconCommand {
   }
 
   private async buildIcons(
-    spinner: ora.Ora,
+    spinner: Ora,
     sources: string[],
     destDirPath: string,
     commandOptions: UIIconCommandOptions

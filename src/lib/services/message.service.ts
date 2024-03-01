@@ -1,9 +1,11 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
-export const ERROR = chalk.red('✖ ');
-export const WARN = chalk.yellow('⚠ ');
-export const INFO = chalk.blue('ℹ ');
-export const OK = chalk.green('✔ ');
+const {red, green, blue, yellow} = chalk;
+
+export const ERROR = red('✖ ');
+export const WARN = yellow('⚠ ');
+export const INFO = blue('ℹ ');
+export const OK = green('✔ ');
 
 export function MISSING_ARG(name: string) {
   return `error: missing required argument '${name}'`;
@@ -16,7 +18,7 @@ export function INVALID_SUB_COMMAND(
   return (
     '\n' +
     ERROR +
-    `Invalid sub-command '${chalk.red(subCommand)}', available: ${Object.values(
+    `Invalid sub-command '${red(subCommand)}', available: ${Object.values(
       availableSubCommands
     ).join(', ')}.\n`
   );

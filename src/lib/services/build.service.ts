@@ -1,24 +1,23 @@
-import {remove} from 'fs-extra';
+import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 import {minifyHTMLLiterals} from 'minify-html-literals';
 import {compileStringAsync} from 'sass';
-import {
-  transpileModule,
-  ScriptTarget,
-  ModuleKind,
-  ModuleResolutionKind,
-} from 'typescript';
-import {gray, cyan, red, bold, magenta, green} from 'chalk';
-import {stat} from 'fs-extra';
+import typescript from 'typescript';
+import chalk from 'chalk';
 import {getManifest} from 'workbox-build';
 import {build as esBuild} from 'esbuild';
 import {nanoid} from 'nanoid';
 
-import {FileService} from '../../lib/services/file.service';
+import {FileService} from '../../lib/services/file.service.js';
 import {
   ProjectService,
   ProjectOptions,
-} from '../../lib/services/project.service';
+} from '../../lib/services/project.service.js';
+
+const {red, gray, green, cyan, magenta, bold} = chalk;
+const {remove, stat} = fsExtra;
+const {transpileModule, ScriptTarget, ModuleKind, ModuleResolutionKind} =
+  typescript;
 
 export class BuildService {
   constructor(

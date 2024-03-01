@@ -1,4 +1,4 @@
-import {TerminalService} from '../../lib/services/terminal.service';
+import {TerminalService} from '../../lib/services/terminal.service.js';
 
 export class TestCommand {
   constructor(private terminalService: TerminalService) {}

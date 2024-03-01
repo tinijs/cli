@@ -1,8 +1,13 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
-import {ERROR} from '../../lib/services/message.service';
-import {ServerAddCommand, ServerAddCommandOptions} from './server-add.command';
-import {ServerBuildCommand} from './server-build.command';
+import {ERROR} from '../../lib/services/message.service.js';
+import {
+  ServerAddCommand,
+  ServerAddCommandOptions,
+} from './server-add.command.js';
+import {ServerBuildCommand} from './server-build.command.js';
+
+const {red, green} = chalk;
 
 type CommandOptions = ServerAddCommandOptions;
 
@@ -24,8 +29,8 @@ export class ServerCommand {
         console.log(
           '\n' +
             ERROR +
-            `Invalid sub-command '${chalk.red(subCommand)}', available: ` +
-            `${chalk.green('add')}, ${chalk.green('build')}.\n`
+            `Invalid sub-command '${red(subCommand)}', available: ` +
+            `${green('add')}, ${green('build')}.\n`
         );
         break;
     }

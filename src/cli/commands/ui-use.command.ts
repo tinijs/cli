@@ -1,15 +1,15 @@
-import {bold, blue, blueBright, green, gray} from 'chalk';
+import chalk from 'chalk';
 import {resolve} from 'pathe';
-import * as ora from 'ora';
+import ora from 'ora';
 
-import {ERROR} from '../../lib/services/message.service';
-import {TerminalService} from '../../lib/services/terminal.service';
-import {ProjectService, Options} from '../../lib/services/project.service';
-import {UiService, SoulAndSkins} from '../../lib/services/ui.service';
+import {ERROR} from '../../lib/services/message.service.js';
+import {TerminalService} from '../../lib/services/terminal.service.js';
+import {ProjectService, Options} from '../../lib/services/project.service.js';
+import {UiService, SoulAndSkins} from '../../lib/services/ui.service.js';
 
-export {CommandOptions as UiUseCommandOptions};
+const {gray, green, blue, blueBright, bold} = chalk;
 
-interface CommandOptions {
+export interface UiUseCommandOptions {
   buildOnly?: boolean;
   skipHelp?: boolean;
 }
@@ -24,7 +24,7 @@ export class UiUseCommand {
     private uiService: UiService
   ) {}
 
-  async run(inputs: string[], options: CommandOptions) {
+  async run(inputs: string[], options: UiUseCommandOptions) {
     const {ui} = await this.projectService.getOptions();
     inputs = ((inputs?.length ? inputs : ui.use) || []).filter(
       item => ~item.indexOf('/')

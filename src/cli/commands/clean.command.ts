@@ -1,11 +1,12 @@
 import {resolve} from 'pathe';
-import * as chalk from 'chalk';
-import * as inquirer from 'inquirer';
-import * as picomatch from 'picomatch';
+import chalk from 'chalk';
+import {createPromptModule} from 'inquirer';
+import picomatch from 'picomatch';
 
-const prompt = inquirer.createPromptModule();
+import {FileService} from '../../lib/services/file.service.js';
 
-import {FileService} from '../../lib/services/file.service';
+const {red, gray, green} = chalk;
+const prompt = createPromptModule();
 
 interface CommandOptions {
   includes?: string;
@@ -55,12 +56,12 @@ export class CleanCommand {
     // show file list
     console.log('(IMPORTANT) The list of files to be removed:');
     if (!files.length) {
-      console.log(chalk.gray('[0] No file available.'));
+      console.log(gray('[0] No file available.'));
     } else {
       files
         .map(path => path.replace(resolve('.'), '').substring(1))
         .sort()
-        .forEach((item, i) => console.log(`[${i + 1}] ` + chalk.red(item)));
+        .forEach((item, i) => console.log(`[${i + 1}] ` + red(item)));
     }
     // question
     const yes = await (async () => {
@@ -70,7 +71,7 @@ export class CleanCommand {
           name: 'ok',
           message:
             'Remove files (please REVIEW the list above and git COMMIT first). ' +
-            chalk.gray('[y/N]'),
+            gray('[y/N]'),
           default: 'N',
         },
       ]);
@@ -90,7 +91,7 @@ export class CleanCommand {
     } else {
       message = 'No file removed.';
     }
-    console.log(chalk.green(`\n===> ${message} <===\n`));
+    console.log(green(`\n===> ${message} <===\n`));
   }
 
   private processInputPaths(input: string) {

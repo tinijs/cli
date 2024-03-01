@@ -1,8 +1,8 @@
-import {INVALID_SUB_COMMAND} from '../../lib/services/message.service';
-import {UiUseCommand, UiUseCommandOptions} from './ui-use.command';
-import {UiBuildCommand} from './ui-build.command';
-import {UiDevCommand} from './ui-dev.command';
-import {UiIconCommand, UIIconCommandOptions} from './ui-icon.command';
+import {INVALID_SUB_COMMAND} from '../../lib/services/message.service.js';
+import {UiUseCommand, UiUseCommandOptions} from './ui-use.command.js';
+import {UiBuildCommand} from './ui-build.command.js';
+import {UiDevCommand} from './ui-dev.command.js';
+import {UiIconCommand, UIIconCommandOptions} from './ui-icon.command.js';
 
 interface CommandOptions extends UiUseCommandOptions, UIIconCommandOptions {}
 

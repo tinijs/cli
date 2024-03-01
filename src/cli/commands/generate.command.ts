@@ -1,7 +1,9 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
-import {FileService} from '../../lib/services/file.service';
-import {GenerateService} from '../../lib/services/generate.service';
+import {FileService} from '../../lib/services/file.service.js';
+import {GenerateService} from '../../lib/services/generate.service.js';
+
+const {red, green, yellow} = chalk;
 
 interface CommandOptions {
   typePrefixed?: boolean;
@@ -20,8 +22,8 @@ export class GenerateCommand {
     ).map(item => item);
     if (SUPPORTED_TYPES.indexOf(type) === -1) {
       return console.log(
-        `\nInvalid type "${chalk.red(type)}", please try: ` +
-          SUPPORTED_TYPES.map(item => chalk.green(item)).join(', ') +
+        `\nInvalid type "${red(type)}", please try: ` +
+          SUPPORTED_TYPES.map(item => green(item)).join(', ') +
           '.\n'
       );
     }
@@ -34,16 +36,14 @@ export class GenerateCommand {
     const {path: mainPath, fullPath: mainFullPath} = templates[0];
     if (await this.fileService.exists(mainFullPath)) {
       return console.log(
-        `\nA ${chalk.yellow(type)} already available at ${chalk.green(
-          mainPath
-        )}.\n`
+        `\nA ${yellow(type)} already available at ${green(mainPath)}.\n`
       );
     }
     // save files
     for (let i = 0; i < templates.length; i++) {
       const {path, fullPath, content} = templates[i];
       await this.fileService.createFile(fullPath, content);
-      console.log(`\nCREATE ${chalk.green(path)}\n`);
+      console.log(`\nCREATE ${green(path)}\n`);
     }
   }
 }

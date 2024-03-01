@@ -1,7 +1,9 @@
-import {bold, blueBright} from 'chalk';
-import * as open from 'open';
+import chalk from 'chalk';
+import open from 'open';
 
-import {INFO} from '../../lib/services/message.service';
+import {INFO} from '../../lib/services/message.service.js';
+
+const {blueBright, bold} = chalk;
 
 export class DocsCommand {
   constructor() {}

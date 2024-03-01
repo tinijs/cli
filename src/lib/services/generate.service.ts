@@ -1,7 +1,7 @@
 import {resolve} from 'pathe';
-import {camelCase, capitalCase, pascalCase, paramCase} from 'change-case';
+import {camelCase, capitalCase, pascalCase, kebabCase} from 'change-case';
 
-import {ProjectService} from './project.service';
+import {ProjectService} from './project.service.js';
 
 interface Names {
   typeCapital: string;
@@ -63,7 +63,7 @@ export class GenerateService {
     const nameCamel = camelCase(name);
     const namePascal = pascalCase(name);
     const nameCapital = capitalCase(name);
-    const nameParam = paramCase(name);
+    const nameParam = kebabCase(name);
     const className =
       (type === this.COMPONENT || type === this.SERVICE ? '' : typeCapital) +
       nameCapital.replace(/ /g, '') +

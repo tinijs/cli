@@ -1,10 +1,13 @@
-import {readdir} from 'fs-extra';
-import {ModuleKind, ScriptTarget} from 'typescript';
+import fsExtra from 'fs-extra';
+import typescript from 'typescript';
 import {resolve} from 'pathe';
 import {camelCase, pascalCase} from 'change-case';
 
-import {FileService} from './file.service';
-import {TypescriptService} from './typescript.service';
+import {FileService} from './file.service.js';
+import {TypescriptService} from './typescript.service.js';
+
+const {readdir} = fsExtra;
+const {ModuleKind, ScriptTarget} = typescript;
 
 export interface SoulAndSkins {
   soul: string;

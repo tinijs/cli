@@ -1,15 +1,15 @@
-import {HelperService} from './services/helper.service';
-import {MessageService} from './services/message.service';
-import {FileService} from './services/file.service';
-import {DownloadService} from './services/download.service';
-import {TerminalService} from './services/terminal.service';
-import {ProjectService} from './services/project.service';
-import {GenerateService} from './services/generate.service';
-import {PwaService} from './services/pwa.service';
-import {TypescriptService} from './services/typescript.service';
-import {BuildService} from './services/build.service';
-import {UiService} from './services/ui.service';
-import {ServerService} from './services/server.service';
+import {HelperService} from './services/helper.service.js';
+import {MessageService} from './services/message.service.js';
+import {FileService} from './services/file.service.js';
+import {DownloadService} from './services/download.service.js';
+import {TerminalService} from './services/terminal.service.js';
+import {ProjectService} from './services/project.service.js';
+import {GenerateService} from './services/generate.service.js';
+import {PwaService} from './services/pwa.service.js';
+import {TypescriptService} from './services/typescript.service.js';
+import {BuildService} from './services/build.service.js';
+import {UiService} from './services/ui.service.js';
+import {ServerService} from './services/server.service.js';
 
 export class Lib {
   readonly helperService: HelperService;

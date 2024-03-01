@@ -1,10 +1,12 @@
 import {execSync} from 'child_process';
 import {resolve} from 'pathe';
-import {green, cyan, gray} from 'chalk';
+import chalk from 'chalk';
 
-import {FileService} from '../../lib/services/file.service';
-import {DownloadService} from '../../lib/services/download.service';
-import {ProjectService} from '../../lib/services/project.service';
+import {FileService} from '../../lib/services/file.service.js';
+import {DownloadService} from '../../lib/services/download.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+
+const {gray, green, cyan} = chalk;
 
 interface CommandOptions {
   latest?: boolean;

@@ -1,7 +1,9 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
-import {ERROR} from '../../lib/services/message.service';
-import {PwaInitCommand, PwaInitCommandOptions} from './pwa-init.command';
+import {ERROR} from '../../lib/services/message.service.js';
+import {PwaInitCommand, PwaInitCommandOptions} from './pwa-init.command.js';
+
+const {red, green} = chalk;
 
 type CommandOptions = PwaInitCommandOptions;
 
@@ -18,8 +20,8 @@ export class PwaCommand {
         console.log(
           '\n' +
             ERROR +
-            `Invalid sub-command '${chalk.red(subCommand)}', available: ` +
-            `${chalk.green('init')}.\n`
+            `Invalid sub-command '${red(subCommand)}', available: ` +
+            `${green('init')}.\n`
         );
         break;
     }

@@ -1,8 +1,10 @@
-import {bold, blueBright} from 'chalk';
+import chalk from 'chalk';
 
-import {INFO, OK} from '../../lib/services/message.service';
-import {ProjectService} from '../../lib/services/project.service';
-import {PwaService} from '../../lib/services/pwa.service';
+import {INFO, OK} from '../../lib/services/message.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+import {PwaService} from '../../lib/services/pwa.service.js';
+
+const {blueBright, bold} = chalk;
 
 export interface PwaInitCommandOptions {
   skipInstall?: boolean;

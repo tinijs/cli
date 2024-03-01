@@ -1,16 +1,12 @@
 import {resolve} from 'pathe';
 import axios from 'axios';
-import {
-  ensureDir,
-  copy,
-  remove,
-  readdir,
-  lstatSync,
-  createWriteStream,
-} from 'fs-extra';
-import * as zipper from 'adm-zip';
+import fsExtra from 'fs-extra';
+import zipper from 'adm-zip';
 
-import {FileService} from './file.service';
+import {FileService} from './file.service.js';
+
+const {ensureDir, copy, remove, readdir, lstatSync, createWriteStream} =
+  fsExtra;
 
 export class DownloadService {
   constructor(private fileService: FileService) {}

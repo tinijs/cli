@@ -1,7 +1,7 @@
 import {resolve} from 'pathe';
-import {FileService} from './file.service';
-import {TerminalService} from './terminal.service';
-import {ProjectService, Options} from './project.service';
+import {FileService} from './file.service.js';
+import {TerminalService} from './terminal.service.js';
+import {ProjectService, Options} from './project.service.js';
 
 export class PwaService {
   private readonly VENDOR_DIR = 'node_modules/@tinijs/pwa/assets';

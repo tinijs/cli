@@ -1,8 +1,10 @@
-import {bold, blueBright} from 'chalk';
-const superstatic = require('superstatic');
+import chalk from 'chalk';
+import superstatic from 'superstatic';
 
-import {INFO} from '../../lib/services/message.service';
-import {ProjectService} from '../../lib/services/project.service';
+import {INFO} from '../../lib/services/message.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+
+const {blueBright, bold} = chalk;
 
 interface CommandOptions {
   port?: string;
@@ -16,8 +18,8 @@ export class PreviewCommand {
   async run(commandOptions: CommandOptions) {
     const {outDir: cwd} = await this.projectService.getOptions();
     // launch server
-    const host = commandOptions.host || '0.0.0.0';
-    const port = commandOptions.port || 3000;
+    const hostname = commandOptions.host || '0.0.0.0';
+    const port = Number(commandOptions.port || 3000);
     const config = {
       cleanUrls: true,
       rewrites: [{source: '**', destination: '/index.html'}],
@@ -27,7 +29,7 @@ export class PreviewCommand {
     }
     superstatic
       .server({
-        host,
+        hostname,
         port,
         cwd,
         config,
@@ -38,7 +40,7 @@ export class PreviewCommand {
           '\n' +
             INFO +
             'Preview your app at: ' +
-            bold(blueBright(`${host}:${port}`)) +
+            bold(blueBright(`${hostname}:${port}`)) +
             '\n'
         )
       );

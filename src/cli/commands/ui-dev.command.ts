@@ -1,10 +1,12 @@
-import {readdir} from 'fs-extra';
+import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 
-import {OK} from '../../lib/services/message.service';
-import {FileService} from '../../lib/services/file.service';
-import {ProjectService} from '../../lib/services/project.service';
-import {UiService, SoulAndSkins} from '../../lib/services/ui.service';
+import {OK} from '../../lib/services/message.service.js';
+import {FileService} from '../../lib/services/file.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
+import {UiService, SoulAndSkins} from '../../lib/services/ui.service.js';
+
+const {readdir} = fsExtra;
 
 export class UiDevCommand {
   constructor(

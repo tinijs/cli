@@ -1,9 +1,11 @@
 import {resolve} from 'pathe';
-import {stat} from 'fs-extra';
+import fsExtra from 'fs-extra';
 
-import {FileService} from './file.service';
-import {TerminalService} from './terminal.service';
-import {ProjectService, Options} from './project.service';
+import {FileService} from './file.service.js';
+import {TerminalService} from './terminal.service.js';
+import {ProjectService} from './project.service.js';
+
+const {stat} = fsExtra;
 
 export interface InitInstruction {
   copy?: Record<string, string>;

@@ -1,7 +1,9 @@
 import {resolve} from 'pathe';
 import {PackageJson} from 'type-fest';
 
-import {FileService} from './file.service';
+import {FileService, require} from './file.service.js';
+
+const cliPackageJson = require('../../../package.json');
 
 export interface Options {
   srcDir?: string;
@@ -43,6 +45,8 @@ export class ProjectService {
     ui: {},
   };
 
+  readonly cliPackageJson = cliPackageJson;
+
   constructor(private fileService: FileService) {}
 
   get targetEnv() {
@@ -50,7 +54,7 @@ export class ProjectService {
   }
 
   get version() {
-    return require('../../../package.json').version as string;
+    return this.cliPackageJson.version;
   }
 
   get rcFilePath() {

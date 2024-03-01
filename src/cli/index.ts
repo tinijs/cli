@@ -1,24 +1,27 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import {Command} from 'commander';
-import {Lib as TiniModule} from '../lib/index';
-import {DocsCommand} from './commands/docs.command';
-import {NewCommand} from './commands/new.command';
-import {GenerateCommand} from './commands/generate.command';
-import {BuildCommand} from './commands/build.command';
-import {PreviewCommand} from './commands/preview.command';
-import {TestCommand} from './commands/test.command';
-import {DevCommand} from './commands/dev.command';
-import {CleanCommand} from './commands/clean.command';
-import {PwaCommand} from './commands/pwa.command';
-import {PwaInitCommand} from './commands/pwa-init.command';
-import {UiCommand} from './commands/ui.command';
-import {UiUseCommand} from './commands/ui-use.command';
-import {UiBuildCommand} from './commands/ui-build.command';
-import {UiDevCommand} from './commands/ui-dev.command';
-import {UiIconCommand} from './commands/ui-icon.command';
-import {ServerCommand} from './commands/server.command';
-import {ServerAddCommand} from './commands/server-add.command';
-import {ServerBuildCommand} from './commands/server-build.command';
+
+import {Lib as TiniModule} from '../lib/index.js';
+import {DocsCommand} from './commands/docs.command.js';
+import {NewCommand} from './commands/new.command.js';
+import {GenerateCommand} from './commands/generate.command.js';
+import {BuildCommand} from './commands/build.command.js';
+import {PreviewCommand} from './commands/preview.command.js';
+import {TestCommand} from './commands/test.command.js';
+import {DevCommand} from './commands/dev.command.js';
+import {CleanCommand} from './commands/clean.command.js';
+import {PwaCommand} from './commands/pwa.command.js';
+import {PwaInitCommand} from './commands/pwa-init.command.js';
+import {UiCommand} from './commands/ui.command.js';
+import {UiUseCommand} from './commands/ui-use.command.js';
+import {UiBuildCommand} from './commands/ui-build.command.js';
+import {UiDevCommand} from './commands/ui-dev.command.js';
+import {UiIconCommand} from './commands/ui-icon.command.js';
+import {ServerCommand} from './commands/server.command.js';
+import {ServerAddCommand} from './commands/server-add.command.js';
+import {ServerBuildCommand} from './commands/server-build.command.js';
+
+const {red} = chalk;
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -245,7 +248,7 @@ export class Cli {
     // general
     const [command, description] = this.commander;
     commander
-      .version(require('../../package.json').version, '-v, --version')
+      .version(this.tiniModule.projectService.version, '-v, --version')
       .name(`${command}`)
       .usage('[options] [command]')
       .description(description);
@@ -498,7 +501,7 @@ export class Cli {
       .command('*')
       .description('Any other command is not supported.')
       .action((options, cmd) =>
-        console.error(chalk.red(`Unknown command '${cmd.args[0]}'`))
+        console.error(red(`Unknown command '${cmd.args[0]}'`))
       );
 
     return commander;

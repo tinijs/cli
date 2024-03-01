@@ -1,4 +1,8 @@
-import {
+import fsExtra from 'fs-extra';
+import recursiveReaddir from 'recursive-readdir';
+import {createRequire} from 'module';
+
+const {
   pathExists,
   readFile,
   readJson,
@@ -8,8 +12,9 @@ import {
   ensureDir,
   copyFile,
   copy,
-} from 'fs-extra';
-import * as recursiveReaddir from 'recursive-readdir';
+} = fsExtra;
+
+export const require = createRequire(import.meta.url);
 
 export class FileService {
   constructor() {}

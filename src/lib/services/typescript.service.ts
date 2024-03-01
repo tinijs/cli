@@ -1,7 +1,9 @@
-import {createCompilerHost, createProgram, CompilerOptions} from 'typescript';
+import typescript, {CompilerOptions} from 'typescript';
 import {resolve} from 'pathe';
 
-import {FileService} from './file.service';
+import {FileService} from './file.service.js';
+
+const {createCompilerHost, createProgram} = typescript;
 
 export class TypescriptService {
   constructor(private fileService: FileService) {}

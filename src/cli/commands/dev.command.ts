@@ -1,14 +1,16 @@
-import concurrently from 'concurrently';
+import {concurrently} from 'concurrently';
 import {watch} from 'chokidar';
 import {resolve} from 'pathe';
-import {bold, blueBright} from 'chalk';
+import chalk from 'chalk';
 
-import {FileService} from '../../lib/services/file.service';
+import {FileService} from '../../lib/services/file.service.js';
 import {
   ProjectService,
   ProjectOptions,
-} from '../../lib/services/project.service';
-import {BuildService} from '../../lib/services/build.service';
+} from '../../lib/services/project.service.js';
+import {BuildService} from '../../lib/services/build.service.js';
+
+const {blueBright, bold} = chalk;
 
 interface CommandOptions {
   watch?: boolean;
@@ -41,19 +43,12 @@ export class DevCommand {
       // build staging
       await this.buildService.buildStaging();
       // start dev server
-      concurrently(
-        [
-          {
-            command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
-          },
-          {command: 'tini dev --watch'},
-        ],
+      concurrently([
         {
-          prefix: 'none',
-          killOthers: ['failure', 'success'],
-          restartTries: 3,
-        }
-      );
+          command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
+        },
+        {command: 'tini dev --watch'},
+      ]);
       // other assets
       this.buildOthers(tiniConfig);
       // running

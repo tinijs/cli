@@ -1,11 +1,11 @@
-import * as os from 'os';
+import {type} from 'os';
 import {execSync} from 'child_process';
 
 export class TerminalService {
   constructor() {}
 
   getCommand(command: string) {
-    return os.type() === 'Windows_NT' ? command + '.cmd' : command;
+    return type() === 'Windows_NT' ? command + '.cmd' : command;
   }
 
   getRawArgs(commanderRawArgs: string[], command: string, toString = true) {
