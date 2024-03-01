@@ -9,16 +9,16 @@ import {PreviewCommand} from './commands/preview.command';
 import {TestCommand} from './commands/test.command';
 import {DevCommand} from './commands/dev.command';
 import {CleanCommand} from './commands/clean.command';
-import {PwaInitCommand} from './commands/pwa-init.command';
 import {PwaCommand} from './commands/pwa.command';
+import {PwaInitCommand} from './commands/pwa-init.command';
+import {UiCommand} from './commands/ui.command';
 import {UiUseCommand} from './commands/ui-use.command';
 import {UiBuildCommand} from './commands/ui-build.command';
 import {UiDevCommand} from './commands/ui-dev.command';
 import {UiIconCommand} from './commands/ui-icon.command';
-import {UiCommand} from './commands/ui.command';
+import {ServerCommand} from './commands/server.command';
 import {ServerAddCommand} from './commands/server-add.command';
 import {ServerBuildCommand} from './commands/server-build.command';
-import {ServerCommand} from './commands/server.command';
 
 export class Cli {
   private tiniModule: TiniModule;
@@ -30,16 +30,16 @@ export class Cli {
   testCommand: TestCommand;
   devCommand: DevCommand;
   cleanCommand: CleanCommand;
-  pwaInitCommand: PwaInitCommand;
   pwaCommand: PwaCommand;
+  pwaInitCommand: PwaInitCommand;
+  uiCommand: UiCommand;
   uiUseCommand: UiUseCommand;
   uiBuildCommand: UiBuildCommand;
   uiDevCommand: UiDevCommand;
   uiIconCommand: UiIconCommand;
-  uiCommand: UiCommand;
+  serverCommand: ServerCommand;
   serverAddCommand: ServerAddCommand;
   serverBuildCommand: ServerBuildCommand;
-  serverCommand: ServerCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -98,18 +98,21 @@ export class Cli {
     ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
-  pwaInitCommandDef: CommandDef = [
-    'pwa-init',
-    'Turn a TiniJS app into a PWA.',
-    ['-i, --skip-install', 'Do not install @tinijs/pwa (install manually).'],
-    ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
-  ];
-
   pwaCommandDef: CommandDef = [
     'pwa <subCommand>',
     'Working with PWA apps.',
     ['-i, --skip-install', 'Do not install @tinijs/pwa (install manually).'],
     ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
+  ];
+
+  pwaInitCommandDef: CommandDef = ['pwa-init', 'Turn a TiniJS app into a PWA.'];
+
+  uiCommandDef: CommandDef = [
+    'ui <subCommand> [params...]',
+    'Tools for developing and using Tini UI.',
+    ['-b, --build-only', 'Build mode only of the use command.'],
+    ['-i, --skip-help', 'Skip instruction of the use command.'],
+    ['-h, --hook [path]', 'Path to a hook.'],
   ];
 
   /**
@@ -118,8 +121,6 @@ export class Cli {
   uiUseCommandDef: CommandDef = [
     'ui-use <inputs...>',
     'Use souls and skins in a project.',
-    ['-b, --build-only', 'Build mode only of the use command.'],
-    ['-i, --skip-help', 'Skip instruction of the use command.'],
   ];
 
   /**
@@ -140,15 +141,13 @@ export class Cli {
   uiIconCommandDef: CommandDef = [
     'ui-icon <packageName> <src>',
     'Build icons pack.',
-    ['-h, --hook [path]', 'Path to a hook.'],
   ];
 
-  uiCommandDef: CommandDef = [
-    'ui <subCommand> [params...]',
-    'Tools for developing and using Tini UI.',
-    ['-b, --build-only', 'Build mode only of the use command.'],
-    ['-i, --skip-help', 'Skip instruction of the use command.'],
-    ['-h, --hook [path]', 'Path to a hook.'],
+  serverCommandDef: CommandDef = [
+    'server <subCommand> [params...]',
+    'Manage backend solutions.',
+    ['-i, --skip-install', 'Do not install the package (install manually).'],
+    ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
   /**
@@ -157,8 +156,6 @@ export class Cli {
   serverAddCommandDef: CommandDef = [
     'server-add <packageName>',
     'Add a backend solution.',
-    ['-i, --skip-install', 'Do not install the package (install manually).'],
-    ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
   /**
@@ -167,13 +164,6 @@ export class Cli {
   serverBuildCommandDef: CommandDef = [
     'server-build <solutionName>',
     'Build the backend.',
-  ];
-
-  serverCommandDef: CommandDef = [
-    'server <subCommand> [params...]',
-    'Manage backend solutions.',
-    ['-i, --skip-install', 'Do not install the package (install manually).'],
-    ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
   constructor() {
@@ -367,7 +357,7 @@ export class Cli {
     })();
 
     // pwa
-    (() => {
+    const pwa = (() => {
       const [command, description, skipInstallOpt, tagOpt] = this.pwaCommandDef;
       commander
         .command(command as string)
@@ -377,22 +367,22 @@ export class Cli {
         .action((subCommand, options) =>
           this.pwaCommand.run(subCommand, options)
         );
+      return {skipInstallOpt, tagOpt};
     })();
 
     // pwa-init
     (() => {
-      const [command, description, skipInstallOpt, tagOpt] =
-        this.pwaInitCommandDef;
+      const [command, description] = this.pwaInitCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...skipInstallOpt)
-        .option(...tagOpt)
+        .option(...pwa.skipInstallOpt)
+        .option(...pwa.tagOpt)
         .action(options => this.pwaInitCommand.run(options));
     })();
 
     // ui
-    (() => {
+    const ui = (() => {
       const [command, description, buildOnlyOpt, skipHelpOpt, hookOpt] =
         this.uiCommandDef;
       commander
@@ -404,17 +394,17 @@ export class Cli {
         .action((subCommand, params, options) =>
           this.uiCommand.run(subCommand, params, options)
         );
+      return {buildOnlyOpt, skipHelpOpt, hookOpt};
     })();
 
     // ui-use
     (() => {
-      const [command, description, buildOnlyOpt, skipHelpOpt] =
-        this.uiUseCommandDef;
+      const [command, description] = this.uiUseCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...buildOnlyOpt)
-        .option(...skipHelpOpt)
+        .option(...ui.buildOnlyOpt)
+        .option(...ui.skipHelpOpt)
         .action((inputs, options) => this.uiUseCommand.run(inputs, options));
     })();
 
@@ -440,18 +430,16 @@ export class Cli {
 
     // ui-icon
     (() => {
-      const [command, description, hookOpt] = this.uiIconCommandDef;
+      const [command, description] = this.uiIconCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...hookOpt)
-        .action((packageName, src, options) =>
-          this.uiIconCommand.run(packageName, src, options)
-        );
+        .option(...ui.hookOpt)
+        .action((src, options) => this.uiIconCommand.run(src, options));
     })();
 
     // server
-    (() => {
+    const server = (() => {
       const [command, description, skipInstallOpt, tagOpt] =
         this.serverCommandDef;
       commander
@@ -462,17 +450,17 @@ export class Cli {
         .action((subCommand, params, options) =>
           this.serverCommand.run(subCommand, params, options)
         );
+      return {skipInstallOpt, tagOpt};
     })();
 
     // server-add
     (() => {
-      const [command, description, skipInstallOpt, tagOpt] =
-        this.serverAddCommandDef;
+      const [command, description] = this.serverAddCommandDef;
       commander
         .command(command as string)
         .description(description)
-        .option(...skipInstallOpt)
-        .option(...tagOpt)
+        .option(...server.skipInstallOpt)
+        .option(...server.tagOpt)
         .action((packageName, options) =>
           this.serverAddCommand.run(packageName, options)
         );
