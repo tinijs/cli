@@ -113,6 +113,8 @@ export class Cli {
     ['-b, --build-only', 'Build mode only of the use command.'],
     ['-i, --skip-help', 'Skip instruction of the use command.'],
     ['-h, --hook [path]', 'Path to a hook.'],
+    ['-o, --output [path]', 'Custom output folder.'],
+    ['-r, --react', 'Build for React.'],
   ];
 
   /**
@@ -135,12 +137,11 @@ export class Cli {
   uiDevCommandDef: CommandDef = ['ui-dev', 'Build the ui-dev package.'];
 
   /**
-   * @param packageName - The package name.
-   * @param src - The path to icon files.
+   * @param sources - The list of paths to icon files.
    */
   uiIconCommandDef: CommandDef = [
-    'ui-icon <packageName> <src>',
-    'Build icons pack.',
+    'ui-icon <sources...>',
+    'Build an icons pack.',
   ];
 
   serverCommandDef: CommandDef = [
@@ -383,18 +384,27 @@ export class Cli {
 
     // ui
     const ui = (() => {
-      const [command, description, buildOnlyOpt, skipHelpOpt, hookOpt] =
-        this.uiCommandDef;
+      const [
+        command,
+        description,
+        buildOnlyOpt,
+        skipHelpOpt,
+        hookOpt,
+        outputOpt,
+        reactOpt,
+      ] = this.uiCommandDef;
       commander
         .command(command as string)
         .description(description)
         .option(...buildOnlyOpt)
         .option(...skipHelpOpt)
         .option(...hookOpt)
+        .option(...outputOpt)
+        .option(...reactOpt)
         .action((subCommand, params, options) =>
           this.uiCommand.run(subCommand, params, options)
         );
-      return {buildOnlyOpt, skipHelpOpt, hookOpt};
+      return {buildOnlyOpt, skipHelpOpt, hookOpt, outputOpt, reactOpt};
     })();
 
     // ui-use
@@ -435,6 +445,8 @@ export class Cli {
         .command(command as string)
         .description(description)
         .option(...ui.hookOpt)
+        .option(...ui.outputOpt)
+        .option(...ui.reactOpt)
         .action((src, options) => this.uiIconCommand.run(src, options));
     })();
 

@@ -26,14 +26,14 @@ export class BuildService {
     private projectService: ProjectService
   ) {}
 
-  resolveStagingPath(srcDir: string, stagingPrefix: string) {
-    return resolve(`${stagingPrefix}-${srcDir}`);
+  resolveStagingPath(srcDir: string, stagingDir: string) {
+    return resolve(`${stagingDir}-${srcDir}`);
   }
 
   async buildStaging() {
-    const {srcDir, stagingPrefix} = await this.projectService.getOptions();
+    const {srcDir, stagingDir} = await this.projectService.getOptions();
     const srcPath = resolve(srcDir);
-    const stagingPath = this.resolveStagingPath(srcDir, stagingPrefix);
+    const stagingPath = this.resolveStagingPath(srcDir, stagingDir);
     await this.fileService.cleanDir(stagingPath);
     const paths = await this.fileService.listDir(srcPath);
     for (let i = 0; i < paths.length; i++) {

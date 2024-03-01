@@ -48,7 +48,7 @@ export class ServerBuildCommand {
     }
   }
 
-  private async buildBasic({stagingPrefix, outDir}: ProjectOptions) {
+  private async buildBasic({stagingDir, outDir}: ProjectOptions) {
     const eleventyConfigPath = resolve('content', 'eleventy.config.js');
     if (!(await this.fileService.exists(eleventyConfigPath))) {
       return console.log(
@@ -59,7 +59,7 @@ export class ServerBuildCommand {
           )} solution (no content/eleventy.config.js found).\n`
       );
     }
-    const stagingDir = `${stagingPrefix}-content`;
+    const stagingDir = `${stagingDir}-content`;
     const tiniContentDir = `${outDir}/tini-content`;
     const srcPath = resolve(stagingDir);
     const destPath = resolve(tiniContentDir);

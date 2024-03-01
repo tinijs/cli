@@ -14,11 +14,11 @@ export class UiDevCommand {
   ) {}
 
   async run() {
-    const {stagingPrefix} = await this.projectService.getOptions();
+    const {stagingDir} = await this.projectService.getOptions();
     const souls = (await readdir(resolve(this.uiService.STYLES_DIR))).filter(
       item => !~item.indexOf('.')
     );
-    const destPath = resolve(`${stagingPrefix}-ui`);
+    const destPath = resolve(`${stagingDir}-ui`);
     // clean dir
     await this.fileService.cleanDir(destPath);
     // copy global files

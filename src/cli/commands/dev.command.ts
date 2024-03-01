@@ -23,10 +23,10 @@ export class DevCommand {
 
   async run(commandOptions: CommandOptions) {
     const tiniConfig = await this.projectService.getOptions();
-    const {srcDir, outDir, stagingPrefix} = tiniConfig;
+    const {srcDir, outDir, stagingDir} = tiniConfig;
     const stagingPath = this.buildService.resolveStagingPath(
       srcDir,
-      stagingPrefix
+      stagingDir
     );
     // watch mode
     if (commandOptions.watch) {

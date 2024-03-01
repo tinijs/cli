@@ -68,6 +68,7 @@
     "open": "^8.4.2",
     "ora": "^5.4.1",
     "parcel": "^2.10.3",
+    "pathe": "^1.1.2",
     "picomatch": "^2.3.1",
     "recursive-readdir": "^2.2.3",
     "sass": "^1.69.5",
@@ -86,6 +87,7 @@
     "@types/node": "^20.9.4",
     "@types/picomatch": "^2.3.3",
     "@types/recursive-readdir": "^2.2.4",
-    "gts": "^5.2.0"
+    "gts": "^5.2.0",
+    "type-fest": "^4.10.3"
   }
 }

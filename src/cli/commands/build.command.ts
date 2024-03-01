@@ -20,11 +20,11 @@ export class BuildCommand {
 
   async run(commandOptions: CommandOptions) {
     const tiniConfig = await this.projectService.getOptions();
-    const {srcDir, outDir, stagingPrefix} = tiniConfig;
+    const {srcDir, outDir, stagingDir} = tiniConfig;
     process.env.TARGET_ENV = commandOptions.target || 'production';
     const stagingPath = this.buildService.resolveStagingPath(
       srcDir,
-      stagingPrefix
+      stagingDir
     );
     // clean target dir
     await remove(resolve(outDir));

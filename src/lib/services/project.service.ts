@@ -1,11 +1,12 @@
 import {resolve} from 'path';
+import {PackageJson} from 'type-fest';
 
 import {FileService} from './file.service';
 
 export interface Options {
   srcDir?: string;
   outDir?: string;
-  stagingPrefix?: string;
+  stagingDir?: string;
   componentPrefix?: string;
   skipMinifyHTMLLiterals?: boolean;
   precompileGeneric?: 'none' | 'lite' | 'full';
@@ -18,18 +19,8 @@ interface PWAPrecaching {
 }
 
 interface UiConfig {
-  use: string[];
-}
-
-export interface PackageJson {
-  name: string;
-  version: string;
-  description: string;
-  homepage?: string;
-  author?: string;
-  license?: string;
-  keywords?: string[];
-  scripts?: Record<string, string>;
+  use?: string[];
+  icon?: string[];
 }
 
 export type ProjectOptions = {
@@ -37,18 +28,19 @@ export type ProjectOptions = {
 };
 
 export class ProjectService {
-  private RC_PATH = 'tini.config.json';
-  private PACKAGE_PATH = 'package.json';
+  private RC_FILE = 'tini.config.json';
+  private PACKAGE_FILE = 'package.json';
+  private UI_OUTPUT_DIR = 'node_modules/@tinijs/ui';
 
   private defaultOptions: ProjectOptions = {
     srcDir: 'app',
     outDir: 'www',
-    stagingPrefix: '.tini',
+    stagingDir: '.tini',
     componentPrefix: 'app',
     skipMinifyHTMLLiterals: false,
     precompileGeneric: 'lite',
     pwa: {},
-    ui: {use: ['bootstrap/light']},
+    ui: {},
   };
 
   constructor(private fileService: FileService) {}
@@ -57,20 +49,24 @@ export class ProjectService {
     return process.env.TARGET_ENV || 'development';
   }
 
-  get rcPath() {
-    return resolve(this.RC_PATH);
-  }
-
-  get packagePath() {
-    return resolve(this.PACKAGE_PATH);
-  }
-
   get version() {
     return require('../../../package.json').version as string;
   }
 
+  get rcFilePath() {
+    return resolve(this.RC_FILE);
+  }
+
+  get packageFilePath() {
+    return resolve(this.PACKAGE_FILE);
+  }
+
+  get uiOutputDirPath() {
+    return resolve(this.UI_OUTPUT_DIR);
+  }
+
   async isTiniConfigExists() {
-    return await this.fileService.exists(this.rcPath);
+    return await this.fileService.exists(this.rcFilePath);
   }
 
   async isPWAEnabled(appConfig?: ProjectOptions) {
@@ -80,35 +76,35 @@ export class ProjectService {
   }
 
   getPackageJson() {
-    return this.fileService.readJson<PackageJson>(this.packagePath);
+    return this.fileService.readJson<PackageJson>(this.packageFilePath);
   }
 
   async updatePackageJson(
     modifier: (currentData: PackageJson) => Promise<PackageJson>
   ) {
     const currentData = await this.fileService.readJson<PackageJson>(
-      this.packagePath
+      this.packageFilePath
     );
     const newData = await modifier(currentData);
-    await this.fileService.createJson(this.packagePath, newData);
+    await this.fileService.createJson(this.packageFilePath, newData);
     return this.getPackageJson();
   }
 
   async getOptions() {
     // read options
-    const options = !(await this.fileService.exists(this.rcPath))
+    const options = !(await this.isTiniConfigExists())
       ? ({} as unknown as Options)
-      : await this.fileService.readJson<Options>(this.rcPath);
+      : await this.fileService.readJson<Options>(this.rcFilePath);
     // result
     return {...this.defaultOptions, ...options} as ProjectOptions;
   }
 
   async updateOptions(modifier: (currentData: Options) => Promise<Options>) {
-    const currentData = !(await this.fileService.exists(this.rcPath))
+    const currentData = !(await this.isTiniConfigExists())
       ? ({} as unknown as Options)
-      : await this.fileService.readJson<Options>(this.rcPath);
+      : await this.fileService.readJson<Options>(this.rcFilePath);
     const newData = await modifier(currentData);
-    await this.fileService.createJson(this.rcPath, newData);
+    await this.fileService.createJson(this.rcFilePath, newData);
     return this.getOptions();
   }
 }
