@@ -35,6 +35,7 @@ export class Lib {
     this.buildService = new BuildService(this.fileService, this.projectService);
     this.uiService = new UiService(this.fileService, this.typescriptService);
     this.moduleService = new ModuleService(
+      this,
       this.fileService,
       this.terminalService,
       this.projectService

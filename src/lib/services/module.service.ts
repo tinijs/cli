@@ -1,21 +1,33 @@
 import {resolve} from 'pathe';
+import {loadConfig} from 'c12';
 import fsExtra from 'fs-extra';
 
+import {Lib as TiniModule} from '../index.js';
 import {FileService} from './file.service.js';
 import {TerminalService} from './terminal.service.js';
 import {ProjectService} from './project.service.js';
 
 const {stat} = fsExtra;
 
-export interface InitInstruction {
+export interface TiniModuleConfig {
+  init?: ModuleInit;
+  build?: (options: any, tiniModule: TiniModule) => void;
+}
+
+export interface ModuleInit {
   copy?: Record<string, string>;
   scripts?: Record<string, string>;
   buildCommand?: string;
-  run?: string;
+  run?: string | ((tiniModule: TiniModule) => void);
+}
+
+export function defineTiniModule(config: TiniModuleConfig) {
+  return config;
 }
 
 export class ModuleService {
   constructor(
+    private tiniModule: TiniModule,
     private fileService: FileService,
     private terminalService: TerminalService,
     private projectService: ProjectService
@@ -27,17 +39,16 @@ export class ModuleService {
     );
   }
 
-  async loadInitInstruction(packageName: string) {
-    const packageJsonPath = resolve(
-      'node_modules',
-      packageName,
-      'package.json'
-    );
-    const packageJson = await this.fileService.readJson(packageJsonPath);
-    return ((packageJson as any).tiniModule || {}) as InitInstruction;
+  async loadModuleConfig(packageName: string) {
+    const loadResult = await loadConfig({
+      cwd: resolve('node_modules', packageName),
+      configFile: 'tini.module',
+      rcFile: false,
+    });
+    return loadResult.config as TiniModuleConfig;
   }
 
-  async copyAssets(packageName: string, copy: Record<string, string>) {
+  async copyAssets(packageName: string, copy: NonNullable<ModuleInit['copy']>) {
     for (const from in copy) {
       const fromPath = resolve('node_modules', packageName, from);
       const toPath = resolve(copy[from]);
@@ -55,7 +66,10 @@ export class ModuleService {
     }
   }
 
-  async updateScripts(scripts: Record<string, string>, buildCommand?: string) {
+  async updateScripts(
+    scripts: NonNullable<ModuleInit['scripts']>,
+    buildCommand?: ModuleInit['buildCommand']
+  ) {
     return this.projectService.updatePackageJson(async data => {
       const build = [
         (data.scripts as any).build,
@@ -72,14 +86,11 @@ export class ModuleService {
     });
   }
 
-  runAdditional(packageName: string, run: string) {
-    const isNPX = run.startsWith('npx ');
-    const isFile = run.endsWith('.js');
-    const command = isNPX
-      ? run
-      : isFile
-      ? `node ${resolve('node_modules', packageName, run)}`
-      : `npm run ${run}`;
-    return this.terminalService.exec(command);
+  initRun(run: NonNullable<ModuleInit['run']>) {
+    return run instanceof Function
+      ? run(this.tiniModule)
+      : this.terminalService.exec(
+          run.startsWith('npx ') ? run : `npm run ${run}`
+        );
   }
 }

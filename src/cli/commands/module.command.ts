@@ -16,19 +16,22 @@ export class ModuleCommand {
     // install packages
     this.moduleService.installPackage(packageName, commandOptions.tag);
     // load init instruction
-    const {copy, scripts, buildCommand, run} =
-      await this.moduleService.loadInitInstruction(packageName);
-    // copy assets
-    if (copy) {
-      await this.moduleService.copyAssets(packageName, copy);
-    }
-    // add scripts
-    if (scripts) {
-      await this.moduleService.updateScripts(scripts, buildCommand);
-    }
-    // run additional
-    if (run) {
-      this.moduleService.runAdditional(packageName, run);
+    const moduleConfig = await this.moduleService.loadModuleConfig(packageName);
+    // handle init
+    if (moduleConfig.init) {
+      const {copy, scripts, buildCommand, run} = moduleConfig.init;
+      // copy assets
+      if (copy) {
+        await this.moduleService.copyAssets(packageName, copy);
+      }
+      // add scripts
+      if (scripts) {
+        await this.moduleService.updateScripts(scripts, buildCommand);
+      }
+      // run
+      if (run) {
+        this.moduleService.initRun(run);
+      }
     }
     // done
     console.log(
