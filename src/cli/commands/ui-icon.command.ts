@@ -32,6 +32,7 @@ export class UiIconCommand {
 
   async run(sources: string[], commandOptions: UIIconCommandOptions) {
     if (!sources) return console.log(MISSING_ARG('sources'));
+    console.log('');
     const spinner = ora('Build icons ...\n').start();
     // prepare
     sources = sources.map(item =>
@@ -95,11 +96,12 @@ export class UiIconCommand {
 
     const allItems = [] as Array<{
       fileNameOnly: string;
-      componentNameClass: string;
+      className: string;
       tagName: string;
     }>;
     const countNames = {} as Record<string, number>;
     for (let i = 0; i < filePaths.length; i++) {
+      if (i > 5) break;
       const [path, variantSuffix] = filePaths[i].split('?');
       // original names
       const fileName = path.split('/').pop() as string;
@@ -131,7 +133,7 @@ export class UiIconCommand {
       // output files
       const dataURI = await this.fileToDataURI(path);
       const code = templateCode
-        .replace('ICON_SRC', `'${dataURI}'`)
+        .replace('ICON_SRC', `\`${dataURI}\``)
         .replace('defaultTagName = ICON', `defaultTagName = '${tagName}'`)
         .replace('class IconComponent', `class ${className}`);
       const reactCode = `import React from 'react';
@@ -151,7 +153,7 @@ export const ${reactTagName} = createComponent({
       // save item for later use
       allItems.push({
         fileNameOnly,
-        componentNameClass,
+        className,
         tagName,
       });
     }
@@ -175,32 +177,32 @@ export const ${reactTagName} = createComponent({
      * III. Preview
      */
 
-    const appTSImports = [] as string[];
-    const appTSComponents = [] as string[];
-    const appTSTags = [] as string[];
-    allItems.forEach(({fileNameOnly, componentNameClass, tagName}) => {
-      appTSImports.push(
-        `import {${componentNameClass}} from './${fileNameOnly}';`
+    const previewTSImports = [] as string[];
+    const previewTSComponents = [] as string[];
+    const previewTSTags = [] as string[];
+    allItems.forEach(({fileNameOnly, className, tagName}) => {
+      previewTSImports.push(
+        `import {${className}} from '../${fileNameOnly}.js';`
       );
-      appTSComponents.push(componentNameClass);
-      appTSTags.push(`<div class="icon"><${tagName}></${tagName}></div>`);
+      previewTSComponents.push(className);
+      previewTSTags.push(`<div><${tagName}></${tagName}></div>`);
     });
-    const appTSCodeWithImports =
-      `${appTSImports.join('\n')}\n` +
+    const previewTSCodeWithImports =
+      `${previewTSImports.join('\n')}\n` +
       previewTsCode
         .replace(
           "@customElement('app-preview')",
-          `useComponents([${appTSComponents.join(
+          `registerComponents([${previewTSComponents.join(
             ','
           )}]);\n\n@customElement('app-preview')`
         )
-        .replace('<main></main>', `<main>${appTSTags.join('')}</main>`);
+        .replace('<main></main>', `<main>${previewTSTags.join('')}</main>`);
     await this.fileService.createFile(
-      resolve(destDirPath, '___preview.ts'),
-      appTSCodeWithImports
+      resolve(destDirPath, 'preview', 'index.ts'),
+      previewTSCodeWithImports
     );
     await this.fileService.createFile(
-      resolve(destDirPath, 'index.html'),
+      resolve(destDirPath, 'preview', 'index.html'),
       previewHtmlCode
     );
 
@@ -293,7 +295,7 @@ export const ${reactTagName} = createComponent({
   }
 
   get iconTemplate() {
-    return `import {TiniIconComponent} from '@tinijs/ui/components/icon';
+    return `import {TiniIconComponent} from '@tinijs/ui/components/icon.js';
 export class IconComponent extends TiniIconComponent {
   static readonly defaultTagName = ICON;
   static readonly prebuiltSrc = ICON_SRC;
@@ -307,12 +309,10 @@ export class IconComponent extends TiniIconComponent {
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tini Icons Preview</title>
-    <script type="module" src="___preview.ts"></script>
+    <script type="module" src="./index.ts"></script>
     <style>
-      :root {
-        --scale-md-2x: 32px;
-      }
       body {
+        --scale-md-2x: 32px;
         margin: 0;
         padding: 1rem;
       }
@@ -328,7 +328,7 @@ export class IconComponent extends TiniIconComponent {
   get previewTSTemplate() {
     return `import {LitElement, html, css} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import {useComponents} from 'tinijs';
+import {registerComponents} from 'tinijs';
 
 @customElement('app-preview')
 export class AppPreview extends LitElement {
@@ -338,7 +338,7 @@ export class AppPreview extends LitElement {
       grid-template-columns: repeat(auto-fill, 3rem);
       gap: .5rem;
     }
-    .icon {
+    main > div {
       display: flex;
       align-items: center;
       justify-content: center;
