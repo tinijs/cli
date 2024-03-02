@@ -21,33 +21,37 @@ const {red} = chalk;
 
 export class Cli {
   private tiniModule: TiniModule;
-  docsCommand: DocsCommand;
-  newCommand: NewCommand;
-  generateCommand: GenerateCommand;
-  buildCommand: BuildCommand;
-  previewCommand: PreviewCommand;
-  testCommand: TestCommand;
-  devCommand: DevCommand;
-  cleanCommand: CleanCommand;
-  uiCommand: UiCommand;
-  uiUseCommand: UiUseCommand;
-  uiBuildCommand: UiBuildCommand;
-  uiDevCommand: UiDevCommand;
-  uiIconCommand: UiIconCommand;
-  moduleCommand: ModuleCommand;
+  readonly docsCommand: DocsCommand;
+  readonly newCommand: NewCommand;
+  readonly generateCommand: GenerateCommand;
+  readonly buildCommand: BuildCommand;
+  readonly previewCommand: PreviewCommand;
+  readonly testCommand: TestCommand;
+  readonly devCommand: DevCommand;
+  readonly cleanCommand: CleanCommand;
+  readonly uiCommand: UiCommand;
+  readonly uiUseCommand: UiUseCommand;
+  readonly uiBuildCommand: UiBuildCommand;
+  readonly uiDevCommand: UiDevCommand;
+  readonly uiIconCommand: UiIconCommand;
+  readonly moduleCommand: ModuleCommand;
 
-  commander = ['tini', 'The CLI for the TiniJS framework.'];
+  readonly commander = ['tini', 'The CLI for the TiniJS framework.'];
 
-  docsCommandDef: CommandDef = [['docs', 'home'], 'Open documentation.'];
+  readonly docsCommandDef: CommandDef = [
+    ['docs', 'home'],
+    'Open documentation.',
+  ];
 
   /**
    * @param projectName - The project name.
    */
-  newCommandDef: CommandDef = [
+  readonly newCommandDef: CommandDef = [
     ['new <projectName>', 'start'],
     'Create a new project.',
-    ['-l, --latest', 'Install the latest @tinijs/skeleton.'],
-    ['-t, --tag [value]', 'Use the custom version of the @tinijs/skeleton.'],
+    ['-l, --latest', 'Install the latest template.'],
+    ['-s, --source [value]', 'Use a custom template instead the official.'],
+    ['-t, --tag [value]', 'Use a custom version of the tempalte.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
     ['-u, --skip-ui', 'Do not run: tini ui use.'],
   ];
@@ -56,26 +60,26 @@ export class Cli {
    * @param type - The resource type
    * @param dest - The resource destination
    */
-  generateCommandDef: CommandDef = [
+  readonly generateCommandDef: CommandDef = [
     ['generate <type> <dest>', 'create', 'g'],
     'Generate a resource.',
     ['-t, --type-prefixed', 'Use the format [name].[type].[ext].'],
     ['-n, --nested', 'Nested under a folder.'],
   ];
 
-  devCommandDef: CommandDef = [
+  readonly devCommandDef: CommandDef = [
     ['dev', 'serve'],
     'Start the dev server.',
     ['-w, --watch', 'Watch mode only.'],
   ];
 
-  buildCommandDef: CommandDef = [
+  readonly buildCommandDef: CommandDef = [
     'build',
     'Build the app.',
     ['-t, --target [value]', 'Target: production (default), qa1, any, ...'],
   ];
 
-  previewCommandDef: CommandDef = [
+  readonly previewCommandDef: CommandDef = [
     'preview',
     'Preview the app.',
     ['-p, --port [value]', 'Custom port.'],
@@ -83,16 +87,16 @@ export class Cli {
     ['-i, --i18n', 'Enable superstatic i18n.'],
   ];
 
-  testCommandDef: CommandDef = ['test', 'Unit test the app.'];
+  readonly testCommandDef: CommandDef = ['test', 'Unit test the app.'];
 
-  cleanCommandDef: CommandDef = [
+  readonly cleanCommandDef: CommandDef = [
     ['clean', 'c'],
     'Clean Typescript output files.',
     ['-i, --includes [value]', 'Including files, separated by |.'],
     ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
-  uiCommandDef: CommandDef = [
+  readonly uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
     'Tools for developing and using Tini UI.',
     ['-b, --build-only', 'Build mode only of the use command.'],
@@ -105,7 +109,7 @@ export class Cli {
   /**
    * @param inputs - List of soul and skins: soul/skin soul/skin-1,skin-2
    */
-  uiUseCommandDef: CommandDef = [
+  readonly uiUseCommandDef: CommandDef = [
     'ui-use <inputs...>',
     'Use souls and skins in a project.',
   ];
@@ -114,17 +118,20 @@ export class Cli {
    * @param packageName - The package name.
    * @param soulName? - The soul name.
    */
-  uiBuildCommandDef: CommandDef = [
+  readonly uiBuildCommandDef: CommandDef = [
     'ui-build <packageName> [soulName]',
     'Build UI systems.',
   ];
 
-  uiDevCommandDef: CommandDef = ['ui-dev', 'Build the ui-dev package.'];
+  readonly uiDevCommandDef: CommandDef = [
+    'ui-dev',
+    'Build the ui-dev package.',
+  ];
 
   /**
    * @param sources - The list of paths to icon files.
    */
-  uiIconCommandDef: CommandDef = [
+  readonly uiIconCommandDef: CommandDef = [
     'ui-icon <sources...>',
     'Build an icons pack.',
   ];
@@ -132,7 +139,7 @@ export class Cli {
   /**
    * @param packageName - The module package name.
    */
-  moduleCommandDef: CommandDef = [
+  readonly moduleCommandDef: CommandDef = [
     ['add <packageName>', 'module'],
     'Add a module to the current project.',
     ['-t, --tag [value]', 'Use the custom version of the package.'],
@@ -140,17 +147,20 @@ export class Cli {
 
   constructor() {
     this.tiniModule = new TiniModule();
-    this.docsCommand = new DocsCommand();
+    this.docsCommand = new DocsCommand(this.tiniModule.messageService);
     this.newCommand = new NewCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.downloadService,
       this.tiniModule.projectService
     );
     this.generateCommand = new GenerateCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.generateService
     );
     this.devCommand = new DevCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.projectService,
       this.tiniModule.buildService
@@ -161,15 +171,20 @@ export class Cli {
       this.tiniModule.projectService,
       this.tiniModule.buildService
     );
-    this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
+    this.previewCommand = new PreviewCommand(
+      this.tiniModule.messageService,
+      this.tiniModule.projectService
+    );
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
     this.cleanCommand = new CleanCommand(this.tiniModule.fileService);
     this.uiUseCommand = new UiUseCommand(
+      this.tiniModule.messageService,
       this.tiniModule.terminalService,
       this.tiniModule.projectService,
       this.tiniModule.uiService
     );
     this.uiBuildCommand = new UiBuildCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.projectService,
       this.tiniModule.typescriptService,
@@ -177,11 +192,13 @@ export class Cli {
       this.tiniModule.uiService
     );
     this.uiDevCommand = new UiDevCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.projectService,
       this.tiniModule.uiService
     );
     this.uiIconCommand = new UiIconCommand(
+      this.tiniModule.messageService,
       this.tiniModule.fileService,
       this.tiniModule.projectService,
       this.tiniModule.typescriptService,
@@ -191,18 +208,24 @@ export class Cli {
       this.uiUseCommand,
       this.uiBuildCommand,
       this.uiDevCommand,
-      this.uiIconCommand
+      this.uiIconCommand,
+      this.tiniModule.messageService
     );
-    this.moduleCommand = new ModuleCommand(this.tiniModule.moduleService);
+    this.moduleCommand = new ModuleCommand(
+      this.tiniModule.messageService,
+      this.tiniModule.moduleService
+    );
   }
 
   getApp() {
     const commander = new Command();
+    const {version: tiniVersion} =
+      this.tiniModule.projectService.cliPackageJson;
 
     // general
     const [command, description] = this.commander;
     commander
-      .version(this.tiniModule.projectService.version, '-v, --version')
+      .version(tiniVersion as string, '-v, --version')
       .name(`${command}`)
       .usage('[options] [command]')
       .description(description);
@@ -223,6 +246,7 @@ export class Cli {
         [command, ...aliases],
         description,
         latestOpt,
+        sourceOpt,
         tagOpt,
         skipGitOpt,
         skipUiOpt,
@@ -232,6 +256,7 @@ export class Cli {
         .aliases(aliases)
         .description(description)
         .option(...latestOpt)
+        .option(...sourceOpt)
         .option(...tagOpt)
         .option(...skipGitOpt)
         .option(...skipUiOpt)

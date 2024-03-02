@@ -55,7 +55,8 @@ export class GenerateService {
   ) {
     const templates: Template[] = [];
     // process
-    const {componentPrefix, srcDir} = await this.projectService.getOptions();
+    const {componentPrefix, srcDir} =
+      await this.projectService.loadProjectConfig();
     const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
     const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
     const typeCapital = type[0].toUpperCase() + type.substring(1);

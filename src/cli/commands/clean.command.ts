@@ -8,7 +8,7 @@ import {FileService} from '../../lib/services/file.service.js';
 const {red, gray, green} = chalk;
 const prompt = createPromptModule();
 
-interface CommandOptions {
+interface CleanCommandOptions {
   includes?: string;
   excludes?: string;
 }
@@ -34,7 +34,7 @@ export class CleanCommand {
 
   constructor(private fileService: FileService) {}
 
-  async run(commandOptions: CommandOptions) {
+  async run(commandOptions: CleanCommandOptions) {
     const includes = commandOptions.includes
       ? this.processInputPaths(commandOptions.includes)
       : [];

@@ -1,22 +1,25 @@
 import chalk from 'chalk';
 import superstatic from 'superstatic';
 
-import {INFO} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {ProjectService} from '../../lib/services/project.service.js';
 
 const {blueBright, bold} = chalk;
 
-interface CommandOptions {
+interface PreviewCommandOptions {
   port?: string;
   host?: string;
   i18n?: boolean;
 }
 
 export class PreviewCommand {
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private messageService: MessageService,
+    private projectService: ProjectService
+  ) {}
 
-  async run(commandOptions: CommandOptions) {
-    const {outDir: cwd} = await this.projectService.getOptions();
+  async run(commandOptions: PreviewCommandOptions) {
+    const {outDir: cwd} = await this.projectService.loadProjectConfig();
     // launch server
     const hostname = commandOptions.host || '0.0.0.0';
     const port = Number(commandOptions.port || 3000);
@@ -36,12 +39,8 @@ export class PreviewCommand {
         debug: false,
       })
       .listen(() =>
-        console.log(
-          '\n' +
-            INFO +
-            'Preview your app at: ' +
-            bold(blueBright(`${hostname}:${port}`)) +
-            '\n'
+        this.messageService.info(
+          `Preview your app at: ${bold(blueBright(`${hostname}:${port}`))}`
         )
       );
   }

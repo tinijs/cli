@@ -4,7 +4,7 @@ import {camelCase, pascalCase} from 'change-case';
 import CleanCSS from 'clean-css';
 import chalk from 'chalk';
 
-import {OK} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {FileService} from '../../lib/services/file.service.js';
 import {ProjectService} from '../../lib/services/project.service.js';
 import {TypescriptService} from '../../lib/services/typescript.service.js';
@@ -18,6 +18,7 @@ export const UI_PACKAGE_NAME = '@tinijs/ui';
 
 export class UiBuildCommand {
   constructor(
+    private messageService: MessageService,
     private fileService: FileService,
     private projectService: ProjectService,
     private typescriptService: TypescriptService,
@@ -51,7 +52,7 @@ export class UiBuildCommand {
       homepage = '',
       license = '',
       keywords = [],
-    } = await this.projectService.getPackageJson();
+    } = await this.projectService.loadProjectPackageJson();
     await this.fileService.createJson(resolve(destPath, 'package.json'), {
       name: packageName,
       version,
@@ -110,8 +111,8 @@ export class UiBuildCommand {
       );
     }
     // result
-    console.log(
-      '\n' + OK + `Build ${bold(blueBright(packageName))} successfully!\n`
+    this.messageService.success(
+      `Build ${bold(blueBright(packageName))} successfully!`
     );
   }
 

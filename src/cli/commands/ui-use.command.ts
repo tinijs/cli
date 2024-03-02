@@ -2,9 +2,9 @@ import chalk from 'chalk';
 import {resolve} from 'pathe';
 import ora from 'ora';
 
-import {ERROR} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {TerminalService} from '../../lib/services/terminal.service.js';
-import {ProjectService, Options} from '../../lib/services/project.service.js';
+import {ProjectService} from '../../lib/services/project.service.js';
 import {UiService, SoulAndSkins} from '../../lib/services/ui.service.js';
 
 const {gray, green, blue, blueBright, bold} = chalk;
@@ -19,21 +19,17 @@ const UI_PACKAGE_NAME = '@tinijs/ui';
 
 export class UiUseCommand {
   constructor(
+    private messageService: MessageService,
     private terminalService: TerminalService,
     private projectService: ProjectService,
     private uiService: UiService
   ) {}
 
   async run(inputs: string[], options: UiUseCommandOptions) {
-    const {ui} = await this.projectService.getOptions();
-    inputs = ((inputs?.length ? inputs : ui.use) || []).filter(
-      item => ~item.indexOf('/')
-    );
+    inputs = (inputs || []).filter(item => ~item.indexOf('/'));
     if (!inputs.length) {
-      return console.log(
-        '\n' +
-          ERROR +
-          `Invalid inputs, valid format: ${blue('soul/skin-1,skin-2')}\n`
+      return this.messageService.error(
+        `Invalid inputs, valid format: ${blue('soul/skin-1,skin-2')}`
       );
     }
     const destPath = resolve(NODE_MODULES_DIR, UI_PACKAGE_NAME);
@@ -43,13 +39,6 @@ export class UiUseCommand {
     // install packages (@tinijs/ui postinstall or using --build-only implicitly)
     if (!options.buildOnly) {
       this.installPackages(souls);
-    }
-
-    // update tini.config.json
-    if (await this.projectService.isTiniConfigExists()) {
-      await this.projectService.updateOptions(
-        async options => ({...options, ui: {use: inputs}}) as Options
-      );
     }
 
     // copy global files

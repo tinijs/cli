@@ -6,7 +6,7 @@ import ora, {Ora} from 'ora';
 import isomorphicDompurify from 'isomorphic-dompurify';
 import {optimize} from 'svgo';
 
-import {MISSING_ARG} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {FileService} from '../../lib/services/file.service.js';
 import {ProjectService} from '../../lib/services/project.service.js';
 import {TypescriptService} from '../../lib/services/typescript.service.js';
@@ -24,6 +24,7 @@ export interface UIIconCommandOptions {
 
 export class UiIconCommand {
   constructor(
+    private messageService: MessageService,
     private fileService: FileService,
     private projectService: ProjectService,
     private typescriptService: TypescriptService,
@@ -31,7 +32,7 @@ export class UiIconCommand {
   ) {}
 
   async run(sources: string[], commandOptions: UIIconCommandOptions) {
-    if (!sources) return console.log(MISSING_ARG('sources'));
+    if (!sources) return this.messageService.logMissingArg('sources');
     console.log('');
     const spinner = ora('Build icons ...\n').start();
     // prepare

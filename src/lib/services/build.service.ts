@@ -1,25 +1,24 @@
 import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 import {minifyHTMLLiterals} from 'minify-html-literals';
-import {compileStringAsync} from 'sass';
-import typescript from 'typescript';
-import chalk from 'chalk';
-import {getManifest} from 'workbox-build';
-import {build as esBuild} from 'esbuild';
+import sass from 'sass';
+import esbuild from 'esbuild';
+import workboxBuild from 'workbox-build';
 import {nanoid} from 'nanoid';
 
 import {FileService} from '../../lib/services/file.service.js';
 import {
   ProjectService,
-  ProjectOptions,
+  ProjectConfig,
 } from '../../lib/services/project.service.js';
 
-const {red, gray, green, cyan, magenta, bold} = chalk;
-const {remove, stat} = fsExtra;
-const {transpileModule, ScriptTarget, ModuleKind, ModuleResolutionKind} =
-  typescript;
+const {remove} = fsExtra;
 
 export class BuildService {
+  readonly sass = sass;
+  readonly esbuild = esbuild;
+  readonly workboxBuild = workboxBuild;
+
   constructor(
     private fileService: FileService,
     private projectService: ProjectService
@@ -30,7 +29,7 @@ export class BuildService {
   }
 
   async buildStaging() {
-    const {srcDir, stagingDir} = await this.projectService.getOptions();
+    const {srcDir, stagingDir} = await this.projectService.loadProjectConfig();
     const srcPath = resolve(srcDir);
     const stagingPath = this.getAppStagingDirPath(stagingDir);
     await this.fileService.cleanDir(stagingPath);
@@ -68,7 +67,7 @@ export class BuildService {
       stagingPath,
       srcDir
     );
-    const appConfig = await this.projectService.getOptions();
+    const projectConfig = await this.projectService.loadProjectConfig();
     // create dir
     await this.fileService.createDir(resolve(stagingPath, dirPath));
     // app.html -> index.html
@@ -80,7 +79,7 @@ export class BuildService {
     } else if (fileExt === 'ts') {
       await this.fileService.createFile(
         outFilePath,
-        await this.buildTS(path, appConfig)
+        await this.buildTS(path, projectConfig)
       );
     } else {
       await this.fileService.copyFile(path, outFilePath);
@@ -91,7 +90,7 @@ export class BuildService {
     return this.fileService.readText(path);
   }
 
-  private async buildTS(path: string, appConfig: ProjectOptions) {
+  private async buildTS(path: string, projectConfig: ProjectConfig) {
     const targetEnv = this.projectService.targetEnv;
     const isDev = targetEnv === 'development';
     const isMain = this.isAppEntry(path);
@@ -117,7 +116,7 @@ export class BuildService {
      * 2. HTML, CSS, Assets
      */
     content = this.processAssets(content);
-    content = this.processHTML(content, isDev, appConfig);
+    content = this.processHTML(content, isDev, projectConfig);
     content = await this.processCSS(content, isDev);
 
     // result
@@ -164,13 +163,13 @@ export class BuildService {
   private processHTML(
     content: string,
     isDev: boolean,
-    appConfig: ProjectOptions
+    projectConfig: ProjectConfig
   ) {
     const templateMatching = content.match(/(return html`)([\s\S]*?)(`;)/);
     // no return html`...`
     if (!templateMatching) return content;
     // process generic component
-    if (appConfig.precompileGeneric === 'lite') {
+    if (projectConfig.precompileGeneric === 'lite') {
       const genericMatchingArr = content.match(
         /<tini-generic(-unscoped)?([\s\S]*?)>/g
       );
@@ -187,7 +186,7 @@ export class BuildService {
           )
         );
       });
-    } else if (appConfig.precompileGeneric === 'full') {
+    } else if (projectConfig.precompileGeneric === 'full') {
       // TODO: full precompile
     }
     // dev mode
@@ -196,7 +195,7 @@ export class BuildService {
     const matchedTemplate = templateMatching[0];
     let minifiedTemplate: string;
     try {
-      if (appConfig.skipMinifyHTMLLiterals) {
+      if (projectConfig.skipMinifyHTMLLiterals) {
         minifiedTemplate = matchedTemplate;
       } else {
         const result = minifyHTMLLiterals(matchedTemplate);
@@ -223,7 +222,7 @@ export class BuildService {
       let compiledStyles: string;
       try {
         compiledStyles = (
-          await compileStringAsync(originalStyles, {
+          await this.sass.compileStringAsync(originalStyles, {
             style: isDev ? 'expanded' : 'compressed',
           })
         ).css;

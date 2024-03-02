@@ -1,3 +1,4 @@
+import pathe from 'pathe';
 import fsExtra from 'fs-extra';
 import recursiveReaddir from 'recursive-readdir';
 import {createRequire} from 'module';
@@ -14,9 +15,12 @@ const {
   copy,
 } = fsExtra;
 
-export const require = createRequire(import.meta.url);
+export const requireModule = createRequire(import.meta.url);
 
 export class FileService {
+  readonly fs = fsExtra;
+  readonly path = pathe;
+
   constructor() {}
 
   exists(path: string) {
@@ -60,7 +64,11 @@ export class FileService {
     return this.createDir(path);
   }
 
-  async changeContent(
+  async listDir(path: string, ignores: string[] = []) {
+    return recursiveReaddir(path, ignores);
+  }
+
+  async modifyContent(
     filePath: string,
     modifier: {[str: string]: string} | ((content: string) => string),
     multipleReplaces = false
@@ -78,9 +86,5 @@ export class FileService {
       );
     }
     return outputFile(filePath, content);
-  }
-
-  async listDir(path: string, ignores: string[] = []) {
-    return recursiveReaddir(path, ignores);
   }
 }

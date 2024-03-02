@@ -1,7 +1,7 @@
 import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 
-import {OK} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {FileService} from '../../lib/services/file.service.js';
 import {ProjectService} from '../../lib/services/project.service.js';
 import {UiService, SoulAndSkins} from '../../lib/services/ui.service.js';
@@ -10,13 +10,14 @@ const {readdir} = fsExtra;
 
 export class UiDevCommand {
   constructor(
+    private messageService: MessageService,
     private fileService: FileService,
     private projectService: ProjectService,
     private uiService: UiService
   ) {}
 
   async run() {
-    const {stagingDir} = await this.projectService.getOptions();
+    const {stagingDir} = await this.projectService.loadProjectConfig();
     const souls = (await readdir(resolve(this.uiService.STYLES_DIR))).filter(
       item => !~item.indexOf('.')
     );
@@ -69,7 +70,7 @@ export class UiDevCommand {
       version: '0.0.0',
     });
     // result
-    console.log('\n' + OK + 'Build ui package for developing.\n');
+    this.messageService.success('Build ui package for developing.');
   }
 
   private async readSoulAndSkinsList(souls: string[]) {

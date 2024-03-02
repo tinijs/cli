@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import {OK} from '../../lib/services/message.service.js';
+import {MessageService} from '../../lib/services/message.service.js';
 import {ModuleService} from '../../lib/services/module.service.js';
 
 const {blueBright} = chalk;
@@ -10,7 +10,10 @@ export interface ModuleCommandOptions {
 }
 
 export class ModuleCommand {
-  constructor(private moduleService: ModuleService) {}
+  constructor(
+    private messageService: MessageService,
+    private moduleService: ModuleService
+  ) {}
 
   async run(packageName: string, commandOptions: ModuleCommandOptions) {
     // install packages
@@ -34,8 +37,8 @@ export class ModuleCommand {
       }
     }
     // done
-    console.log(
-      '\n' + OK + `Add module ${blueBright(packageName)} successfully.\n`
+    this.messageService.success(
+      `Add module ${blueBright(packageName)} successfully.`
     );
   }
 }

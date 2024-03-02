@@ -8,7 +8,7 @@ import {BuildService} from '../../lib/services/build.service.js';
 
 const {remove} = fsExtra;
 
-interface CommandOptions {
+interface BuildCommandOptions {
   target?: string;
 }
 
@@ -20,10 +20,10 @@ export class BuildCommand {
     private buildService: BuildService
   ) {}
 
-  async run(commandOptions: CommandOptions) {
-    const tiniConfig = await this.projectService.getOptions();
-    const {srcDir, outDir, stagingDir} = tiniConfig;
+  async run(commandOptions: BuildCommandOptions) {
     process.env.TARGET_ENV = commandOptions.target || 'production';
+    const projectConfig = await this.projectService.loadProjectConfig();
+    const {srcDir, outDir, stagingDir} = projectConfig;
     const stagingPath = this.buildService.getAppStagingDirPath(stagingDir);
     // clean target dir
     await remove(resolve(outDir));

@@ -9,7 +9,7 @@ import {ProjectService} from './project.service.js';
 
 const {stat} = fsExtra;
 
-export interface TiniModuleConfig {
+export interface ModuleConfig {
   init?: ModuleInit;
   build?: (options: any, tiniModule: TiniModule) => void;
 }
@@ -21,7 +21,7 @@ export interface ModuleInit {
   run?: string | ((tiniModule: TiniModule) => void);
 }
 
-export function defineTiniModule(config: TiniModuleConfig) {
+export function defineTiniModule(config: ModuleConfig) {
   return config;
 }
 
@@ -45,7 +45,7 @@ export class ModuleService {
       configFile: 'tini.module',
       rcFile: false,
     });
-    return loadResult.config as TiniModuleConfig;
+    return loadResult.config as ModuleConfig;
   }
 
   async copyAssets(packageName: string, copy: NonNullable<ModuleInit['copy']>) {
@@ -70,7 +70,7 @@ export class ModuleService {
     scripts: NonNullable<ModuleInit['scripts']>,
     buildCommand?: ModuleInit['buildCommand']
   ) {
-    return this.projectService.updatePackageJson(async data => {
+    return this.projectService.modifyProjectPackageJson(async data => {
       const build = [
         (data.scripts as any).build,
         !buildCommand ? undefined : `npm run ${buildCommand}`,

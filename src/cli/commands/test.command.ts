@@ -5,7 +5,7 @@ export class TestCommand {
 
   run() {
     this.terminalService.exec(
-      'echo "// TODO: implement the test command"',
+      'echo "TODO: implement the test command"',
       '.',
       'inherit'
     );

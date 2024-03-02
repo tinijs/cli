@@ -3,29 +3,31 @@ import {watch} from 'chokidar';
 import {resolve} from 'pathe';
 import chalk from 'chalk';
 
+import {MessageService} from '../../lib/services/message.service.js';
 import {FileService} from '../../lib/services/file.service.js';
 import {
   ProjectService,
-  ProjectOptions,
+  ProjectConfig,
 } from '../../lib/services/project.service.js';
 import {BuildService} from '../../lib/services/build.service.js';
 
 const {blueBright, bold} = chalk;
 
-interface CommandOptions {
+interface DevCommandOptions {
   watch?: boolean;
 }
 
 export class DevCommand {
   constructor(
+    private messageService: MessageService,
     private fileService: FileService,
     private projectService: ProjectService,
     private buildService: BuildService
   ) {}
 
-  async run(commandOptions: CommandOptions) {
-    const tiniConfig = await this.projectService.getOptions();
-    const {srcDir, outDir, stagingDir} = tiniConfig;
+  async run(commandOptions: DevCommandOptions) {
+    const projectConfig = await this.projectService.loadProjectConfig();
+    const {srcDir, outDir, stagingDir} = projectConfig;
     const stagingPath = this.buildService.getAppStagingDirPath(stagingDir);
     // watch mode
     if (commandOptions.watch) {
@@ -50,26 +52,26 @@ export class DevCommand {
         {command: 'tini dev --watch'},
       ]);
       // other assets
-      this.buildOthers(tiniConfig);
+      this.buildOthers(projectConfig);
       // running
       setTimeout(
         () =>
-          console.log(
-            '\n' + bold(blueBright('Server running at http://localhost:3000'))
+          this.messageService.log(
+            bold(blueBright('Server running at http://localhost:3000'))
           ),
         2000
       );
     }
   }
 
-  private buildOthers(tiniConfig: ProjectOptions) {
+  private buildOthers(projectConfig: ProjectConfig) {
     setTimeout(async () => {
-      const {srcDir, outDir} = tiniConfig;
+      const {srcDir, outDir} = projectConfig;
       if (await this.fileService.exists(resolve(outDir))) {
         // copy public dir
         await this.buildService.copyPublic(srcDir, outDir);
       } else {
-        this.buildOthers(tiniConfig);
+        this.buildOthers(projectConfig);
       }
     }, 2000);
   }
