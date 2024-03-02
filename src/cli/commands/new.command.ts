@@ -11,7 +11,6 @@ const {gray, green, cyan} = chalk;
 interface CommandOptions {
   latest?: boolean;
   tag?: string;
-  skipInstall?: boolean;
   skipUi?: boolean;
   skipGit?: boolean;
 }
@@ -48,12 +47,10 @@ export class NewCommand {
     console.log('Create a new TiniJS project:', green(validProjectName));
     console.log('From: ' + gray(resourceUrl));
     // install dependencies
-    if (!commandOptions.skipInstall) {
-      execSync('npm i --loglevel=error', {
-        stdio: 'inherit',
-        cwd: projectPath,
-      });
-    }
+    execSync('npm i --loglevel=error', {
+      stdio: 'inherit',
+      cwd: projectPath,
+    });
     // tini ui use
     if (!commandOptions.skipUi) {
       execSync('tini ui use --build-only --skip-help', {

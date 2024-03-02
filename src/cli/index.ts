@@ -56,7 +56,6 @@ export class Cli {
     'Create a new project.',
     ['-l, --latest', 'Install the latest @tinijs/skeleton.'],
     ['-t, --tag [value]', 'Use the custom version of the @tinijs/skeleton.'],
-    ['-i, --skip-install', 'Do not install dependency packages.'],
     ['-u, --skip-ui', 'Do not run tini ui use.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
   ];
