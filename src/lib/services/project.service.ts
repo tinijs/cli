@@ -12,12 +12,7 @@ export interface Options {
   componentPrefix?: string;
   skipMinifyHTMLLiterals?: boolean;
   precompileGeneric?: 'none' | 'lite' | 'full';
-  pwa?: PWAPrecaching;
   ui?: UiConfig;
-}
-
-interface PWAPrecaching {
-  globPatterns?: string[];
 }
 
 interface UiConfig {
@@ -41,7 +36,6 @@ export class ProjectService {
     componentPrefix: 'app',
     skipMinifyHTMLLiterals: false,
     precompileGeneric: 'lite',
-    pwa: {},
     ui: {},
   };
 
@@ -71,12 +65,6 @@ export class ProjectService {
 
   async isTiniConfigExists() {
     return await this.fileService.exists(this.rcFilePath);
-  }
-
-  async isPWAEnabled(appConfig?: ProjectOptions) {
-    const {srcDir, pwa} = appConfig || (await this.getOptions());
-    const swExists = await this.fileService.exists(resolve(srcDir, 'sw.ts'));
-    return swExists && pwa?.globPatterns;
   }
 
   getPackageJson() {

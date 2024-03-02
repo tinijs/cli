@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SoulAndSkins | @tinijs/cli</title>
+	<title>InitInstruction | @tinijs/cli</title>
 	<meta name="description" content="Documentation for @tinijs/cli">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="soulandskins.html">SoulAndSkins</a>
+					<a href="initinstruction.html">InitInstruction</a>
 				</li>
 			</ul>
-			<h1>Interface SoulAndSkins</h1>
+			<h1>Interface InitInstruction</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SoulAndSkins</span>
+						<span class="target">InitInstruction</span>
 					</li>
 				</ul>
 			</section>
@@ -79,8 +79,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="soulandskins.html#skins" class="tsd-kind-icon">skins</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="soulandskins.html#soul" class="tsd-kind-icon">soul</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="initinstruction.html#buildcommand" class="tsd-kind-icon">build<wbr>Command</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="initinstruction.html#copy" class="tsd-kind-icon">copy</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="initinstruction.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="initinstruction.html#scripts" class="tsd-kind-icon">scripts</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,22 +91,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="skins" class="tsd-anchor"></a>
-					<h3>skins</h3>
-					<div class="tsd-signature tsd-kind-icon">skins<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="buildcommand" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> build<wbr>Command</h3>
+					<div class="tsd-signature tsd-kind-icon">build<wbr>Command<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/ui.service.ts#L14">lib/services/ui.service.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/module.service.ts#L13">lib/services/module.service.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="soul" class="tsd-anchor"></a>
-					<h3>soul</h3>
-					<div class="tsd-signature tsd-kind-icon">soul<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="copy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> copy</h3>
+					<div class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/ui.service.ts#L13">lib/services/ui.service.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/module.service.ts#L11">lib/services/module.service.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="run" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> run</h3>
+					<div class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/module.service.ts#L14">lib/services/module.service.ts:14</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="scripts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> scripts</h3>
+					<div class="tsd-signature tsd-kind-icon">scripts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/module.service.ts#L12">lib/services/module.service.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -123,13 +145,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="soulandskins.html" class="tsd-kind-icon">Soul<wbr>And<wbr>Skins</a>
+						<a href="initinstruction.html" class="tsd-kind-icon">Init<wbr>Instruction</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="soulandskins.html#skins" class="tsd-kind-icon">skins</a>
+								<a href="initinstruction.html#buildcommand" class="tsd-kind-icon">build<wbr>Command</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="soulandskins.html#soul" class="tsd-kind-icon">soul</a>
+								<a href="initinstruction.html#copy" class="tsd-kind-icon">copy</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="initinstruction.html#run" class="tsd-kind-icon">run</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="initinstruction.html#scripts" class="tsd-kind-icon">scripts</a>
 							</li>
 						</ul>
 					</li>

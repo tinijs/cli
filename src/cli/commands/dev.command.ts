@@ -68,10 +68,6 @@ export class DevCommand {
       if (await this.fileService.exists(resolve(outDir))) {
         // copy public dir
         await this.buildService.copyPublic(srcDir, outDir);
-        // build pwa
-        if (await this.projectService.isPWAEnabled(tiniConfig)) {
-          await this.buildService.buildPWA(tiniConfig);
-        }
       } else {
         this.buildOthers(tiniConfig);
       }

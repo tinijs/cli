@@ -83,11 +83,18 @@
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="projectservice.html#clipackagejson" class="tsd-kind-icon">cli<wbr>Package<wbr>Json</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#packagepath" class="tsd-kind-icon">package<wbr>Path</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#rcpath" class="tsd-kind-icon">rc<wbr>Path</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#packagefilepath" class="tsd-kind-icon">package<wbr>File<wbr>Path</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#rcfilepath" class="tsd-kind-icon">rc<wbr>File<wbr>Path</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#targetenv" class="tsd-kind-icon">target<wbr>Env</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#uioutputdirpath" class="tsd-kind-icon">ui<wbr>Output<wbr>Dir<wbr>Path</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="projectservice.html#version" class="tsd-kind-icon">version</a></li>
 							</ul>
 						</section>
@@ -96,9 +103,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#getoptions" class="tsd-kind-icon">get<wbr>Options</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#getpackagejson" class="tsd-kind-icon">get<wbr>Package<wbr>Json</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#ispwaenabled" class="tsd-kind-icon">isPWAEnabled</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#istiniconfigexists" class="tsd-kind-icon">is<wbr>Tini<wbr>Config<wbr>Exists</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#updateoptions" class="tsd-kind-icon">update<wbr>Options</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="projectservice.html#updatepackagejson" class="tsd-kind-icon">update<wbr>Package<wbr>Json</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,7 +123,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L49">src/lib/services/project.service.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L42">lib/services/project.service.ts:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -131,38 +138,51 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="clipackagejson" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> cli<wbr>Package<wbr>Json</h3>
+					<div class="tsd-signature tsd-kind-icon">cli<wbr>Package<wbr>Json<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = cliPackageJson</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L42">lib/services/project.service.ts:42</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="packagepath" class="tsd-anchor"></a>
-					<h3>package<wbr>Path</h3>
+					<a name="packagefilepath" class="tsd-anchor"></a>
+					<h3>package<wbr>File<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> packagePath<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> packageFilePath<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L61">src/lib/services/project.service.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L58">lib/services/project.service.ts:58</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="rcpath" class="tsd-anchor"></a>
-					<h3>rc<wbr>Path</h3>
+					<a name="rcfilepath" class="tsd-anchor"></a>
+					<h3>rc<wbr>File<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> rcPath<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> rcFilePath<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L57">src/lib/services/project.service.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L54">lib/services/project.service.ts:54</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -176,7 +196,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L53">src/lib/services/project.service.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L46">lib/services/project.service.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -184,19 +204,36 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="version" class="tsd-anchor"></a>
-					<h3>version</h3>
+					<a name="uioutputdirpath" class="tsd-anchor"></a>
+					<h3>ui<wbr>Output<wbr>Dir<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> version<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> uiOutputDirPath<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L65">src/lib/services/project.service.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L62">lib/services/project.service.ts:62</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="version" class="tsd-anchor"></a>
+					<h3>version</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> version<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L50">lib/services/project.service.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -213,7 +250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L83">src/lib/services/project.service.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L85">lib/services/project.service.ts:85</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#projectoptions" class="tsd-signature-type">ProjectOptions</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -224,39 +261,16 @@
 					<a name="getpackagejson" class="tsd-anchor"></a>
 					<h3>get<wbr>Package<wbr>Json</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Package<wbr>Json<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packagejson.html" class="tsd-signature-type">PackageJson</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Package<wbr>Json<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L79">src/lib/services/project.service.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L70">lib/services/project.service.ts:70</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packagejson.html" class="tsd-signature-type">PackageJson</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ispwaenabled" class="tsd-anchor"></a>
-					<h3>isPWAEnabled</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">isPWAEnabled<span class="tsd-signature-symbol">(</span>appConfig<span class="tsd-signature-symbol">?: </span><a href="../globals.html#projectoptions" class="tsd-signature-type">ProjectOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L73">src/lib/services/project.service.ts:73</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appConfig: <a href="../globals.html#projectoptions" class="tsd-signature-type">ProjectOptions</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -264,16 +278,16 @@
 					<a name="istiniconfigexists" class="tsd-anchor"></a>
 					<h3>is<wbr>Tini<wbr>Config<wbr>Exists</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Tini<wbr>Config<wbr>Exists<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Tini<wbr>Config<wbr>Exists<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L69">src/lib/services/project.service.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L66">lib/services/project.service.ts:66</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -287,7 +301,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tinijs/cli/blob/dec4034/src/lib/services/project.service.ts#L92">src/lib/services/project.service.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L94">lib/services/project.service.ts:94</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -318,6 +332,47 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updatepackagejson" class="tsd-anchor"></a>
+					<h3>update<wbr>Package<wbr>Json</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Package<wbr>Json<span class="tsd-signature-symbol">(</span>modifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>currentData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/tinijs/cli/blob/187ef17/src/lib/services/project.service.ts#L74">lib/services/project.service.ts:74</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>modifier: <span class="tsd-signature-symbol">(</span>currentData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>currentData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">&gt;</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>currentData: <span class="tsd-signature-type">PackageJson</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PackageJson</span><span class="tsd-signature-symbol">&gt;</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -338,14 +393,20 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="projectservice.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="projectservice.html#packagepath" class="tsd-kind-icon">package<wbr>Path</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="projectservice.html#clipackagejson" class="tsd-kind-icon">cli<wbr>Package<wbr>Json</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="projectservice.html#rcpath" class="tsd-kind-icon">rc<wbr>Path</a>
+								<a href="projectservice.html#packagefilepath" class="tsd-kind-icon">package<wbr>File<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="projectservice.html#rcfilepath" class="tsd-kind-icon">rc<wbr>File<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="projectservice.html#targetenv" class="tsd-kind-icon">target<wbr>Env</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="projectservice.html#uioutputdirpath" class="tsd-kind-icon">ui<wbr>Output<wbr>Dir<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="projectservice.html#version" class="tsd-kind-icon">version</a>
@@ -357,13 +418,13 @@
 								<a href="projectservice.html#getpackagejson" class="tsd-kind-icon">get<wbr>Package<wbr>Json</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="projectservice.html#ispwaenabled" class="tsd-kind-icon">isPWAEnabled</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="projectservice.html#istiniconfigexists" class="tsd-kind-icon">is<wbr>Tini<wbr>Config<wbr>Exists</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="projectservice.html#updateoptions" class="tsd-kind-icon">update<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="projectservice.html#updatepackagejson" class="tsd-kind-icon">update<wbr>Package<wbr>Json</a>
 							</li>
 						</ul>
 					</li>

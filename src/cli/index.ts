@@ -10,16 +10,12 @@ import {PreviewCommand} from './commands/preview.command.js';
 import {TestCommand} from './commands/test.command.js';
 import {DevCommand} from './commands/dev.command.js';
 import {CleanCommand} from './commands/clean.command.js';
-import {PwaCommand} from './commands/pwa.command.js';
-import {PwaInitCommand} from './commands/pwa-init.command.js';
 import {UiCommand} from './commands/ui.command.js';
 import {UiUseCommand} from './commands/ui-use.command.js';
 import {UiBuildCommand} from './commands/ui-build.command.js';
 import {UiDevCommand} from './commands/ui-dev.command.js';
 import {UiIconCommand} from './commands/ui-icon.command.js';
-import {ServerCommand} from './commands/server.command.js';
-import {ServerAddCommand} from './commands/server-add.command.js';
-import {ServerBuildCommand} from './commands/server-build.command.js';
+import {ModuleCommand} from './commands/module.command.js';
 
 const {red} = chalk;
 
@@ -33,16 +29,12 @@ export class Cli {
   testCommand: TestCommand;
   devCommand: DevCommand;
   cleanCommand: CleanCommand;
-  pwaCommand: PwaCommand;
-  pwaInitCommand: PwaInitCommand;
   uiCommand: UiCommand;
   uiUseCommand: UiUseCommand;
   uiBuildCommand: UiBuildCommand;
   uiDevCommand: UiDevCommand;
   uiIconCommand: UiIconCommand;
-  serverCommand: ServerCommand;
-  serverAddCommand: ServerAddCommand;
-  serverBuildCommand: ServerBuildCommand;
+  moduleCommand: ModuleCommand;
 
   commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -56,8 +48,8 @@ export class Cli {
     'Create a new project.',
     ['-l, --latest', 'Install the latest @tinijs/skeleton.'],
     ['-t, --tag [value]', 'Use the custom version of the @tinijs/skeleton.'],
-    ['-u, --skip-ui', 'Do not run tini ui use.'],
     ['-g, --skip-git', 'Do not initialize a git repository.'],
+    ['-u, --skip-ui', 'Do not run: tini ui use.'],
   ];
 
   /**
@@ -100,15 +92,6 @@ export class Cli {
     ['-e, --excludes [value]', 'Excluding files, separated by |.'],
   ];
 
-  pwaCommandDef: CommandDef = [
-    'pwa <subCommand>',
-    'Working with PWA apps.',
-    ['-i, --skip-install', 'Do not install @tinijs/pwa (install manually).'],
-    ['-t, --tag [value]', 'Use the custom version of @tinijs/pwa.'],
-  ];
-
-  pwaInitCommandDef: CommandDef = ['pwa-init', 'Turn a TiniJS app into a PWA.'];
-
   uiCommandDef: CommandDef = [
     'ui <subCommand> [params...]',
     'Tools for developing and using Tini UI.',
@@ -146,27 +129,13 @@ export class Cli {
     'Build an icons pack.',
   ];
 
-  serverCommandDef: CommandDef = [
-    'server <subCommand> [params...]',
-    'Manage backend solutions.',
-    ['-i, --skip-install', 'Do not install the package (install manually).'],
+  /**
+   * @param packageName - The module package name.
+   */
+  moduleCommandDef: CommandDef = [
+    ['add <packageName>', 'module'],
+    'Add a module to the current project.',
     ['-t, --tag [value]', 'Use the custom version of the package.'],
-  ];
-
-  /**
-   * @param packageName - The server package name.
-   */
-  serverAddCommandDef: CommandDef = [
-    'server-add <packageName>',
-    'Add a backend solution.',
-  ];
-
-  /**
-   * @param solutionName - The name of the solution.
-   */
-  serverBuildCommandDef: CommandDef = [
-    'server-build <solutionName>',
-    'Build the backend.',
   ];
 
   constructor() {
@@ -195,11 +164,6 @@ export class Cli {
     this.previewCommand = new PreviewCommand(this.tiniModule.projectService);
     this.testCommand = new TestCommand(this.tiniModule.terminalService);
     this.cleanCommand = new CleanCommand(this.tiniModule.fileService);
-    this.pwaInitCommand = new PwaInitCommand(
-      this.tiniModule.projectService,
-      this.tiniModule.pwaService
-    );
-    this.pwaCommand = new PwaCommand(this.pwaInitCommand);
     this.uiUseCommand = new UiUseCommand(
       this.tiniModule.terminalService,
       this.tiniModule.projectService,
@@ -229,16 +193,7 @@ export class Cli {
       this.uiDevCommand,
       this.uiIconCommand
     );
-    this.serverAddCommand = new ServerAddCommand(this.tiniModule.serverService);
-    this.serverBuildCommand = new ServerBuildCommand(
-      this.tiniModule.fileService,
-      this.tiniModule.terminalService,
-      this.tiniModule.projectService
-    );
-    this.serverCommand = new ServerCommand(
-      this.serverAddCommand,
-      this.serverBuildCommand
-    );
+    this.moduleCommand = new ModuleCommand(this.tiniModule.moduleService);
   }
 
   getApp() {
@@ -269,9 +224,8 @@ export class Cli {
         description,
         latestOpt,
         tagOpt,
-        skipInstallOpt,
-        skipUiOpt,
         skipGitOpt,
+        skipUiOpt,
       ] = this.newCommandDef;
       commander
         .command(command)
@@ -279,9 +233,8 @@ export class Cli {
         .description(description)
         .option(...latestOpt)
         .option(...tagOpt)
-        .option(...skipInstallOpt)
-        .option(...skipUiOpt)
         .option(...skipGitOpt)
+        .option(...skipUiOpt)
         .description(description)
         .action((projectName, options) =>
           this.newCommand.run(projectName, options)
@@ -359,31 +312,6 @@ export class Cli {
         .action(options => this.cleanCommand.run(options));
     })();
 
-    // pwa
-    const pwa = (() => {
-      const [command, description, skipInstallOpt, tagOpt] = this.pwaCommandDef;
-      commander
-        .command(command as string)
-        .description(description)
-        .option(...skipInstallOpt)
-        .option(...tagOpt)
-        .action((subCommand, options) =>
-          this.pwaCommand.run(subCommand, options)
-        );
-      return {skipInstallOpt, tagOpt};
-    })();
-
-    // pwa-init
-    (() => {
-      const [command, description] = this.pwaInitCommandDef;
-      commander
-        .command(command as string)
-        .description(description)
-        .option(...pwa.skipInstallOpt)
-        .option(...pwa.tagOpt)
-        .action(options => this.pwaInitCommand.run(options));
-    })();
-
     // ui
     const ui = (() => {
       const [
@@ -452,41 +380,18 @@ export class Cli {
         .action((src, options) => this.uiIconCommand.run(src, options));
     })();
 
-    // server
-    const server = (() => {
-      const [command, description, skipInstallOpt, tagOpt] =
-        this.serverCommandDef;
+    // module
+    (() => {
+      const [[command, ...aliases], description, tagOpt] =
+        this.moduleCommandDef;
       commander
-        .command(command as string)
+        .command(command)
+        .aliases(aliases)
         .description(description)
-        .option(...skipInstallOpt)
         .option(...tagOpt)
-        .action((subCommand, params, options) =>
-          this.serverCommand.run(subCommand, params, options)
-        );
-      return {skipInstallOpt, tagOpt};
-    })();
-
-    // server-add
-    (() => {
-      const [command, description] = this.serverAddCommandDef;
-      commander
-        .command(command as string)
-        .description(description)
-        .option(...server.skipInstallOpt)
-        .option(...server.tagOpt)
         .action((packageName, options) =>
-          this.serverAddCommand.run(packageName, options)
+          this.moduleCommand.run(packageName, options)
         );
-    })();
-
-    // server-build
-    (() => {
-      const [command, description] = this.serverBuildCommandDef;
-      commander
-        .command(command as string)
-        .description(description)
-        .action(solutionName => this.serverBuildCommand.run(solutionName));
     })();
 
     // help

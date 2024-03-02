@@ -37,9 +37,5 @@ export class BuildCommand {
     );
     // copy public dir
     await this.buildService.copyPublic(srcDir, outDir);
-    // build pwa
-    if (await this.projectService.isPWAEnabled(tiniConfig)) {
-      await this.buildService.buildPWA(tiniConfig);
-    }
   }
 }

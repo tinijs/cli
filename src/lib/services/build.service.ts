@@ -87,66 +87,6 @@ export class BuildService {
     }
   }
 
-  async buildPWA(appConfig: ProjectOptions) {
-    const SW_TS = 'sw.ts';
-    const SW_JS = 'sw.js';
-    const {srcDir, outDir, pwa: pwaPrecaching} = appConfig;
-    const startTime = new Date().getTime();
-    // read sw.ts
-    const tsCode = await this.fileService.readText(resolve(srcDir, SW_TS));
-    // transpile
-    let {outputText: code} = transpileModule(tsCode, {
-      compilerOptions: {
-        noEmit: false,
-        sourceMap: false,
-        skipLibCheck: true,
-        moduleResolution: ModuleResolutionKind.NodeJs,
-        module: ModuleKind.ESNext,
-        target: ScriptTarget.ESNext,
-      },
-    });
-    // inject precaching entries
-    if (pwaPrecaching?.globPatterns) {
-      const {manifestEntries} = await getManifest({
-        globDirectory: outDir,
-        ...(pwaPrecaching || {}),
-      });
-      code =
-        `
-import {precacheAndRoute} from 'workbox-precaching';
-precacheAndRoute(${JSON.stringify(manifestEntries)});
-      \n` + code;
-    }
-    // save file
-    const swPath = resolve(outDir, SW_JS);
-    await this.fileService.createFile(swPath, code);
-    // bundle
-    try {
-      await esBuild({
-        entryPoints: [`${outDir}/sw.js`],
-        allowOverwrite: true,
-        bundle: true,
-        sourcemap: true,
-        minify: true,
-        outdir: outDir,
-      });
-      if (this.projectService.targetEnv !== 'development') {
-        const endTime = new Date().getTime();
-        const timeSecs = ((endTime - startTime) / 1000).toFixed(2);
-        const fileStat = await stat(swPath);
-        process.stdout.write(
-          `${gray(outDir + '/')}${bold(cyan(SW_JS))}          ${bold(
-            magenta((fileStat.size / 1024).toFixed(2) + ' KB')
-          )}    ${bold(green(timeSecs + 's'))}\n`
-        );
-      }
-    } catch (error: unknown) {
-      process.stdout.write(
-        red(`Failed to build ${outDir}/${SW_JS}, please try again!`) + '\n'
-      );
-    }
-  }
-
   private buildIndexHTML(path: string) {
     return this.fileService.readText(path);
   }
@@ -179,13 +119,6 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
     content = this.processAssets(content);
     content = this.processHTML(content, isDev, appConfig);
     content = await this.processCSS(content, isDev);
-
-    /*
-     * 3. PWA
-     */
-    if (isMain && (await this.projectService.isPWAEnabled(appConfig))) {
-      content = this.injectPWA(content);
-    }
 
     // result
     return content;
@@ -377,32 +310,6 @@ precacheAndRoute(${JSON.stringify(manifestEntries)});
         }
         // apply new content
         content = content.replace(originalStr, newStr);
-      }
-    }
-    return content;
-  }
-
-  private injectPWA(content: string) {
-    const wbCode = `
-      (this as typeof this & AppWithWorkbox).workbox = registerServiceWorker();
-    `;
-    // registerServiceWorker
-    content =
-      "import {AppWithWorkbox, registerServiceWorker} from '@tinijs/pwa';\n" +
-      content;
-    // add code
-    const anchorMatching = content.match(/onCreate\(([\s\S]*?)\{/);
-    if (anchorMatching) {
-      const anchorStr = anchorMatching[0];
-      content = content.replace(anchorStr, anchorStr + `\n${wbCode}`);
-    } else {
-      const appRootMatching = content.match(/export class AppRoot([\s\S]*?)\{/);
-      if (appRootMatching) {
-        const anchorStr = appRootMatching[0];
-        content = content.replace(
-          anchorStr,
-          anchorStr + `\n  onCreate() {${wbCode}}`
-        );
       }
     }
     return content;

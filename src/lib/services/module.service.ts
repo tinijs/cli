@@ -14,7 +14,7 @@ export interface InitInstruction {
   run?: string;
 }
 
-export class ServerService {
+export class ModuleService {
   constructor(
     private fileService: FileService,
     private terminalService: TerminalService,
@@ -34,7 +34,7 @@ export class ServerService {
       'package.json'
     );
     const packageJson = await this.fileService.readJson(packageJsonPath);
-    return ((packageJson as any).tiniServer || {}) as InitInstruction;
+    return ((packageJson as any).tiniModule || {}) as InitInstruction;
   }
 
   async copyAssets(packageName: string, copy: Record<string, string>) {
