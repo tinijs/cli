@@ -1,13 +1,5 @@
-import {TerminalService} from '../../lib/services/terminal.service.js';
+import {exec} from '../../lib/helpers/terminal.js';
 
-export class TestCommand {
-  constructor(private terminalService: TerminalService) {}
-
-  run() {
-    this.terminalService.exec(
-      'echo "TODO: implement the test command"',
-      '.',
-      'inherit'
-    );
-  }
+export function testCommand() {
+  exec('echo "TODO: implement the test command"', '.', 'inherit');
 }

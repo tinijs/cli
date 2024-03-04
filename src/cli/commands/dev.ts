@@ -2,77 +2,63 @@ import {concurrently} from 'concurrently';
 import {watch} from 'chokidar';
 import {resolve} from 'pathe';
 import chalk from 'chalk';
+import fsExtra from 'fs-extra';
 
-import {MessageService} from '../../lib/services/message.service.js';
-import {FileService} from '../../lib/services/file.service.js';
+import {log} from '../../lib/helpers/message.js';
+import {ProjectConfig, loadProjectConfig} from '../../lib/helpers/project.js';
 import {
-  ProjectService,
-  ProjectConfig,
-} from '../../lib/services/project.service.js';
-import {BuildService} from '../../lib/services/build.service.js';
+  getAppStagingDirPath,
+  buildFile,
+  removeFile,
+  buildStaging,
+  copyPublic,
+} from '../../lib/helpers/build.js';
 
 const {blueBright, bold} = chalk;
+const {pathExists} = fsExtra;
 
 interface DevCommandOptions {
   watch?: boolean;
 }
 
-export class DevCommand {
-  constructor(
-    private messageService: MessageService,
-    private fileService: FileService,
-    private projectService: ProjectService,
-    private buildService: BuildService
-  ) {}
+export async function devCommand(commandOptions: DevCommandOptions) {
+  const projectConfig = await loadProjectConfig();
+  const {srcDir, outDir, stagingDir} = projectConfig;
+  const stagingPath = getAppStagingDirPath(stagingDir);
+  // watch mode
+  if (commandOptions.watch) {
+    watch(srcDir, {ignoreInitial: true})
+      .on('add', path => buildFile(path, stagingPath, srcDir))
+      .on('change', path => buildFile(path, stagingPath, srcDir))
+      .on('unlink', path => removeFile(path, stagingPath, srcDir));
+  } else {
+    // build staging
+    await buildStaging();
+    // start dev server
+    concurrently([
+      {
+        command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
+      },
+      {command: 'tini dev --watch'},
+    ]);
+    // other assets
+    buildOthers(projectConfig);
+    // running
+    setTimeout(
+      () => log(bold(blueBright('Server running at http://localhost:3000'))),
+      2000
+    );
+  }
+}
 
-  async run(commandOptions: DevCommandOptions) {
-    const projectConfig = await this.projectService.loadProjectConfig();
-    const {srcDir, outDir, stagingDir} = projectConfig;
-    const stagingPath = this.buildService.getAppStagingDirPath(stagingDir);
-    // watch mode
-    if (commandOptions.watch) {
-      watch(srcDir, {ignoreInitial: true})
-        .on('add', path =>
-          this.buildService.buildFile(path, stagingPath, srcDir)
-        )
-        .on('change', path =>
-          this.buildService.buildFile(path, stagingPath, srcDir)
-        )
-        .on('unlink', path =>
-          this.buildService.removeFile(path, stagingPath, srcDir)
-        );
+function buildOthers(projectConfig: ProjectConfig) {
+  setTimeout(async () => {
+    const {srcDir, outDir} = projectConfig;
+    if (await pathExists(resolve(outDir))) {
+      // copy public dir
+      await copyPublic(srcDir, outDir);
     } else {
-      // build staging
-      await this.buildService.buildStaging();
-      // start dev server
-      concurrently([
-        {
-          command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
-        },
-        {command: 'tini dev --watch'},
-      ]);
-      // other assets
-      this.buildOthers(projectConfig);
-      // running
-      setTimeout(
-        () =>
-          this.messageService.log(
-            bold(blueBright('Server running at http://localhost:3000'))
-          ),
-        2000
-      );
+      buildOthers(projectConfig);
     }
-  }
-
-  private buildOthers(projectConfig: ProjectConfig) {
-    setTimeout(async () => {
-      const {srcDir, outDir} = projectConfig;
-      if (await this.fileService.exists(resolve(outDir))) {
-        // copy public dir
-        await this.buildService.copyPublic(srcDir, outDir);
-      } else {
-        this.buildOthers(projectConfig);
-      }
-    }, 2000);
-  }
+  }, 2000);
 }

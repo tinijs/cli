@@ -2,10 +2,13 @@ import {resolve} from 'pathe';
 import chalk from 'chalk';
 import {createPromptModule} from 'inquirer';
 import picomatch from 'picomatch';
+import fsExtra from 'fs-extra';
 
-import {FileService} from '../../lib/services/file.service.js';
+import {listDir, removeFiles} from '../../lib/helpers/file.js';
 
 const {red, gray, green} = chalk;
+const {pathExists} = fsExtra;
+
 const prompt = createPromptModule();
 
 interface CleanCommandOptions {
@@ -13,96 +16,92 @@ interface CleanCommandOptions {
   excludes?: string;
 }
 
-export class CleanCommand {
-  private ignoredPaths = [
-    'node_modules', // modules
-    '.*', // dot files
-    '.*/**', // dot folders
-    'dist', // output folder
-    'public', // handle by: parcel-reporter-static-files-copy
-    'public-api.*', // lib api
-    // defaults
-    'package.json',
-    'package-lock.json',
-    'LICENSE',
-    'README.md',
-    'tsconfig.json',
-  ];
+const ignoredPaths = [
+  'node_modules', // modules
+  '.*', // dot files
+  '.*/**', // dot folders
+  'dist', // output folder
+  'public', // handle by: parcel-reporter-static-files-copy
+  'public-api.*', // lib api
+  // defaults
+  'package.json',
+  'package-lock.json',
+  'LICENSE',
+  'README.md',
+  'tsconfig.json',
+];
 
-  private PROCESSABLE_PATTERN =
-    '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
+const PROCESSABLE_PATTERN =
+  '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
 
-  constructor(private fileService: FileService) {}
-
-  async run(commandOptions: CleanCommandOptions) {
-    const includes = commandOptions.includes
-      ? this.processInputPaths(commandOptions.includes)
-      : [];
-    const excludes = commandOptions.excludes
-      ? this.processInputPaths(commandOptions.excludes)
-      : [];
-    // process files
-    const removableMatch = picomatch(this.PROCESSABLE_PATTERN.substring(1));
-    const defaultFiles = [
-      'public-api.d.ts',
-      'public-api.js',
-      'public-api.map',
-    ].map(path => resolve(path));
-    const projectFiles = await this.listFiles();
-    const files = [...defaultFiles, ...projectFiles]
-      .map(path => path.replace(/\\/g, '/'))
-      .filter(path => removableMatch(path) && excludes.indexOf(path) === -1)
-      .concat(...includes);
-    // show file list
-    console.log('(IMPORTANT) The list of files to be removed:');
-    if (!files.length) {
-      console.log(gray('[0] No file available.'));
-    } else {
-      files
-        .map(path => path.replace(resolve('.'), '').substring(1))
-        .sort()
-        .forEach((item, i) => console.log(`[${i + 1}] ` + red(item)));
-    }
-    // question
-    const yes = await (async () => {
-      const answer = await prompt([
-        {
-          type: 'input',
-          name: 'ok',
-          message:
-            'Remove files (please REVIEW the list above and git COMMIT first). ' +
-            gray('[y/N]'),
-          default: 'N',
-        },
-      ]);
-      return answer.ok === 'y';
-    })();
-    let message = '';
-    if (yes) {
-      let fileNumber = 0;
-      for (let i = 0; i < files.length; i++) {
-        const path = resolve(files[i]);
-        if (await this.fileService.exists(path)) {
-          await this.fileService.removeFiles([path]);
-          fileNumber++;
-        }
+export async function cleanCommand(commandOptions: CleanCommandOptions) {
+  const includes = commandOptions.includes
+    ? processInputPaths(commandOptions.includes)
+    : [];
+  const excludes = commandOptions.excludes
+    ? processInputPaths(commandOptions.excludes)
+    : [];
+  // process files
+  const removableMatch = picomatch(PROCESSABLE_PATTERN.substring(1));
+  const defaultFiles = [
+    'public-api.d.ts',
+    'public-api.js',
+    'public-api.map',
+  ].map(path => resolve(path));
+  const projectFiles = await listFiles();
+  const files = [...defaultFiles, ...projectFiles]
+    .map(path => path.replace(/\\/g, '/'))
+    .filter(path => removableMatch(path) && excludes.indexOf(path) === -1)
+    .concat(...includes);
+  // show file list
+  console.log('(IMPORTANT) The list of files to be removed:');
+  if (!files.length) {
+    console.log(gray('[0] No file available.'));
+  } else {
+    files
+      .map(path => path.replace(resolve('.'), '').substring(1))
+      .sort()
+      .forEach((item, i) => console.log(`[${i + 1}] ` + red(item)));
+  }
+  // question
+  const yes = await (async () => {
+    const answer = await prompt([
+      {
+        type: 'input',
+        name: 'ok',
+        message:
+          'Remove files (please REVIEW the list above and git COMMIT first). ' +
+          gray('[y/N]'),
+        default: 'N',
+      },
+    ]);
+    return answer.ok === 'y';
+  })();
+  let message = '';
+  if (yes) {
+    let fileNumber = 0;
+    for (let i = 0; i < files.length; i++) {
+      const path = resolve(files[i]);
+      if (await pathExists(path)) {
+        await removeFiles([path]);
+        fileNumber++;
       }
-      message = `Removed ${fileNumber} files.`;
-    } else {
-      message = 'No file removed.';
     }
-    console.log(green(`\n===> ${message} <===\n`));
+    message = `Removed ${fileNumber} files.`;
+  } else {
+    message = 'No file removed.';
   }
+  console.log(green(`\n===> ${message} <===\n`));
+}
 
-  private processInputPaths(input: string) {
-    return input
-      .split('|')
-      .map(path =>
-        path.trim().replace('./', '').replace('.\\', '').replace(/\\/g, '/')
-      );
-  }
+function processInputPaths(input: string) {
+  return input
+    .split('|')
+    .map(path =>
+      path.trim().replace('./', '').replace('.\\', '').replace(/\\/g, '/')
+    );
+}
 
-  private async listFiles() {
-    return await this.fileService.listDir(resolve('.'), this.ignoredPaths);
-  }
+async function listFiles() {
+  return await listDir(resolve('.'), ignoredPaths);
 }

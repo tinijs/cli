@@ -1,7 +1,7 @@
 import {resolve} from 'pathe';
 import {camelCase, capitalCase, pascalCase, kebabCase} from 'change-case';
 
-import {ProjectService} from './project.service.js';
+import {loadProjectConfig} from './project.js';
 
 interface Names {
   typeCapital: string;
@@ -22,265 +22,260 @@ interface Template extends Names {
   content: string;
 }
 
-export class GenerateService {
-  SERVICE = 'service';
-  LAYOUT = 'layout';
-  PAGE = 'page';
-  COMPONENT = 'component';
-  PARTIAL = 'partial';
-  HELPER = 'helper';
-  CONST = 'const';
-  STORE = 'store';
-  TYPE = 'type';
+export const SERVICE = 'service';
+export const LAYOUT = 'layout';
+export const PAGE = 'page';
+export const COMPONENT = 'component';
+export const PARTIAL = 'partial';
+export const HELPER = 'helper';
+export const CONST = 'const';
+export const STORE = 'store';
+export const TYPE = 'type';
 
-  DEFAULT_FOLDERS = {
-    [this.SERVICE]: 'services',
-    [this.LAYOUT]: 'layouts',
-    [this.PAGE]: 'pages',
-    [this.COMPONENT]: 'components',
-    [this.PARTIAL]: 'partials',
-    [this.HELPER]: 'helpers',
-    [this.CONST]: 'consts',
-    [this.STORE]: 'stores',
-    [this.TYPE]: 'types',
+export const DEFAULT_FOLDERS = {
+  [SERVICE]: 'services',
+  [LAYOUT]: 'layouts',
+  [PAGE]: 'pages',
+  [COMPONENT]: 'components',
+  [PARTIAL]: 'partials',
+  [HELPER]: 'helpers',
+  [CONST]: 'consts',
+  [STORE]: 'stores',
+  [TYPE]: 'types',
+} as Record<string, string>;
+
+export async function generate(
+  type: string,
+  dest: string,
+  typePrefixed = false,
+  isNested = false
+) {
+  const templates: Template[] = [];
+  // process
+  const {componentPrefix, srcDir} = await loadProjectConfig();
+  const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
+  const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
+  const typeCapital = type[0].toUpperCase() + type.substring(1);
+  const nameConst = name.replace(/-/g, '_').toUpperCase();
+  const nameCamel = camelCase(name);
+  const namePascal = pascalCase(name);
+  const nameCapital = capitalCase(name);
+  const nameParam = kebabCase(name);
+  const className =
+    (type === COMPONENT || type === SERVICE ? '' : typeCapital) +
+    nameCapital.replace(/ /g, '') +
+    (type !== COMPONENT && type !== SERVICE ? '' : typeCapital);
+  const classNameWithPrefix = capitalCase(componentPrefix) + className;
+  const tagName =
+    type === COMPONENT
+      ? `${componentPrefix}-${nameParam}`
+      : `${componentPrefix}-${type}-${nameParam}`;
+  const names: Names = {
+    typeCapital,
+    name,
+    nameConst,
+    nameCamel,
+    namePascal,
+    nameCapital,
+    nameParam,
+    className,
+    classNameWithPrefix,
+    tagName,
   };
+  const {path: mainPath, fullPath: mainFullPath} = buildPath(
+    srcDir,
+    nameParam,
+    type,
+    destSplits,
+    typePrefixed,
+    isNested,
+    'ts'
+  );
+  // main
+  const mainContent = buildMainContent(type, names);
+  const mainTemplate = {
+    ...names,
+    path: mainPath,
+    fullPath: mainFullPath,
+    content: mainContent,
+  };
+  templates.push(mainTemplate);
+  // result
+  return templates;
+}
 
-  constructor(private projectService: ProjectService) {}
-
-  async generate(
-    type: string,
-    dest: string,
-    typePrefixed = false,
-    isNested = false
-  ) {
-    const templates: Template[] = [];
-    // process
-    const {componentPrefix, srcDir} =
-      await this.projectService.loadProjectConfig();
-    const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
-    const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
-    const typeCapital = type[0].toUpperCase() + type.substring(1);
-    const nameConst = name.replace(/-/g, '_').toUpperCase();
-    const nameCamel = camelCase(name);
-    const namePascal = pascalCase(name);
-    const nameCapital = capitalCase(name);
-    const nameParam = kebabCase(name);
-    const className =
-      (type === this.COMPONENT || type === this.SERVICE ? '' : typeCapital) +
-      nameCapital.replace(/ /g, '') +
-      (type !== this.COMPONENT && type !== this.SERVICE ? '' : typeCapital);
-    const classNameWithPrefix = capitalCase(componentPrefix) + className;
-    const tagName =
-      type === this.COMPONENT
-        ? `${componentPrefix}-${nameParam}`
-        : `${componentPrefix}-${type}-${nameParam}`;
-    const names: Names = {
-      typeCapital,
-      name,
-      nameConst,
-      nameCamel,
-      namePascal,
-      nameCapital,
-      nameParam,
-      className,
-      classNameWithPrefix,
-      tagName,
-    };
-    const {path: mainPath, fullPath: mainFullPath} = this.buildPath(
-      srcDir,
-      nameParam,
-      type,
-      destSplits,
-      typePrefixed,
-      isNested,
-      'ts'
-    );
-    // main
-    const mainContent = this.buildMainContent(type, names);
-    const mainTemplate = {
-      ...names,
-      path: mainPath,
-      fullPath: mainFullPath,
-      content: mainContent,
-    };
-    templates.push(mainTemplate);
-    // result
-    return templates;
+function buildPath(
+  src: string,
+  name: string,
+  type: string,
+  destSplits: string[] = [],
+  typePrefixed = false,
+  isNested = false,
+  ext = 'ts',
+  extPrefix?: string
+) {
+  const filePaths = [...destSplits];
+  if (isNested) {
+    filePaths.push(name);
   }
+  const defaultFolder = DEFAULT_FOLDERS[type];
+  const path = [
+    src,
+    defaultFolder,
+    ...filePaths,
+    `${name}.${!typePrefixed ? '' : type + '.'}${
+      !extPrefix ? '' : extPrefix + '.'
+    }${ext}`,
+  ]
+    .join('/')
+    .replace(`${defaultFolder}/${defaultFolder}`, defaultFolder);
+  const fullPath = resolve(path);
+  return {path, fullPath};
+}
 
-  private buildPath(
-    src: string,
-    name: string,
-    type: string,
-    destSplits: string[] = [],
-    typePrefixed = false,
-    isNested = false,
-    ext = 'ts',
-    extPrefix?: string
-  ) {
-    const filePaths = [...destSplits];
-    if (isNested) {
-      filePaths.push(name);
-    }
-    const defaultFolder = this.DEFAULT_FOLDERS[type];
-    const path = [
-      src,
-      defaultFolder,
-      ...filePaths,
-      `${name}.${!typePrefixed ? '' : type + '.'}${
-        !extPrefix ? '' : extPrefix + '.'
-      }${ext}`,
-    ]
-      .join('/')
-      .replace(`${defaultFolder}/${defaultFolder}`, defaultFolder);
-    const fullPath = resolve(path);
-    return {path, fullPath};
+function buildMainContent(
+  type: string,
+  {
+    typeCapital,
+    className,
+    classNameWithPrefix,
+    tagName,
+    nameCamel,
+    namePascal,
+    nameConst,
+  }: Names
+) {
+  switch (type) {
+    case SERVICE:
+      return contentForService(className);
+    case LAYOUT:
+      return contentForLayout(classNameWithPrefix, tagName);
+    case PAGE:
+      return contentForPage(classNameWithPrefix, tagName);
+    case COMPONENT:
+      return contentForComponent(classNameWithPrefix, tagName);
+    case PARTIAL:
+      return contentForPartial(nameCamel, typeCapital);
+    case HELPER:
+      return contentForHelper(nameCamel);
+    case CONST:
+      return contentForConst(nameConst);
+    case STORE:
+      return contentForStore(nameCamel, typeCapital);
+    case TYPE:
+      return contentForType(namePascal);
+    default:
+      return '';
   }
+}
 
-  private buildMainContent(
-    type: string,
-    {
-      typeCapital,
-      className,
-      classNameWithPrefix,
-      tagName,
-      nameCamel,
-      namePascal,
-      nameConst,
-    }: Names
-  ) {
-    switch (type) {
-      case this.SERVICE:
-        return this.contentForService(className);
-      case this.LAYOUT:
-        return this.contentForLayout(classNameWithPrefix, tagName);
-      case this.PAGE:
-        return this.contentForPage(classNameWithPrefix, tagName);
-      case this.COMPONENT:
-        return this.contentForComponent(classNameWithPrefix, tagName);
-      case this.PARTIAL:
-        return this.contentForPartial(nameCamel, typeCapital);
-      case this.HELPER:
-        return this.contentForHelper(nameCamel);
-      case this.CONST:
-        return this.contentForConst(nameConst);
-      case this.STORE:
-        return this.contentForStore(nameCamel, typeCapital);
-      case this.TYPE:
-        return this.contentForType(namePascal);
-      default:
-        return '';
-    }
-  }
-
-  private contentForService(className: string) {
-    return `export class ${className} {
-  name = '${className}';
+function contentForService(className: string) {
+  return `export class ${className} {
+name = '${className}';
 }
 
 export default ${className};\n`;
-  }
+}
 
-  private contentForLayout(className: string, tagName: string) {
-    return `import {html, css} from 'lit';
+function contentForLayout(className: string, tagName: string) {
+  return `import {html, css} from 'lit';
 
 import {Layout, TiniComponent} from '@tinijs/core';
 
 @Layout({
-  name: '${tagName}',
+name: '${tagName}',
 })
 export class ${className} extends TiniComponent {
 
-  protected render() {
-    return html\`<div class="page"><slot></slot></div>\`;
-  }
+protected render() {
+  return html\`<div class="page"><slot></slot></div>\`;
+}
 
-  static styles = css\`\`;
+static styles = css\`\`;
 }\n`;
-  }
+}
 
-  private contentForPage(className: string, tagName: string) {
-    return `import {html, css} from 'lit';
+function contentForPage(className: string, tagName: string) {
+  return `import {html, css} from 'lit';
 
 import {Page, TiniComponent} from '@tinijs/core';
 
 @Page({
-  name: '${tagName}',
+name: '${tagName}',
 })
 export class ${className} extends TiniComponent {
 
-  protected render() {
-    return html\`<p>${className}</p>\`;
-  }
+protected render() {
+  return html\`<p>${className}</p>\`;
+}
 
-  static styles = css\`\`;
+static styles = css\`\`;
 }\n`;
-  }
+}
 
-  private contentForComponent(className: string, tagName: string) {
-    return `import {html, css} from 'lit';
+function contentForComponent(className: string, tagName: string) {
+  return `import {html, css} from 'lit';
 
 import {Component, TiniComponent, OnCreate, Input, Output, EventEmitter} from '@tinijs/core';
 
 @Component()
 export class ${className} extends TiniComponent implements OnCreate {
-  static readonly defaultTagName = '${tagName}';
+static readonly defaultTagName = '${tagName}';
 
-  @Input() property?: string;
-  @Output() customEvent!: EventEmitter<{payload: any}>;
+@Input() property?: string;
+@Output() customEvent!: EventEmitter<{payload: any}>;
 
-  onCreate() {
-    // element connected
-  }
+onCreate() {
+  // element connected
+}
 
-  emitCustomEvent() {
-    this.customEvent.emit({payload: '...'});
-  }
+emitCustomEvent() {
+  customEvent.emit({payload: '...'});
+}
 
-  protected render() {
-    return html\`<p @click=\${this.emitCustomEvent}>${className}</p>\`;
-  }
+protected render() {
+  return html\`<p @click=\${emitCustomEvent}>${className}</p>\`;
+}
 
-  static styles = css\`\`;
+static styles = css\`\`;
 }\n`;
-  }
+}
 
-  private contentForPartial(nameCamel: string, typeCapital: string) {
-    return `import {html} from 'lit';
+function contentForPartial(nameCamel: string, typeCapital: string) {
+  return `import {html} from 'lit';
 
 // Note: remember to registerComponents()
 // if you use other components in this partial
 
 export function ${nameCamel}${typeCapital}({
-  custom = 'foo'
+custom = 'foo'
 }: {
-  custom?: string
+custom?: string
 } = {}) {
-  return html\`
-    <p>Partial content: $\{custom}</p>
-  \`;
+return html\`
+  <p>Partial content: $\{custom}</p>
+\`;
 }\n`;
-  }
+}
 
-  private contentForHelper(nameCamel: string) {
-    return `export function ${nameCamel}(param: string) {
-  return param.toUpperCase();
+function contentForHelper(nameCamel: string) {
+  return `export function ${nameCamel}(param: string) {
+return param.toUpperCase();
 }\n`;
-  }
+}
 
-  private contentForConst(nameConst: string) {
-    return `export const ${nameConst} = 'value';\n`;
-  }
+function contentForConst(nameConst: string) {
+  return `export const ${nameConst} = 'value';\n`;
+}
 
-  private contentForStore(nameCamel: string, typeCapital: string) {
-    return `import {createStore} from '@tinijs/store';
+function contentForStore(nameCamel: string, typeCapital: string) {
+  return `import {createStore} from '@tinijs/store';
 
 export const ${nameCamel}${typeCapital} = createStore({
-  name: '${nameCamel}',
+name: '${nameCamel}',
 });\n`;
-  }
+}
 
-  private contentForType(namePascal: string) {
-    return `export type ${namePascal} = any;\n`;
-  }
+function contentForType(namePascal: string) {
+  return `export type ${namePascal} = any;\n`;
 }

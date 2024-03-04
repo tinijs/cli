@@ -1,19 +1,13 @@
 import chalk from 'chalk';
 import open from 'open';
 
-import {MessageService} from '../../lib/services/message.service.js';
+import {info} from '../../lib/helpers/message.js';
 
 const {blueBright, bold} = chalk;
 
-export class DocsCommand {
-  readonly HOME_URL = 'https://tinijs.dev';
+const HOME_URL = 'https://tinijs.dev';
 
-  constructor(private messageService: MessageService) {}
-
-  run() {
-    this.messageService.info(
-      `Documetation link: ${bold(blueBright(this.HOME_URL))}`
-    );
-    open(this.HOME_URL);
-  }
+export function docsCommand() {
+  info(`Documetation link: ${bold(blueBright(HOME_URL))}`);
+  open(HOME_URL);
 }

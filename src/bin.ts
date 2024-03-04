@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {Cli} from './cli/index.js';
+import {getApp} from './cli/index.js';
 
-const cliApp = new Cli().getApp();
+const cliApp = getApp();
 cliApp.parse(process.argv);

@@ -8,28 +8,13 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
-- [Install](#install)
-- [Development](#development)
-  - [The structure](#the-structure)
-  - [Add a new command](#add-a-new-command)
-  - [Add a new service](#add-a-new-service)
-  - [Generate documentation](#generate-documentation)
-- [Command overview](#cli-command-overview)
-- [Command reference](#cli-command-reference)
-  - [`add`](#command-add)
-  - [`build`](#command-build)
-  - [`clean`](#command-clean)
-  - [`dev`](#command-dev)
-  - [`docs`](#command-docs)
-  - [`generate`](#command-generate)
-  - [`new`](#command-new)
-  - [`preview`](#command-preview)
-  - [`test`](#command-test)
-  - [`ui`](#command-ui)
-  - [`help`](#command-help)
-  - [`*`](#command-*)
-- [Detail API reference](https://cli-api.tinijs.dev)
-
+- [@tinijs/cli](#tinijscli)
+  - [Install](#install)
+  - [Development](#development)
+    - [The structure](#the-structure)
+    - [Add a new command](#add-a-new-command)
+    - [Add a new helper](#add-a-new-helper)
+  - [License](#license)
 
 </section>
 
@@ -58,15 +43,12 @@ For more, please visit: <https://tinijs.dev>
 
 ### The structure
 
-This project uses a design pattern called `seminjecto` (it's a term which I invented some years ago).
-
 The source of the package resides in the `src` folder:
 
 - `public-api.ts`: the public interface of the package
 - `bin.ts`: the entry of the CLI
-- `lib/index.ts`: the container for all shared features
-- `lib/services/...`: all the reusable services
-- `cli/index.ts`: the container of the CLI app
+- `lib/helpers/...`: all the reusable functions
+- `cli/index.ts`: the CLI app
 - `cli/commands/...`: all the commands of the CLI app
 
 The test specs are in the `test` folder:
@@ -75,24 +57,17 @@ The test specs are in the `test` folder:
 
 ### Add a new command
 
-- Install the `@lamnhan/seminjecto` CLI tool: `npm i -g @lamnhan/seminjecto` (the tool is quite outdated but it is still working :), I will update it when I have more time).
-- Run: `semidi g command commands/<name>`
+Add a file in `src/cli/commands/<name>.ts`, for example:
 
-A file will be create in `src/cli/commands/<name>.command.ts`.
+```ts
+export async function <name>Command() {
+  // command logic here
+}
+```
 
-Beside, the command definition code will be injected into `src/cli/index.ts`.
+### Add a new helper
 
-### Add a new service
-
-Similar to adding a new command, but run: `semidi g service services/<name>`
-
-### Generate documentation
-
-To generate the usage section of this README, we use the `@lamnhan/ayedocs` tool.
-
-- Install: `npm i -D @lamnhan/ayedocs`
-- Run: `npx ayedocs g -c .ayedocsrc.cjs`
-- Uninstall: `npm un -D @lamnhan/ayedocs` (to avoid polluting the project)
+Similar to adding a new command, add a new file: `src/lib/helpers/<name>.ts`
 
 </section>
 

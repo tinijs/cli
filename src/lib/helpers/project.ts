@@ -1,9 +1,11 @@
 import {resolve} from 'pathe';
 import {loadConfig} from 'c12';
 import {PackageJson} from 'type-fest';
+import fsExtra from 'fs-extra';
 
-import {FileService, requireModule} from './file.service.js';
-const cliPackageJson = requireModule('../../../package.json');
+import {requireModule} from './file.js';
+
+const {readJson, writeJson} = fsExtra;
 
 export interface ProjectConfig {
   srcDir: string;
@@ -14,49 +16,44 @@ export interface ProjectConfig {
   precompileGeneric: 'none' | 'lite' | 'full';
 }
 
+export const UI_OUTPUT_DIR_PATH = resolve('node_modules/@tinijs/ui');
+export const CLI_PACKAGE_JSON = requireModule('../../../package.json');
+
+const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
+  srcDir: 'app',
+  outDir: 'www',
+  stagingDir: '.tini',
+  componentPrefix: 'app',
+  skipMinifyHTMLLiterals: false,
+  precompileGeneric: 'lite',
+};
+
 export function defineTiniConfig(config: Partial<ProjectConfig>) {
   return config;
 }
 
-export class ProjectService {
-  private readonly DEFAULT_PROJECT_CONFIG: ProjectConfig = {
-    srcDir: 'app',
-    outDir: 'www',
-    stagingDir: '.tini',
-    componentPrefix: 'app',
-    skipMinifyHTMLLiterals: false,
-    precompileGeneric: 'lite',
-  };
+export function getTargetEnv() {
+  return process.env.TARGET_ENV || 'development';
+}
 
-  readonly uiOutputDirPath = resolve('node_modules/@tinijs/ui');
-  readonly cliPackageJson = cliPackageJson;
+export async function loadProjectPackageJson() {
+  return readJson(resolve('package.json')) as Promise<PackageJson>;
+}
 
-  get targetEnv() {
-    return process.env.TARGET_ENV || 'development';
-  }
+export async function loadProjectConfig() {
+  const loadResult = await loadConfig({
+    configFile: 'tini.config',
+    rcFile: false,
+    defaultConfig: DEFAULT_PROJECT_CONFIG,
+  });
+  return loadResult.config as ProjectConfig;
+}
 
-  constructor(private fileService: FileService) {}
-
-  async loadProjectPackageJson() {
-    return this.fileService.readJson<PackageJson>(resolve('package.json'));
-  }
-
-  async loadProjectConfig() {
-    const loadResult = await loadConfig({
-      configFile: 'tini.config',
-      rcFile: false,
-      defaultConfig: this.DEFAULT_PROJECT_CONFIG,
-    });
-    return loadResult.config as ProjectConfig;
-  }
-
-  async modifyProjectPackageJson(
-    modifier: (currentData: PackageJson) => Promise<PackageJson>
-  ) {
-    const packageJsonPath = resolve('package.json');
-    const currentData =
-      await this.fileService.readJson<PackageJson>(packageJsonPath);
-    const newData = await modifier(currentData);
-    return this.fileService.createJson(packageJsonPath, newData);
-  }
+export async function modifyProjectPackageJson(
+  modifier: (currentData: PackageJson) => Promise<PackageJson>
+) {
+  const packageJsonPath = resolve('package.json');
+  const currentData = (await readJson(packageJsonPath)) as PackageJson;
+  const newData = await modifier(currentData);
+  return writeJson(packageJsonPath, newData, {spaces: 2});
 }
