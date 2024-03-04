@@ -11,14 +11,20 @@ const {stat} = fsExtra;
 
 export interface ModuleConfig {
   init?: ModuleInit;
-  build?: (options: any, tiniModule: TiniModule) => void;
+  exec?: (
+    moduleCommand: string,
+    moduleCommandOptions: any,
+    tiniKit: TiniModule
+  ) => void | Promise<void>;
+  defaults?: Record<string, any>;
+  build?: (options: any, tiniKit: TiniModule) => void | Promise<void>;
 }
 
 export interface ModuleInit {
   copy?: Record<string, string>;
   scripts?: Record<string, string>;
   buildCommand?: string;
-  run?: string | ((tiniModule: TiniModule) => void);
+  run?: string | ((tiniKit: TiniModule) => void);
 }
 
 export function defineTiniModule(config: ModuleConfig) {
@@ -39,9 +45,11 @@ export class ModuleService {
     );
   }
 
-  async loadModuleConfig(packageName: string) {
+  async loadModuleConfig(packageName: string, customDir?: string) {
     const loadResult = await loadConfig({
-      cwd: resolve('node_modules', packageName),
+      cwd: customDir
+        ? resolve(customDir)
+        : resolve('node_modules', packageName),
       configFile: 'tini.module',
       rcFile: false,
     });

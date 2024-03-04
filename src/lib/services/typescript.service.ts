@@ -3,19 +3,19 @@ import {resolve} from 'pathe';
 
 import {FileService} from './file.service.js';
 
-export class TypescriptService {
-  readonly ts = typescript;
+const {createCompilerHost, createProgram} = typescript;
 
+export class TypescriptService {
   constructor(private fileService: FileService) {}
 
   transpileFiles(paths: string[], options: CompilerOptions) {
     const createdFiles: Record<string, string> = {};
     // create the host
-    const host = this.ts.createCompilerHost(options);
+    const host = createCompilerHost(options);
     host.writeFile = (path: string, content: string) =>
       (createdFiles[path] = content);
     // emit the files
-    const program = this.ts.createProgram(paths, options, host);
+    const program = createProgram(paths, options, host);
     program.emit();
     // result
     return paths.map(path => {

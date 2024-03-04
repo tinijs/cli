@@ -2,8 +2,6 @@ import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 import {minifyHTMLLiterals} from 'minify-html-literals';
 import sass from 'sass';
-import esbuild from 'esbuild';
-import workboxBuild from 'workbox-build';
 import {nanoid} from 'nanoid';
 
 import {FileService} from '../../lib/services/file.service.js';
@@ -13,12 +11,9 @@ import {
 } from '../../lib/services/project.service.js';
 
 const {remove} = fsExtra;
+const {compileStringAsync} = sass;
 
 export class BuildService {
-  readonly sass = sass;
-  readonly esbuild = esbuild;
-  readonly workboxBuild = workboxBuild;
-
   constructor(
     private fileService: FileService,
     private projectService: ProjectService
@@ -222,7 +217,7 @@ export class BuildService {
       let compiledStyles: string;
       try {
         compiledStyles = (
-          await this.sass.compileStringAsync(originalStyles, {
+          await compileStringAsync(originalStyles, {
             style: isDev ? 'expanded' : 'compressed',
           })
         ).css;

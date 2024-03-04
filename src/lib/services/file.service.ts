@@ -1,4 +1,3 @@
-import pathe from 'pathe';
 import fsExtra from 'fs-extra';
 import recursiveReaddir from 'recursive-readdir';
 import {createRequire} from 'module';
@@ -18,9 +17,6 @@ const {
 export const requireModule = createRequire(import.meta.url);
 
 export class FileService {
-  readonly fs = fsExtra;
-  readonly path = pathe;
-
   constructor() {}
 
   exists(path: string) {

@@ -1,12 +1,8 @@
 import chalk from 'chalk';
-import ora from 'ora';
 
 const {red, green, blue, yellow} = chalk;
 
 export class MessageService {
-  readonly chalk = chalk;
-  readonly ora = ora;
-
   constructor() {}
 
   logMissingArg(name: string) {

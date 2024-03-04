@@ -16,6 +16,7 @@ import {UiBuildCommand} from './commands/ui-build.command.js';
 import {UiDevCommand} from './commands/ui-dev.command.js';
 import {UiIconCommand} from './commands/ui-icon.command.js';
 import {ModuleCommand} from './commands/module.command.js';
+import {ExecCommand} from './commands/exec.command.js';
 
 const {red} = chalk;
 
@@ -35,6 +36,7 @@ export class Cli {
   readonly uiDevCommand: UiDevCommand;
   readonly uiIconCommand: UiIconCommand;
   readonly moduleCommand: ModuleCommand;
+  readonly execCommand: ExecCommand;
 
   readonly commander = ['tini', 'The CLI for the TiniJS framework.'];
 
@@ -145,6 +147,16 @@ export class Cli {
     ['-t, --tag [value]', 'Use the custom version of the package.'],
   ];
 
+  /**
+   * @param packageName - The module package name.
+   * @param moduleCommand - The command of the module to be executed.
+   */
+  execCommandDef: CommandDef = [
+    'exec <packageName> <moduleCommand>',
+    'Exec a module command.',
+    ['-d, --dir [value]', 'Custom root of the module.'],
+  ];
+
   constructor() {
     this.tiniModule = new TiniModule();
     this.docsCommand = new DocsCommand(this.tiniModule.messageService);
@@ -212,6 +224,11 @@ export class Cli {
       this.tiniModule.messageService
     );
     this.moduleCommand = new ModuleCommand(
+      this.tiniModule.messageService,
+      this.tiniModule.moduleService
+    );
+    this.execCommand = new ExecCommand(
+      this.tiniModule,
       this.tiniModule.messageService,
       this.tiniModule.moduleService
     );
@@ -416,6 +433,18 @@ export class Cli {
         .option(...tagOpt)
         .action((packageName, options) =>
           this.moduleCommand.run(packageName, options)
+        );
+    })();
+
+    // exec
+    (() => {
+      const [command, description, dirOpt] = this.execCommandDef;
+      commander
+        .command(command as string)
+        .description(description)
+        .option(...dirOpt)
+        .action((packageName, moduleCommand, options, commander) =>
+          this.execCommand.run(packageName, moduleCommand, options, commander)
         );
     })();
 
