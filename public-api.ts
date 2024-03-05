@@ -6,6 +6,5 @@ export * from './lib/helpers/project.js';
 export * from './lib/helpers/generate.js';
 export * from './lib/helpers/typescript.js';
 export * from './lib/helpers/build.js';
-export * from './lib/helpers/ui.js';
 export * from './lib/helpers/module.js';
 export * from './lib/helpers/git.js';

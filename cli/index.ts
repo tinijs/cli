@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import {Command} from 'commander';
-import chalk from 'chalk';
 
 import {error} from '../lib/helpers/message.js';
 import {CLI_PACKAGE_JSON} from '../lib/helpers/project.js';
@@ -14,10 +13,8 @@ import buildCommand from './commands/build.js';
 import previewCommand from './commands/preview.js';
 import testCommand from './commands/test.js';
 import cleanCommand from './commands/clean.js';
-import uiCommand from './commands/ui.js';
 import moduleCommand from './commands/module.js';
 
-const {red} = chalk;
 const {version: tiniVersion} = CLI_PACKAGE_JSON;
 
 (async () => {
@@ -103,17 +100,6 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .option('-e, --excludes [value]', 'Excluding files, separated by |.')
     .action(cleanCommand);
 
-  // ui
-  commander
-    .command('ui <subCommand> [params...]')
-    .description('Tools for developing and using Tini UI.')
-    .option('-b, --build-only', 'Build mode only of the use command.')
-    .option('-i, --skip-help', 'Skip instruction of the use command.')
-    .option('-h, --hook [path]', 'Path to a hook file.')
-    .option('-o, --output [path]', 'Custom output folder.')
-    .option('-r, --react', 'Build for React.')
-    .action(uiCommand);
-
   // module
   commander
     .command('add <packageName>')
@@ -122,14 +108,14 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .option('-t, --tag [value]', 'Use the custom version of the package.')
     .action(moduleCommand);
 
+  // extended commands
+  await extendTiniCLI(commander);
+
   // help
   commander
     .command('help')
     .description('Display help.')
     .action(() => commander.outputHelp());
-
-  // extended commands
-  await extendTiniCLI(commander);
 
   // *
   commander
