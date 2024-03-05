@@ -17,6 +17,10 @@ export function errorInvalidSubCommand(
   );
 }
 
+export function errorUncleanGit() {
+  error('Unclean git working directory. Please commit or stash changes first.');
+}
+
 export function log(message: string, compact = false) {
   message = message.trim();
   if (!compact) message = '\n' + message + '\n';

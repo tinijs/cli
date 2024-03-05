@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import {resolve} from 'pathe';
+import {execaCommand} from 'execa';
 import ora from 'ora';
 
 import {error} from '../../lib/helpers/message.js';
-import {exec} from '../../lib/helpers/terminal.js';
 import {
   SoulAndSkins,
   COMPONENTS_DIR,
@@ -39,7 +39,7 @@ export async function uiUseCommand(
 
   // install packages (@tinijs/ui postinstall or using --build-only implicitly)
   if (!options.buildOnly) {
-    installPackages(souls);
+    await installPackages(souls);
   }
 
   // copy global files
@@ -94,11 +94,13 @@ function parseInputs(inputs: string[]): SoulAndSkins[] {
   });
 }
 
-function installPackages(souls: string[]) {
+async function installPackages(souls: string[]) {
   const soulPackages = souls
     .map(soul => `${UI_PACKAGE_NAME}-${soul}`)
     .join(' ');
-  exec(`npm i ${soulPackages} ${UI_PACKAGE_NAME}-common ${UI_PACKAGE_NAME}`);
+  return execaCommand(
+    `npm i ${soulPackages} ${UI_PACKAGE_NAME}-common ${UI_PACKAGE_NAME}`
+  );
 }
 
 function showInstruction(firstSoulSkin: string) {

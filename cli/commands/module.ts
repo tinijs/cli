@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import {success} from '../../lib/helpers/message.js';
+import {success, errorUncleanGit} from '../../lib/helpers/message.js';
 import {
   installPackage,
   loadModuleConfig,
@@ -8,6 +8,7 @@ import {
   updateScripts,
   initRun,
 } from '../../lib/helpers/module.js';
+import {isGitClean} from '../../lib/helpers/git.js';
 
 const {blueBright} = chalk;
 
@@ -19,8 +20,9 @@ export async function moduleCommand(
   packageName: string,
   commandOptions: ModuleCommandOptions
 ) {
+  if (!isGitClean()) return errorUncleanGit();
   // install packages
-  installPackage(packageName, commandOptions.tag);
+  await installPackage(packageName, commandOptions.tag);
   // load init instruction
   const moduleConfig = await loadModuleConfig(packageName);
   // handle init
@@ -36,7 +38,7 @@ export async function moduleCommand(
     }
     // run
     if (run) {
-      initRun(run);
+      await initRun(run);
     }
   }
   // done

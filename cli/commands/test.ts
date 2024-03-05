@@ -1,5 +1,8 @@
-import {exec} from '../../lib/helpers/terminal.js';
+import {execaCommand} from 'execa';
 
 export function testCommand() {
-  exec('echo "TODO: implement the test command"', '.', 'inherit');
+  execaCommand('echo "TODO: implement the test command"', {
+    cwd: '.',
+    stdio: 'inherit',
+  });
 }

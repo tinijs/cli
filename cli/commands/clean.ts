@@ -4,7 +4,9 @@ import {createPromptModule} from 'inquirer';
 import picomatch from 'picomatch';
 import fsExtra from 'fs-extra';
 
+import {errorUncleanGit} from '../../lib/helpers/message.js';
 import {listDir, removeFiles} from '../../lib/helpers/file.js';
+import {isGitClean} from '../../lib/helpers/git.js';
 
 const {red, gray, green} = chalk;
 const {pathExists} = fsExtra;
@@ -35,6 +37,7 @@ const PROCESSABLE_PATTERN =
   '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
 
 export async function cleanCommand(commandOptions: CleanCommandOptions) {
+  if (!isGitClean()) return errorUncleanGit();
   const includes = commandOptions.includes
     ? processInputPaths(commandOptions.includes)
     : [];

@@ -1,9 +1,9 @@
 import {resolve} from 'pathe';
 import {loadConfig} from 'c12';
 import fsExtra from 'fs-extra';
+import {execaCommand} from 'execa';
 
 import {modifyProjectPackageJson} from '../../lib/helpers/project.js';
-import {exec} from '../../lib/helpers/terminal.js';
 
 const {stat, pathExists, copy: copyDir, copyFile} = fsExtra;
 
@@ -17,15 +17,17 @@ export interface ModuleInit {
   copy?: Record<string, string>;
   scripts?: Record<string, string>;
   buildCommand?: string;
-  run?: string | (() => void);
+  run?: string | (() => void | Promise<void>);
 }
 
 export function defineTiniModule(config: ModuleConfig) {
   return config;
 }
 
-export function installPackage(packageName: string, tag?: string) {
-  return exec(`npm i ${packageName}${!tag ? '' : `@${tag}`}  --loglevel error`);
+export async function installPackage(packageName: string, tag?: string) {
+  return execaCommand(
+    `npm i ${packageName}${!tag ? '' : `@${tag}`}  --loglevel error`
+  );
 }
 
 export async function loadModuleConfig(
@@ -78,8 +80,8 @@ export async function updateScripts(
   });
 }
 
-export function initRun(run: NonNullable<ModuleInit['run']>) {
+export async function initRun(run: NonNullable<ModuleInit['run']>) {
   return run instanceof Function
     ? run()
-    : exec(run.startsWith('npx ') ? run : `npm run ${run}`);
+    : execaCommand(run.startsWith('npx ') ? run : `npm run ${run}`);
 }
