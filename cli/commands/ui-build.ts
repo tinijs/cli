@@ -25,7 +25,7 @@ const {pathExists, ensureDir, copy, copyFile, writeJson, outputFile, readFile} =
 export const APP_DIR = 'app';
 export const UI_PACKAGE_NAME = '@tinijs/ui';
 
-export async function uiBuildCommand(packageName: string, soulName?: string) {
+export default async function (packageName: string, soulName?: string) {
   packageName = !packageName
     ? UI_PACKAGE_NAME
     : `${packageName}-${!soulName ? 'common' : soulName}`;

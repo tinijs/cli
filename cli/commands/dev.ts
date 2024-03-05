@@ -21,7 +21,7 @@ interface DevCommandOptions {
   watch?: boolean;
 }
 
-export async function devCommand(commandOptions: DevCommandOptions) {
+export default async function (commandOptions: DevCommandOptions) {
   const projectConfig = await loadProjectConfig();
   const {srcDir, outDir, stagingDir} = projectConfig;
   const stagingPath = getAppStagingDirPath(stagingDir);

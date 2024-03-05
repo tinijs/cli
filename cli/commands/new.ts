@@ -18,7 +18,7 @@ interface NewCommandOptions {
   skipGit?: boolean;
 }
 
-export async function newCommand(
+export default async function (
   projectName: string,
   commandOptions: NewCommandOptions
 ) {
@@ -40,7 +40,7 @@ export async function newCommand(
     );
   }
   // create
-  await create(resourceUrl, projectPath);
+  await downloadAndUnzip(resourceUrl, projectPath + '/download.zip');
   // info
   info(`\nCreate a new TiniJS project: ${green(validProjectName)}`, true);
   info(`From: ${gray(resourceUrl)}\n`, true);
@@ -72,8 +72,4 @@ What's next?
 › Preview production: ${cyan('npm run preview')}
 › For more, please visit: ${cyan('https://tinijs.dev')}
   `);
-}
-
-async function create(resourceUrl: string, projectPath: string) {
-  await downloadAndUnzip(resourceUrl, projectPath + '/download.zip');
 }

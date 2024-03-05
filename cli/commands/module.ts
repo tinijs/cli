@@ -16,7 +16,7 @@ export interface ModuleCommandOptions {
   tag?: string;
 }
 
-export async function moduleCommand(
+export default async function (
   packageName: string,
   commandOptions: ModuleCommandOptions
 ) {

@@ -12,7 +12,7 @@ interface PreviewCommandOptions {
   i18n?: boolean;
 }
 
-export async function previewCommand(commandOptions: PreviewCommandOptions) {
+export default async function (commandOptions: PreviewCommandOptions) {
   const {outDir: cwd} = await loadProjectConfig();
   // launch server
   const hostname = commandOptions.host || '0.0.0.0';

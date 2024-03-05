@@ -17,7 +17,7 @@ import {
 
 const {readdir, writeJson} = fsExtra;
 
-export async function uiDevCommand() {
+export default async function () {
   const {stagingDir} = await loadProjectConfig();
   const souls = (await readdir(resolve(STYLES_DIR))).filter(
     item => !~item.indexOf('.')

@@ -78,7 +78,7 @@ protected render() {
 }
   `;
 
-export async function uiIconCommand(
+export default async function (
   sources: string[],
   commandOptions: UIIconCommandOptions
 ) {

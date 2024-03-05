@@ -9,18 +9,3 @@ export * from './lib/helpers/build.js';
 export * from './lib/helpers/ui.js';
 export * from './lib/helpers/module.js';
 export * from './lib/helpers/git.js';
-
-export * from './cli/commands/docs.js';
-export * from './cli/commands/new.js';
-export * from './cli/commands/dev.js';
-export * from './cli/commands/build.js';
-export * from './cli/commands/preview.js';
-export * from './cli/commands/test.js';
-export * from './cli/commands/clean.js';
-export * from './cli/commands/generate.js';
-export * from './cli/commands/ui.js';
-export * from './cli/commands/ui-use.js';
-export * from './cli/commands/ui-build.js';
-export * from './cli/commands/ui-dev.js';
-export * from './cli/commands/ui-icon.js';
-export * from './cli/commands/module.js';

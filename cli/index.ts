@@ -6,20 +6,16 @@ import {error} from '../lib/helpers/message.js';
 import {CLI_PACKAGE_JSON} from '../lib/helpers/project.js';
 import {extendTiniCLI, getExtendableCommands} from '../lib/helpers/extend.js';
 
-import {docsCommand} from './commands/docs.js';
-import {newCommand} from './commands/new.js';
-import {generateCommand} from './commands/generate.js';
-import {devCommand} from './commands/dev.js';
-import {buildCommand} from './commands/build.js';
-import {previewCommand} from './commands/preview.js';
-import {testCommand} from './commands/test.js';
-import {cleanCommand} from './commands/clean.js';
-import {uiCommand} from './commands/ui.js';
-import {uiUseCommand} from './commands/ui-use.js';
-import {uiBuildCommand} from './commands/ui-build.js';
-import {uiDevCommand} from './commands/ui-dev.js';
-import {uiIconCommand} from './commands/ui-icon.js';
-import {moduleCommand} from './commands/module.js';
+import docsCommand from './commands/docs.js';
+import newCommand from './commands/new.js';
+import generateCommand from './commands/generate.js';
+import devCommand from './commands/dev.js';
+import buildCommand from './commands/build.js';
+import previewCommand from './commands/preview.js';
+import testCommand from './commands/test.js';
+import cleanCommand from './commands/clean.js';
+import uiCommand from './commands/ui.js';
+import moduleCommand from './commands/module.js';
 
 const {red} = chalk;
 const {version: tiniVersion} = CLI_PACKAGE_JSON;
@@ -108,51 +104,15 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .action(cleanCommand);
 
   // ui
-  const uiOpts = {
-    buildOnly: ['-b, --build-only', 'Build mode only of the use command.'],
-    skipHelp: ['-i, --skip-help', 'Skip instruction of the use command.'],
-    hook: ['-h, --hook [path]', 'Path to a hook file.'],
-    output: ['-o, --output [path]', 'Custom output folder.'],
-    react: ['-r, --react', 'Build for React.'],
-  } as Record<string, [string, string]>;
   commander
     .command('ui <subCommand> [params...]')
     .description('Tools for developing and using Tini UI.')
-    .option(...uiOpts.buildOnly)
-    .option(...uiOpts.skipHelp)
-    .option(...uiOpts.hook)
-    .option(...uiOpts.output)
-    .option(...uiOpts.react)
+    .option('-b, --build-only', 'Build mode only of the use command.')
+    .option('-i, --skip-help', 'Skip instruction of the use command.')
+    .option('-h, --hook [path]', 'Path to a hook file.')
+    .option('-o, --output [path]', 'Custom output folder.')
+    .option('-r, --react', 'Build for React.')
     .action(uiCommand);
-
-  // ui-use
-  commander
-    .command('ui-use <inputs...>')
-    .description('Use souls and skins in a project.')
-    .option(...uiOpts.buildOnly)
-    .option(...uiOpts.skipHelp)
-    .action(uiUseCommand);
-
-  // ui-build
-  commander
-    .command('ui-build <packageName> [soulName]')
-    .description('Build UI systems.')
-    .action(uiBuildCommand);
-
-  // ui-dev
-  commander
-    .command('ui-dev')
-    .description('Build the ui-dev package.')
-    .action(uiDevCommand);
-
-  // ui-icon
-  commander
-    .command('ui-icon <sources...>')
-    .description('Build an icons pack.')
-    .option(...uiOpts.hook)
-    .option(...uiOpts.output)
-    .option(...uiOpts.react)
-    .action(uiIconCommand);
 
   // module
   commander

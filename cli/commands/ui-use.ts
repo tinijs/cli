@@ -25,10 +25,7 @@ export interface UiUseCommandOptions {
 const NODE_MODULES_DIR = 'node_modules';
 const UI_PACKAGE_NAME = '@tinijs/ui';
 
-export async function uiUseCommand(
-  inputs: string[],
-  options: UiUseCommandOptions
-) {
+export default async function (inputs: string[], options: UiUseCommandOptions) {
   inputs = (inputs || []).filter(item => ~item.indexOf('/'));
   if (!inputs.length) {
     return error(`Invalid inputs, valid format: ${blue('soul/skin-1,skin-2')}`);

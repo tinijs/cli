@@ -12,7 +12,7 @@ interface GenerateCommandOptions {
   nested?: boolean;
 }
 
-export async function generateCommand(
+export default async function (
   type: string,
   dest: string,
   commandOptions: GenerateCommandOptions

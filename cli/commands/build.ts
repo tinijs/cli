@@ -15,7 +15,7 @@ interface BuildCommandOptions {
   target?: string;
 }
 
-export async function buildCommand(commandOptions: BuildCommandOptions) {
+export default async function (commandOptions: BuildCommandOptions) {
   process.env.TARGET_ENV = commandOptions.target || 'production';
   const projectConfig = await loadProjectConfig();
   const {srcDir, outDir, stagingDir} = projectConfig;

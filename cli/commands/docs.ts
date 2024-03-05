@@ -5,9 +5,8 @@ import {info} from '../../lib/helpers/message.js';
 
 const {blueBright, bold} = chalk;
 
-const HOME_URL = 'https://tinijs.dev';
-
-export function docsCommand() {
+export default function () {
+  const HOME_URL = 'https://tinijs.dev';
   info(`Documetation link: ${bold(blueBright(HOME_URL))}`);
   open(HOME_URL);
 }

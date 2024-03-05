@@ -18,13 +18,13 @@ interface CleanCommandOptions {
   excludes?: string;
 }
 
-const ignoredPaths = [
+const IGNORED_PATHS = [
   'node_modules', // modules
   '.*', // dot files
   '.*/**', // dot folders
-  'dist', // output folder
-  'public', // handle by: parcel-reporter-static-files-copy
-  'public-api.*', // lib api
+  'dist',
+  'build',
+  'public-api.*',
   // defaults
   'package.json',
   'package-lock.json',
@@ -33,10 +33,9 @@ const ignoredPaths = [
   'tsconfig.json',
 ];
 
-const PROCESSABLE_PATTERN =
-  '!**/?(app|configs|layouts|pages|components|services|helpers|consts)/*.@(d.ts|js|map)';
+const PROCESSABLE_PATTERN = '!**/?(lib|cli|module|app|)/*.@(d.ts|js|map)';
 
-export async function cleanCommand(commandOptions: CleanCommandOptions) {
+export default async function (commandOptions: CleanCommandOptions) {
   if (!isGitClean()) return errorUncleanGit();
   const includes = commandOptions.includes
     ? processInputPaths(commandOptions.includes)
@@ -51,7 +50,7 @@ export async function cleanCommand(commandOptions: CleanCommandOptions) {
     'public-api.js',
     'public-api.map',
   ].map(path => resolve(path));
-  const projectFiles = await listFiles();
+  const projectFiles = await listDir(resolve('.'), IGNORED_PATHS);
   const files = [...defaultFiles, ...projectFiles]
     .map(path => path.replace(/\\/g, '/'))
     .filter(path => removableMatch(path) && excludes.indexOf(path) === -1)
@@ -103,8 +102,4 @@ function processInputPaths(input: string) {
     .map(path =>
       path.trim().replace('./', '').replace('.\\', '').replace(/\\/g, '/')
     );
-}
-
-async function listFiles() {
-  return await listDir(resolve('.'), ignoredPaths);
 }
