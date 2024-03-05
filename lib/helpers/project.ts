@@ -14,9 +14,11 @@ export interface ProjectConfig {
   componentPrefix: string;
   skipMinifyHTMLLiterals: boolean;
   precompileGeneric: 'none' | 'lite' | 'full';
+  cliExtends: Record<string, string>;
 }
 
-export const UI_OUTPUT_DIR_PATH = resolve('node_modules/@tinijs/ui');
+export const TINIJS_INSTALL_DIR_PATH = resolve('node_modules', '@tinijs');
+export const UI_OUTPUT_DIR_PATH = resolve(TINIJS_INSTALL_DIR_PATH, 'ui');
 export const CLI_PACKAGE_JSON = requireModule('../../package.json');
 
 const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
@@ -26,6 +28,10 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   componentPrefix: 'app',
   skipMinifyHTMLLiterals: false,
   precompileGeneric: 'lite',
+  cliExtends: {
+    // ui: './node_modules/@tinijs/ui/cli/extend.js',
+    content: './node_modules/@tinijs/content/cli/extend.js',
+  },
 };
 
 export function defineTiniConfig(config: Partial<ProjectConfig>) {

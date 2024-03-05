@@ -1,3 +1,4 @@
+export * from './lib/helpers/extend.js';
 export * from './lib/helpers/message.js';
 export * from './lib/helpers/file.js';
 export * from './lib/helpers/download.js';
