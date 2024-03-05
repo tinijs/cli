@@ -4,8 +4,10 @@ node_modules/
 .nyc_output/
 # distribution
 .deploy/
-src/**/*.js
+lib/**/*.js
+cli/**/*.js
 test/**/*.js
+public-api.js
 *.map
 *.d.ts
 *.tgz

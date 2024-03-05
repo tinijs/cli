@@ -12,15 +12,19 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "src/public-api.js",
-  "types": "src/public-api.d.ts",
+  "exports": "./public-api.js",
+  "types": "./public-api.d.ts",
   "bin": {
-    "tini": "src/bin.js"
+    "tini": "./cli/index.js"
   },
   "files": [
-    "src",
+    "lib",
+    "cli",
+    "public-api.*",
     "!**/*.ts",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "!docs",
+    "!test"
   ],
   "scripts": {
     "compile": "tsc",
@@ -30,9 +34,8 @@
     "fix": "gts fix"
   },
   "keywords": [
-    "node",
-    "module",
-    "cli"
+    "TiniJS",
+    "CLI"
   ],
   "repository": {
     "type": "git",

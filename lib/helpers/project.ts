@@ -17,7 +17,7 @@ export interface ProjectConfig {
 }
 
 export const UI_OUTPUT_DIR_PATH = resolve('node_modules/@tinijs/ui');
-export const CLI_PACKAGE_JSON = requireModule('../../../package.json');
+export const CLI_PACKAGE_JSON = requireModule('../../package.json');
 
 const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   srcDir: 'app',
