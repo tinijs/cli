@@ -29,8 +29,8 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   skipMinifyHTMLLiterals: false,
   precompileGeneric: 'lite',
   cliExtends: {
-    ui: resolve(TINIJS_INSTALL_DIR_PATH, 'ui', 'cli', 'extend.js'),
-    content: resolve(TINIJS_INSTALL_DIR_PATH, 'content', 'cli', 'extend.js'),
+    ui: resolve(TINIJS_INSTALL_DIR_PATH, 'ui', 'cli', 'expand.js'),
+    content: resolve(TINIJS_INSTALL_DIR_PATH, 'content', 'cli', 'expand.js'),
   },
 };
 

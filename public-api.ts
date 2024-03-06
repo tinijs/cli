@@ -1,4 +1,4 @@
-export * from './cli/helpers/extend.js';
+export * from './cli/helpers/expand.js';
 export * from './cli/helpers/message.js';
 export * from './cli/helpers/file.js';
 export * from './cli/helpers/download.js';

@@ -3,7 +3,7 @@ import {Command} from 'commander';
 
 import {error} from './helpers/message.js';
 import {CLI_PACKAGE_JSON} from './helpers/project.js';
-import {extendTiniCLI, getExtendableCommands} from './helpers/extend.js';
+import {getExpandedCommands, expandCliApp} from './helpers/expand.js';
 
 import docsCommand from './commands/docs.js';
 import newCommand from './commands/new.js';
@@ -108,8 +108,8 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .option('-t, --tag [value]', 'Use the custom version of the package.')
     .action(moduleCommand);
 
-  // extended commands
-  await extendTiniCLI(commander);
+  // expand
+  await expandCliApp(commander);
 
   // help
   commander
@@ -123,10 +123,10 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .description('Any other command is not supported.')
     .action(async (options, commander) => {
       const command = commander.args[0];
-      const extendableCommands = await getExtendableCommands();
-      if (extendableCommands[command]) {
+      const expandableCommands = await getExpandedCommands();
+      if (expandableCommands[command]) {
         error(
-          `The extended command "${command}" is not found at ${extendableCommands[command]}.`
+          `The expanded command "${command}" is not found at ${expandableCommands[command]}.`
         );
       } else {
         error(`Unknown command "${command}"`);
