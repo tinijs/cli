@@ -1,13 +1,15 @@
 import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
-import {error, success} from '../helpers/message.js';
-import {DEFAULT_FOLDERS, generate} from '../helpers/generate.js';
+import {error, success} from '../utils/message.js';
+import {getTiniApp} from '../../lib/classes/tini-app.js';
+import {BUILTIN_GENERATORS, TemplateGenerator} from '../utils/generate.js';
 
 const {red, green, yellow} = chalk;
 const {exists, outputFile} = fsExtra;
 
 interface GenerateCommandOptions {
+  dir?: string;
   typePrefixed?: boolean;
   nested?: boolean;
 }
@@ -17,28 +19,41 @@ export default async function (
   dest: string,
   commandOptions: GenerateCommandOptions
 ) {
-  const SUPPORTED_TYPES = Object.keys(DEFAULT_FOLDERS).map(item => item);
-  if (SUPPORTED_TYPES.indexOf(type) === -1) {
+  const {
+    config: {srcDir, cli},
+  } = await getTiniApp();
+  const availableGenerators: Record<string, TemplateGenerator> = {
+    ...BUILTIN_GENERATORS,
+    ...(cli?.generate || {}).generators,
+  };
+  const generator = availableGenerators[type];
+  if (!generator) {
     return error(
-      `Invalid type "${red(type)}", please try: ${SUPPORTED_TYPES.map(item =>
-        green(item)
-      ).join(', ')}.`
+      `Invalid type "${red(type)}", please try: ${Object.keys(
+        availableGenerators
+      )
+        .map(item => green(item))
+        .join(', ')}.`
     );
   }
-  const templates = await generate(
+  const templates = await generator({
     type,
     dest,
-    commandOptions.typePrefixed,
-    commandOptions.nested
-  );
-  const {path: mainPath, fullPath: mainFullPath} = templates[0];
+    srcDir: commandOptions.dir || srcDir,
+    typePrefixed: commandOptions.typePrefixed || false,
+    nested: commandOptions.nested || false,
+    componentPrefix: (cli?.generate || {}).componentPrefix || 'app',
+  });
+  const {shortPath: mainShortPath, fullPath: mainFullPath} = templates[0];
   if (await exists(mainFullPath)) {
-    return error(`A ${yellow(type)} already available at ${green(mainPath)}.`);
+    return error(
+      `A ${yellow(type)} already available at ${green(mainShortPath)}.`
+    );
   }
   // save files
   for (let i = 0; i < templates.length; i++) {
-    const {path, fullPath, content} = templates[i];
+    const {shortPath, fullPath, content} = templates[i];
     await outputFile(fullPath, content);
-    success(`CREATE ${green(path)}.`);
+    success(`CREATE ${green(shortPath)}.`);
   }
 }

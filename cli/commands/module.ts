@@ -1,14 +1,15 @@
 import chalk from 'chalk';
 
-import {success, errorUncleanGit} from '../helpers/message.js';
+import {
+  loadModule,} from '../../lib/utils/module.js';
+import {success, errorUncleanGit} from '../utils/message.js';
 import {
   installPackage,
-  loadModule,
   copyAssets,
   updateScripts,
   initRun,
-} from '../helpers/module.js';
-import {isGitClean} from '../helpers/git.js';
+} from '../utils/module.js';
+import {isGitClean} from '../utils/git.js';
 
 const {blueBright} = chalk;
 

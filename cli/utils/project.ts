@@ -2,14 +2,18 @@ import {resolve} from 'pathe';
 import {PackageJson} from 'type-fest';
 import fsExtra from 'fs-extra';
 
-import {requireModule} from './file.js';
+import {requireModule, modifyJsonFile} from './file.js';
 
-const {readJson, writeJson} = fsExtra;
+const {readJson} = fsExtra;
 
-export const CLI_PACKAGE_JSON = requireModule('../../package.json');
+export const TINIJS_INSTALL_DIR_PATH = resolve('node_modules', '@tinijs');
 
 export function getTargetEnv() {
   return process.env.TARGET_ENV || 'development';
+}
+
+export async function loadCliPackageJson() {
+  return requireModule('../../package.json') as PackageJson;
 }
 
 export async function loadProjectPackageJson() {
@@ -19,8 +23,5 @@ export async function loadProjectPackageJson() {
 export async function modifyProjectPackageJson(
   modifier: (currentData: PackageJson) => Promise<PackageJson>
 ) {
-  const packageJsonPath = resolve('package.json');
-  const currentData = (await readJson(packageJsonPath)) as PackageJson;
-  const newData = await modifier(currentData);
-  return writeJson(packageJsonPath, newData, {spaces: 2});
+  return modifyJsonFile('package.json', modifier, {spaces: 2});
 }

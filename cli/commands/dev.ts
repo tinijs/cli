@@ -4,15 +4,15 @@ import {resolve} from 'pathe';
 import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
-import {log} from '../helpers/message.js';
-import {TiniConfig, getTiniApp} from '../helpers/tini.js';
+import {log} from '../utils/message.js';
+import {TiniConfig, getTiniApp} from '../../lib/classes/tini-app.js';
 import {
   getAppStagingDirPath,
   buildFile,
   removeFile,
   buildStaging,
   copyPublic,
-} from '../helpers/build.js';
+} from '../utils/build.js';
 
 const {blueBright, bold} = chalk;
 const {exists} = fsExtra;
@@ -23,8 +23,8 @@ interface DevCommandOptions {
 
 export default async function (commandOptions: DevCommandOptions) {
   const {config: tiniConfig} = await getTiniApp();
-  const {srcDir, outDir, stagingDir} = tiniConfig;
-  const stagingPath = getAppStagingDirPath(stagingDir);
+  const {srcDir, outDir, tempDir} = tiniConfig;
+  const stagingPath = getAppStagingDirPath(tempDir);
   // watch mode
   if (commandOptions.watch) {
     watch(srcDir, {ignoreInitial: true})

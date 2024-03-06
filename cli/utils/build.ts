@@ -4,24 +4,24 @@ import {minifyHTMLLiterals} from 'minify-html-literals';
 import * as sass from 'sass';
 import {nanoid} from 'nanoid';
 
+import {TiniConfig, getTiniApp} from '../../lib/classes/tini-app.js';
 import {cleanDir, listDir} from './file.js';
 import {getTargetEnv} from './project.js';
-import {TiniConfig, getTiniApp} from './tini.js';
 
 const {remove, exists, ensureDir, copy, copyFile, readFile, outputFile} =
   fsExtra;
 const {compileStringAsync} = sass;
 
-export function getAppStagingDirPath(stagingDir: string) {
-  return resolve(stagingDir, 'app');
+export function getAppStagingDirPath(tempDir: string) {
+  return resolve(tempDir, 'app');
 }
 
 export async function buildStaging() {
   const {
-    config: {srcDir, stagingDir},
+    config: {srcDir, tempDir},
   } = await getTiniApp();
   const srcPath = resolve(srcDir);
-  const stagingPath = getAppStagingDirPath(stagingDir);
+  const stagingPath = getAppStagingDirPath(tempDir);
   await cleanDir(stagingPath);
   const paths = await listDir(srcPath);
   for (let i = 0; i < paths.length; i++) {
@@ -153,7 +153,7 @@ function processHTML(content: string, isDev: boolean, tiniConfig: TiniConfig) {
   // no return html`...`
   if (!templateMatching) return content;
   // process generic component
-  if (tiniConfig.precompileGeneric === 'lite') {
+  if ((tiniConfig.prebuild || {}).precompileGeneric === 'lite') {
     const genericMatchingArr = content.match(
       /<tini-generic(-unscoped)?([\s\S]*?)>/g
     );
@@ -167,7 +167,7 @@ function processHTML(content: string, isDev: boolean, tiniConfig: TiniConfig) {
         genericMatching.replace(`<${tag}`, `<${tag} precomputed="${nanoid(7)}"`)
       );
     });
-  } else if (tiniConfig.precompileGeneric === 'full') {
+  } else if ((tiniConfig.prebuild || {}).precompileGeneric === 'full') {
     // TODO: full precompile
   }
   // dev mode
@@ -176,7 +176,7 @@ function processHTML(content: string, isDev: boolean, tiniConfig: TiniConfig) {
   const matchedTemplate = templateMatching[0];
   let minifiedTemplate: string;
   try {
-    if (tiniConfig.skipMinifyHTMLLiterals) {
+    if ((tiniConfig.prebuild || {}).skipMinifyHtmlLiterals) {
       minifiedTemplate = matchedTemplate;
     } else {
       const result = minifyHTMLLiterals(matchedTemplate);

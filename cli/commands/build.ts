@@ -2,12 +2,12 @@ import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 import {execaCommand} from 'execa';
 
-import {getTiniApp} from '../helpers/tini.js';
+import {getTiniApp} from '../../lib/classes/tini-app.js';
 import {
   getAppStagingDirPath,
   buildStaging,
   copyPublic,
-} from '../helpers/build.js';
+} from '../utils/build.js';
 
 const {remove} = fsExtra;
 
@@ -18,8 +18,8 @@ interface BuildCommandOptions {
 export default async function (commandOptions: BuildCommandOptions) {
   process.env.TARGET_ENV = commandOptions.target || 'production';
   const {config: tiniConfig} = await getTiniApp();
-  const {srcDir, outDir, stagingDir} = tiniConfig;
-  const stagingPath = getAppStagingDirPath(stagingDir);
+  const {srcDir, outDir, tempDir} = tiniConfig;
+  const stagingPath = getAppStagingDirPath(tempDir);
   // clean target dir
   await remove(resolve(outDir));
   // build staging

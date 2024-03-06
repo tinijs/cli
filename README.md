@@ -13,7 +13,7 @@
   - [Development](#development)
     - [The structure](#the-structure)
     - [Add a new command](#add-a-new-command)
-    - [Add a new helper](#add-a-new-helper)
+    - [Add a new util](#add-a-new-util)
   - [License](#license)
 
 </section>
@@ -46,10 +46,9 @@ For more, please visit: <https://tinijs.dev>
 The source of the package resides in the `src` folder:
 
 - `public-api.ts`: the public interface of the package
-- `bin.ts`: the entry of the CLI
-- `lib/helpers/...`: all the reusable functions
-- `cli/index.ts`: the CLI app
+- `cli/index.ts`: the entry of the CLI
 - `cli/commands/...`: all the commands of the CLI app
+- `cli/utils/...`: all the reusable functions
 
 The test specs are in the `test` folder:
 
@@ -65,9 +64,9 @@ export async function <name>Command() {
 }
 ```
 
-### Add a new helper
+### Add a new util
 
-Similar to adding a new command, add a new file: `src/lib/helpers/<name>.ts`
+Similar to adding a new command, add a new file: `src/lib/utils/<name>.ts`
 
 </section>
 
