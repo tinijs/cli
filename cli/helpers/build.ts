@@ -176,7 +176,7 @@ function processHTML(content: string, isDev: boolean, tiniConfig: TiniConfig) {
   const matchedTemplate = templateMatching[0];
   let minifiedTemplate: string;
   try {
-    if (tiniConfig.skipMinifyHTMLLiterals) {
+    if (tiniConfig.skipMinifyHtmlLiterals) {
       minifiedTemplate = matchedTemplate;
     } else {
       const result = minifyHTMLLiterals(matchedTemplate);

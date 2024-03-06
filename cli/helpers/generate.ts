@@ -1,185 +1,176 @@
 import {resolve} from 'pathe';
-import {camelCase, capitalCase, pascalCase, kebabCase} from 'change-case';
+import {Promisable} from 'type-fest';
 
-import {getTiniApp} from './tini.js';
+import {parseName, Names} from './name.js';
 
-interface Names {
-  typeCapital: string;
-  name: string;
-  nameConst: string;
-  nameCamel: string;
-  namePascal: string;
-  nameCapital: string;
-  nameParam: string;
-  className: string;
-  classNameWithPrefix: string;
-  tagName: string;
+export interface TemplateContext {
+  type: string;
+  dest: string;
+  srcDir: string;
+  typePrefixed: boolean;
+  nested: boolean;
+  componentPrefix: string;
 }
 
-interface Template extends Names {
-  path: string;
+export type TemplateGenerator = (
+  context: TemplateContext
+) => Promisable<GeneratedTemplate[]>;
+
+export interface GeneratedTemplate {
+  shortPath: string;
   fullPath: string;
   content: string;
 }
 
-export const SERVICE = 'service';
-export const LAYOUT = 'layout';
-export const PAGE = 'page';
-export const COMPONENT = 'component';
-export const PARTIAL = 'partial';
-export const HELPER = 'helper';
-export const CONST = 'const';
-export const STORE = 'store';
-export const TYPE = 'type';
-
-export const DEFAULT_FOLDERS = {
-  [SERVICE]: 'services',
-  [LAYOUT]: 'layouts',
-  [PAGE]: 'pages',
-  [COMPONENT]: 'components',
-  [PARTIAL]: 'partials',
-  [HELPER]: 'helpers',
-  [CONST]: 'consts',
-  [STORE]: 'stores',
-  [TYPE]: 'types',
-} as Record<string, string>;
-
-export async function generate(
-  type: string,
-  dest: string,
-  typePrefixed = false,
-  isNested = false
-) {
-  const templates: Template[] = [];
-  // process
-  const {
-    config: {componentPrefix, srcDir},
-  } = await getTiniApp();
-  const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
-  const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
-  const typeCapital = type[0].toUpperCase() + type.substring(1);
-  const nameConst = name.replace(/-/g, '_').toUpperCase();
-  const nameCamel = camelCase(name);
-  const namePascal = pascalCase(name);
-  const nameCapital = capitalCase(name);
-  const nameParam = kebabCase(name);
-  const className =
-    (type === COMPONENT || type === SERVICE ? '' : typeCapital) +
-    nameCapital.replace(/ /g, '') +
-    (type !== COMPONENT && type !== SERVICE ? '' : typeCapital);
-  const classNameWithPrefix = capitalCase(componentPrefix) + className;
-  const tagName =
-    type === COMPONENT
-      ? `${componentPrefix}-${nameParam}`
-      : `${componentPrefix}-${type}-${nameParam}`;
-  const names: Names = {
-    typeCapital,
-    name,
-    nameConst,
-    nameCamel,
-    namePascal,
-    nameCapital,
-    nameParam,
-    className,
-    classNameWithPrefix,
-    tagName,
-  };
-  const {path: mainPath, fullPath: mainFullPath} = buildPath(
-    srcDir,
-    nameParam,
-    type,
-    destSplits,
-    typePrefixed,
-    isNested,
-    'ts'
-  );
-  // main
-  const mainContent = buildMainContent(type, names);
-  const mainTemplate = {
-    ...names,
-    path: mainPath,
-    fullPath: mainFullPath,
-    content: mainContent,
-  };
-  templates.push(mainTemplate);
-  // result
-  return templates;
+enum BuiltinTypes {
+  Service = 'service',
+  Layout = 'layout',
+  Page = 'page',
+  Component = 'component',
+  Partial = 'partial',
+  Helper = 'helper',
+  Const = 'const',
+  Store = 'store',
+  Type = 'type',
 }
 
-function buildPath(
-  src: string,
-  name: string,
-  type: string,
-  destSplits: string[] = [],
-  typePrefixed = false,
-  isNested = false,
-  ext = 'ts',
-  extPrefix?: string
-) {
-  const filePaths = [...destSplits];
-  if (isNested) {
-    filePaths.push(name);
-  }
-  const defaultFolder = DEFAULT_FOLDERS[type];
-  const path = [
-    src,
+export const BUILTIN_GENERATORS: Record<string, TemplateGenerator> = {
+  [BuiltinTypes.Component]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Service]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Layout]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Page]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Partial]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Helper]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Const]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Store]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+  [BuiltinTypes.Type]: async context => {
+    const mainTemplate = await generateBuiltinMainTemplate(context);
+    return [mainTemplate];
+  },
+};
+
+async function generateBuiltinMainTemplate({
+  type,
+  dest,
+  srcDir,
+  typePrefixed,
+  nested,
+  componentPrefix,
+}: TemplateContext) {
+  const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
+  const names = parseName(
+    destSplits[destSplits.length - 1].split('.')[0],
+    ({tagName}) => ({
+      tagName:
+        type === BuiltinTypes.Component
+          ? `${componentPrefix}-${tagName}`
+          : `${componentPrefix}-${type}-${tagName}`,
+    })
+  );
+  // paths
+  const name = names.cleanName;
+  const ext = 'ts';
+  const filePaths = dest.replace(/\\/g, '/').split('/') as string[];
+  if (nested) filePaths.push(name);
+  const defaultFolder = (
+    {
+      [BuiltinTypes.Service]: 'services',
+      [BuiltinTypes.Layout]: 'layouts',
+      [BuiltinTypes.Page]: 'pages',
+      [BuiltinTypes.Component]: 'components',
+      [BuiltinTypes.Partial]: 'partials',
+      [BuiltinTypes.Helper]: 'helpers',
+      [BuiltinTypes.Const]: 'consts',
+      [BuiltinTypes.Store]: 'stores',
+      [BuiltinTypes.Type]: 'types',
+    } as Record<string, string>
+  )[type];
+  const shortPath = [
+    srcDir,
     defaultFolder,
     ...filePaths,
-    `${name}.${!typePrefixed ? '' : type + '.'}${
-      !extPrefix ? '' : extPrefix + '.'
-    }${ext}`,
+    `${name}.${!typePrefixed ? '' : type + '.'}${ext}`,
   ]
     .join('/')
     .replace(`${defaultFolder}/${defaultFolder}`, defaultFolder);
-  const fullPath = resolve(path);
-  return {path, fullPath};
-}
-
-function buildMainContent(
-  type: string,
-  {
-    typeCapital,
-    className,
-    classNameWithPrefix,
-    tagName,
-    nameCamel,
-    namePascal,
-    nameConst,
-  }: Names
-) {
+  const fullPath = resolve(shortPath);
+  // content
+  let content = '';
   switch (type) {
-    case SERVICE:
-      return contentForService(className);
-    case LAYOUT:
-      return contentForLayout(classNameWithPrefix, tagName);
-    case PAGE:
-      return contentForPage(classNameWithPrefix, tagName);
-    case COMPONENT:
-      return contentForComponent(classNameWithPrefix, tagName);
-    case PARTIAL:
-      return contentForPartial(nameCamel, typeCapital);
-    case HELPER:
-      return contentForHelper(nameCamel);
-    case CONST:
-      return contentForConst(nameConst);
-    case STORE:
-      return contentForStore(nameCamel, typeCapital);
-    case TYPE:
-      return contentForType(namePascal);
+    case BuiltinTypes.Service:
+      content = getServiceMainContent(names);
+      break;
+    case BuiltinTypes.Layout:
+      content = getLayoutMainContent(names);
+      break;
+    case BuiltinTypes.Page:
+      content = getPageMainContent(names);
+      break;
+    case BuiltinTypes.Component:
+      content = getComponentMainContent(names);
+      break;
+    case BuiltinTypes.Partial:
+      content = getPartialMainContent(names);
+      break;
+    case BuiltinTypes.Helper:
+      content = getHelperMainContent(names);
+      break;
+    case BuiltinTypes.Const:
+      content = getConstMainContent(names);
+      break;
+    case BuiltinTypes.Store:
+      content = getStoreMainContent(names);
+      break;
+    case BuiltinTypes.Type:
+      content = getTypeMainContent(names);
+      break;
     default:
-      return '';
+      content = '';
+      break;
   }
+  // result
+  return {
+    shortPath,
+    fullPath,
+    content,
+  } as GeneratedTemplate;
 }
 
-function contentForService(className: string) {
-  return `export class ${className} {
-name = '${className}';
+function getServiceMainContent({className}: Names) {
+  const serviceName = `${className}Service`;
+  return `export class ${serviceName} {
+name = '${serviceName}';
 }
 
-export default ${className};\n`;
+export default ${serviceName};\n`;
 }
 
-function contentForLayout(className: string, tagName: string) {
+function getLayoutMainContent({className, tagName}: Names) {
+  const layoutName = `${className}Layout`;
   return `import {html, css} from 'lit';
 
 import {Layout, TiniComponent} from '@tinijs/core';
@@ -187,7 +178,7 @@ import {Layout, TiniComponent} from '@tinijs/core';
 @Layout({
 name: '${tagName}',
 })
-export class ${className} extends TiniComponent {
+export class ${layoutName} extends TiniComponent {
 
 protected render() {
   return html\`<div class="page"><slot></slot></div>\`;
@@ -197,7 +188,8 @@ static styles = css\`\`;
 }\n`;
 }
 
-function contentForPage(className: string, tagName: string) {
+function getPageMainContent({className, tagName}: Names) {
+  const pageName = `${className}Page`;
   return `import {html, css} from 'lit';
 
 import {Page, TiniComponent} from '@tinijs/core';
@@ -205,23 +197,24 @@ import {Page, TiniComponent} from '@tinijs/core';
 @Page({
 name: '${tagName}',
 })
-export class ${className} extends TiniComponent {
+export class ${pageName} extends TiniComponent {
 
 protected render() {
-  return html\`<p>${className}</p>\`;
+  return html\`<p>${pageName}</p>\`;
 }
 
 static styles = css\`\`;
 }\n`;
 }
 
-function contentForComponent(className: string, tagName: string) {
+function getComponentMainContent({className, tagName}: Names) {
+  const componentName = `${className}Component`;
   return `import {html, css} from 'lit';
 
 import {Component, TiniComponent, OnCreate, Input, Output, EventEmitter} from '@tinijs/core';
 
 @Component()
-export class ${className} extends TiniComponent implements OnCreate {
+export class ${componentName} extends TiniComponent implements OnCreate {
 static readonly defaultTagName = '${tagName}';
 
 @Input() property?: string;
@@ -236,20 +229,20 @@ emitCustomEvent() {
 }
 
 protected render() {
-  return html\`<p @click=\${emitCustomEvent}>${className}</p>\`;
+  return html\`<p @click=\${emitCustomEvent}>${componentName}</p>\`;
 }
 
 static styles = css\`\`;
 }\n`;
 }
 
-function contentForPartial(nameCamel: string, typeCapital: string) {
+function getPartialMainContent({varName}: Names) {
   return `import {html} from 'lit';
 
 // Note: remember to registerComponents()
 // if you use other components in this partial
 
-export function ${nameCamel}${typeCapital}({
+export function ${varName}Partial({
 custom = 'foo'
 }: {
 custom?: string
@@ -260,24 +253,24 @@ return html\`
 }\n`;
 }
 
-function contentForHelper(nameCamel: string) {
-  return `export function ${nameCamel}(param: string) {
+function getHelperMainContent({varName}: Names) {
+  return `export function ${varName}(param: string) {
 return param.toUpperCase();
 }\n`;
 }
 
-function contentForConst(nameConst: string) {
-  return `export const ${nameConst} = 'value';\n`;
+function getConstMainContent({constName}: Names) {
+  return `export const ${constName} = 'value';\n`;
 }
 
-function contentForStore(nameCamel: string, typeCapital: string) {
+function getStoreMainContent({varName}: Names) {
   return `import {createStore} from '@tinijs/store';
 
-export const ${nameCamel}${typeCapital} = createStore({
-name: '${nameCamel}',
+export const ${varName}Store = createStore({
+name: '${varName}',
 });\n`;
 }
 
-function contentForType(namePascal: string) {
-  return `export type ${namePascal} = any;\n`;
+function getTypeMainContent({className}: Names) {
+  return `export type ${className} = any;\n`;
 }

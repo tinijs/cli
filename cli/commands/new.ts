@@ -5,7 +5,7 @@ import fsExtra from 'fs-extra';
 
 import {info, error} from '../helpers/message.js';
 import {downloadAndUnzip} from '../helpers/download.js';
-import {CLI_PACKAGE_JSON} from '../helpers/project.js';
+import {loadCliPackageJson} from '../helpers/project.js';
 
 const {gray, green, cyan} = chalk;
 const {exists} = fsExtra;
@@ -22,7 +22,7 @@ export default async function (
   projectName: string,
   commandOptions: NewCommandOptions
 ) {
-  const {version: tiniVersion} = CLI_PACKAGE_JSON;
+  const {version: tiniVersion} = await loadCliPackageJson();
   const source = commandOptions.source || 'tinijs/skeleton';
   const tag = commandOptions.latest
     ? 'latest'

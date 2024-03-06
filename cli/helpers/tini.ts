@@ -2,34 +2,53 @@ import {createHooks} from 'hookable';
 import {defu} from 'defu';
 import {resolve} from 'pathe';
 import {loadConfig} from 'c12';
+import {Promisable} from 'type-fest';
 
 import {loadModule} from './module.js';
 
-export interface TiniHooks {
-  start?: () => void | Promise<void>;
-  'build:before'?: () => void | Promise<void>;
-  'build:after'?: () => void | Promise<void>;
-  close?: () => void | Promise<void>;
+export interface TiniConfigHooks {
+  start?: () => Promisable<void>;
+  close?: () => Promisable<void>;
 }
 
-export type TiniModules = Array<
-  string | [string, any] | ((tiniApp: TiniApp) => void | Promise<void>)
+export type TiniConfigModules = Array<
+  string | [string, any?] | ((tiniApp: TiniApp) => Promisable<void>)
 >;
+
+export interface CliExpandCommandOptions {}
+
+export interface CliExpandOptions {
+  commands?: Record<string, CliExpandCommandOptions>;
+}
+
+export interface TiniConfigCli {
+  generate?: {
+    componentPrefix?: string;
+    generators?: Record<string, any>;
+  };
+  expand?: Array<string | [string, CliExpandOptions?]>;
+}
+
+export interface TiniConfigPrebuilt {
+  stagingDir: string;
+  skipMinifyHtmlLiterals: boolean;
+  precompileGeneric: 'none' | 'lite' | 'full';
+}
 
 export interface TiniConfig {
   srcDir: string;
   outDir: string;
   stagingDir: string;
   componentPrefix: string;
-  skipMinifyHTMLLiterals: boolean;
+  skipMinifyHtmlLiterals: boolean;
   precompileGeneric: 'none' | 'lite' | 'full';
-  cliExtends: Record<string, string>;
-  hooks?: TiniHooks;
-  modules?: TiniModules;
+  expandCli: Array<string | [string, CliExpandOptions?]>;
+  cli?: TiniConfigCli;
+  hooks?: TiniConfigHooks;
+  modules?: TiniConfigModules;
 }
 
 export const TINIJS_INSTALL_DIR_PATH = resolve('node_modules', '@tinijs');
-export const UI_OUTPUT_DIR_PATH = resolve(TINIJS_INSTALL_DIR_PATH, 'ui');
 
 export function defineTiniConfig(config: Partial<TiniConfig>) {
   return config;
@@ -85,17 +104,8 @@ async function loadTiniConfig() {
       outDir: 'www',
       stagingDir: '.tini',
       componentPrefix: 'app',
-      skipMinifyHTMLLiterals: false,
+      skipMinifyHtmlLiterals: false,
       precompileGeneric: 'lite',
-      cliExtends: {
-        ui: resolve(TINIJS_INSTALL_DIR_PATH, 'ui', 'cli', 'expand.js'),
-        content: resolve(
-          TINIJS_INSTALL_DIR_PATH,
-          'content',
-          'cli',
-          'expand.js'
-        ),
-      },
     },
   });
   return loadResult.config as TiniConfig;

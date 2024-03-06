@@ -1,26 +1,26 @@
-import typescript, {CompilerOptions} from 'typescript';
 import {resolve} from 'pathe';
+import typescript, {CompilerOptions} from 'typescript';
 import fsExtra from 'fs-extra';
 
-const {createCompilerHost, createProgram} = typescript;
 const {outputFile} = fsExtra;
+const {createCompilerHost, createProgram} = typescript;
 
-export function transpileFiles(paths: string[], options: CompilerOptions) {
+export function transpileFiles(filePaths: string[], options: CompilerOptions) {
   const createdFiles: Record<string, string> = {};
   // create the host
   const host = createCompilerHost(options);
-  host.writeFile = (path: string, content: string) =>
-    (createdFiles[path] = content);
+  host.writeFile = (filePath: string, content: string) =>
+    (createdFiles[filePath] = content);
   // emit the files
-  const program = createProgram(paths, options, host);
+  const program = createProgram(filePaths, options, host);
   program.emit();
   // result
-  return paths.map(path => {
-    const jsContent = createdFiles[path.replace('.ts', '.js')];
-    const dtsContent = createdFiles[path.replace('.ts', '.d.ts')];
-    const mapContent = createdFiles[path.replace('.ts', '.js.map')];
+  return filePaths.map(filePath => {
+    const jsContent = createdFiles[filePath.replace('.ts', '.js')];
+    const dtsContent = createdFiles[filePath.replace('.ts', '.d.ts')];
+    const mapContent = createdFiles[filePath.replace('.ts', '.js.map')];
     return {
-      path,
+      filePath,
       jsContent,
       dtsContent,
       mapContent,
@@ -29,27 +29,34 @@ export function transpileFiles(paths: string[], options: CompilerOptions) {
 }
 
 export async function transpileAndOutputFiles(
-  paths: string[],
+  filePaths: string[],
   options: CompilerOptions,
   outDir: string,
-  filePathProcessor?: (path: string) => string,
-  contentProcessor?: (content: string) => string
+  transformFilePath?: (filePath: string) => string,
+  transformContent?: (content: string, type: 'js' | 'dts' | 'map') => string
 ) {
-  const transpiledResults = transpileFiles(paths, options);
+  const transpiledResults = transpileFiles(filePaths, options);
   for (let i = 0; i < transpiledResults.length; i++) {
-    const {path, jsContent, dtsContent, mapContent} = transpiledResults[i];
-    const filePath = !filePathProcessor ? path : filePathProcessor(path);
+    const {
+      filePath: originalFilePath,
+      jsContent,
+      dtsContent,
+      mapContent,
+    } = transpiledResults[i];
+    const filePath = !transformFilePath
+      ? originalFilePath
+      : transformFilePath(originalFilePath);
     await outputFile(
       resolve(outDir, filePath.replace('.ts', '.js')),
-      !contentProcessor ? jsContent : contentProcessor(jsContent)
+      !transformContent ? jsContent : transformContent(jsContent, 'js')
     );
     await outputFile(
       resolve(outDir, filePath.replace('.ts', '.d.ts')),
-      !contentProcessor ? dtsContent : contentProcessor(dtsContent)
+      !transformContent ? dtsContent : transformContent(dtsContent, 'dts')
     );
     await outputFile(
       resolve(outDir, filePath.replace('.ts', '.js.map')),
-      !contentProcessor ? mapContent : contentProcessor(mapContent)
+      !transformContent ? mapContent : transformContent(mapContent, 'map')
     );
   }
 }

@@ -2,8 +2,8 @@
 import {Command} from 'commander';
 
 import {error} from './helpers/message.js';
-import {CLI_PACKAGE_JSON} from './helpers/project.js';
-import {getExpandedCommands, expandCliApp} from './helpers/expand.js';
+import {loadCliPackageJson} from './helpers/project.js';
+import {getNamedExpandedCommands, expandCliApp} from './helpers/expand.js';
 
 import docsCommand from './commands/docs.js';
 import newCommand from './commands/new.js';
@@ -15,10 +15,9 @@ import testCommand from './commands/test.js';
 import cleanCommand from './commands/clean.js';
 import moduleCommand from './commands/module.js';
 
-const {version: tiniVersion} = CLI_PACKAGE_JSON;
-
 (async () => {
   const commander = new Command();
+  const {version: tiniVersion} = await loadCliPackageJson();
 
   // general
   commander
@@ -54,6 +53,7 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .command('generate <type> <dest>')
     .aliases(['create', 'g'])
     .description('Generate a resource.')
+    .option('-d, --dir', 'Override the default srcDir.')
     .option('-t, --type-prefixed', 'Use the format [name].[type].[ext].')
     .option('-n, --nested', 'Nested under a folder.')
     .action(generateCommand);
@@ -123,10 +123,10 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .description('Any other command is not supported.')
     .action(async (options, commander) => {
       const command = commander.args[0];
-      const expandedCommands = await getExpandedCommands();
+      const expandedCommands = await getNamedExpandedCommands();
       if (expandedCommands[command]) {
         error(
-          `The expanded command "${command}" is not available at ${expandedCommands[command]}.`
+          `The expanded command "${command}" is not available at ${expandedCommands[command].entryFilePath}.`
         );
       } else {
         error(`Unknown command "${command}"`);

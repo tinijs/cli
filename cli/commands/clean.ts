@@ -1,8 +1,8 @@
 import {resolve} from 'pathe';
 import chalk from 'chalk';
-import {createPromptModule} from 'inquirer';
 import picomatch from 'picomatch';
 import fsExtra from 'fs-extra';
+import {createPromptModule} from 'inquirer';
 
 import {errorUncleanGit} from '../helpers/message.js';
 import {listDir, removeFiles} from '../helpers/file.js';
@@ -33,7 +33,7 @@ const IGNORED_PATHS = [
   'tsconfig.json',
 ];
 
-const PROCESSABLE_PATTERN = '!**/?(lib|cli|module|app|)/*.@(d.ts|js|map)';
+const PROCESSABLE_PATTERN = '!**/*.@(d.ts|js|map)';
 
 export default async function (commandOptions: CleanCommandOptions) {
   if (!isGitClean()) return errorUncleanGit();

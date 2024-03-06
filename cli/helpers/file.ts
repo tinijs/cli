@@ -1,40 +1,41 @@
-import fsExtra from 'fs-extra';
-import recursiveReaddir from 'recursive-readdir';
+import {resolve} from 'pathe';
 import {createRequire} from 'module';
+import recursiveReaddir from 'recursive-readdir';
+import fsExtra from 'fs-extra';
+import {Promisable} from 'type-fest';
 
-const {readFile, outputFile, remove, ensureDir} = fsExtra;
+const {ensureDir, remove, readFile, outputFile, readJson, writeJson} = fsExtra;
 
 export const requireModule = createRequire(import.meta.url);
 
-export function removeFiles(paths: string[]) {
-  return Promise.all(paths.map(filePath => remove(filePath)));
+export function removeFiles(filePaths: string[]) {
+  return Promise.all(filePaths.map(filePath => remove(filePath)));
 }
 
-export async function cleanDir(path: string) {
-  await remove(path);
-  return ensureDir(path);
+export async function cleanDir(dirPath: string) {
+  await remove(dirPath);
+  return ensureDir(dirPath);
 }
 
-export async function listDir(path: string, ignores: string[] = []) {
-  return recursiveReaddir(path, ignores);
+export async function listDir(dirPath: string, ignores?: string[]) {
+  return recursiveReaddir(dirPath, ignores);
 }
 
-export async function modifyContent(
+export async function modifyTextFile(
   filePath: string,
-  modifier: {[str: string]: string} | ((content: string) => string),
-  multipleReplaces = false
+  modifier: (content: string) => Promisable<string>
 ) {
-  let content = await readFile(filePath, 'utf8');
-  if (modifier instanceof Function) {
-    content = modifier(content);
-  } else {
-    Object.keys(modifier).forEach(
-      str =>
-        (content = content.replace(
-          !multipleReplaces ? str : new RegExp(str, 'g'),
-          modifier[str]
-        ))
-    );
-  }
-  return outputFile(filePath, content);
+  filePath = resolve(filePath);
+  const content = await readFile(filePath, 'utf8');
+  return outputFile(filePath, await modifier(content));
+}
+
+export async function modifyJsonFile<Type>(
+  filePath: string,
+  modifier: (content: Type) => Promisable<Type>,
+  options?: Parameters<typeof writeJson>[2]
+) {
+  filePath = resolve(filePath);
+  const data = (await readJson(filePath)) as Type;
+  return writeJson(filePath, await modifier(data), options);
 }

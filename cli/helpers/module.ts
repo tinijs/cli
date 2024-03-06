@@ -1,9 +1,10 @@
 import {resolve} from 'pathe';
 import fsExtra from 'fs-extra';
 import {execaCommand} from 'execa';
+import {Promisable} from 'type-fest';
 
-import {TiniApp} from './tini.js';
 import {modifyProjectPackageJson} from './project.js';
+import {TiniApp} from './tini.js';
 
 const {stat, exists, copy: copyDir, copyFile} = fsExtra;
 
@@ -15,14 +16,14 @@ export interface ModuleInit {
   copy?: Record<string, string>;
   scripts?: Record<string, string>;
   buildCommand?: string;
-  run?: string | (() => void | Promise<void>);
+  run?: string | (() => Promisable<void>);
 }
 
 export interface ModuleConfig<ModuleOptions> {
   meta: ModuleMeta;
   init?: ModuleInit;
   defaults?: ModuleOptions;
-  setup?: (options: ModuleOptions, tini: TiniApp) => void | Promise<void>;
+  setup?: (options: ModuleOptions, tini: TiniApp) => Promisable<void>;
 }
 
 export function defineTiniModule<ModuleOptions>(
@@ -37,13 +38,16 @@ export async function installPackage(packageName: string, tag?: string) {
   );
 }
 
-export async function loadModule(packageName: string, customDir?: string) {
+export async function loadModule<ModuleOptions = any>(
+  packageName: string,
+  customDir?: string
+) {
   const moduleEntryFilePath = customDir
     ? resolve(customDir)
     : resolve('node_modules', packageName, 'module', 'index.js');
   if (!(await exists(moduleEntryFilePath))) return null;
   const {default: config} = await import(moduleEntryFilePath);
-  return config as ModuleConfig<any>;
+  return config as ModuleConfig<ModuleOptions>;
 }
 
 export async function copyAssets(

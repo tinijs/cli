@@ -1,4 +1,4 @@
-import {resolve} from 'pathe';
+import {resolve, parse} from 'pathe';
 import axios from 'axios';
 import fsExtra from 'fs-extra';
 import zipper from 'adm-zip';
@@ -20,21 +20,21 @@ export async function downloadAndUnzip(url: string, filePath: string) {
   }
   // download
   else {
-    await downloadBlob(url, filePath);
+    await downloadFile(url, filePath);
   }
   // unzip
   await unzip(filePath);
   // remove the zip file
   await remove(filePath);
   // unnest if wrapped
-  const {folderPath} = extractFilePath(filePath);
-  await unnest(folderPath);
+  const {dir: dirPath} = parse(filePath);
+  await unnest(dirPath);
 }
 
-export function downloadBlob(url: string, filePath: string): Promise<void> {
-  const {folderPath} = extractFilePath(filePath);
+export function downloadFile(url: string, filePath: string): Promise<void> {
+  const {dir: dirPath} = parse(filePath);
   return new Promise((resolve, reject) => {
-    ensureDir(folderPath)
+    ensureDir(dirPath)
       .catch(reject)
       .then(() => {
         axios({
@@ -60,11 +60,11 @@ export async function downloadText(url: string, filePath: string) {
 }
 
 export function unzip(filePath: string): Promise<void> {
-  const {folderPath} = extractFilePath(filePath);
+  const {dir: dirPath} = parse(filePath);
   return new Promise(resolve => {
     setTimeout(() => {
       const zip = new zipper(filePath);
-      zip.extractAllTo(folderPath, true);
+      zip.extractAllTo(dirPath, true);
       resolve();
     }, 1000);
   });
@@ -88,20 +88,4 @@ export function unnest(dir: string): Promise<void> {
       }
     });
   });
-}
-
-export function extractFilePath(filePath: string) {
-  const pathSegments = filePath.split('/');
-  const fileFullName = pathSegments.pop() as string;
-  const fileName = fileFullName.split('.').shift() as string;
-  const folderPath = pathSegments.join('/');
-  const folderName = pathSegments.pop();
-  return {
-    pathSegments,
-    folderPath,
-    folderName,
-    filePath,
-    fileName,
-    fileFullName,
-  };
 }
