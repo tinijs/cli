@@ -8,6 +8,7 @@ export * from './cli/helpers/typescript.js';
 export * from './cli/helpers/build.js';
 export * from './cli/helpers/module.js';
 export * from './cli/helpers/git.js';
+export * from './cli/helpers/tini.js';
 export * from './cli/commands/build.js';
 export * from './cli/commands/clean.js';
 export * from './cli/commands/dev.js';

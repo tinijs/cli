@@ -8,7 +8,7 @@ import {downloadAndUnzip} from '../helpers/download.js';
 import {CLI_PACKAGE_JSON} from '../helpers/project.js';
 
 const {gray, green, cyan} = chalk;
-const {pathExists} = fsExtra;
+const {exists} = fsExtra;
 
 interface NewCommandOptions {
   latest?: boolean;
@@ -34,7 +34,7 @@ export default async function (
     .replace(/ /g, '-');
   const projectPath = resolve(validProjectName);
   // exist
-  if (await pathExists(projectPath)) {
+  if (await exists(projectPath)) {
     return error(
       `A project with the name "${green(validProjectName)}" is already exist!`
     );

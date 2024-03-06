@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import superstatic from 'superstatic';
 
 import {info} from '../helpers/message.js';
-import {loadProjectConfig} from '../helpers/project.js';
+import {getTiniApp} from '../helpers/tini.js';
 
 const {blueBright, bold} = chalk;
 
@@ -13,7 +13,9 @@ interface PreviewCommandOptions {
 }
 
 export default async function (commandOptions: PreviewCommandOptions) {
-  const {outDir: cwd} = await loadProjectConfig();
+  const {
+    config: {outDir: cwd},
+  } = await getTiniApp();
   // launch server
   const hostname = commandOptions.host || '0.0.0.0';
   const port = Number(commandOptions.port || 3000);

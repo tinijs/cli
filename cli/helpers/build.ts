@@ -5,9 +5,10 @@ import * as sass from 'sass';
 import {nanoid} from 'nanoid';
 
 import {cleanDir, listDir} from './file.js';
-import {ProjectConfig, loadProjectConfig, getTargetEnv} from './project.js';
+import {getTargetEnv} from './project.js';
+import {TiniConfig, getTiniApp} from './tini.js';
 
-const {remove, pathExists, ensureDir, copy, copyFile, readFile, outputFile} =
+const {remove, exists, ensureDir, copy, copyFile, readFile, outputFile} =
   fsExtra;
 const {compileStringAsync} = sass;
 
@@ -16,7 +17,9 @@ export function getAppStagingDirPath(stagingDir: string) {
 }
 
 export async function buildStaging() {
-  const {srcDir, stagingDir} = await loadProjectConfig();
+  const {
+    config: {srcDir, stagingDir},
+  } = await getTiniApp();
   const srcPath = resolve(srcDir);
   const stagingPath = getAppStagingDirPath(stagingDir);
   await cleanDir(stagingPath);
@@ -30,7 +33,7 @@ export async function buildStaging() {
 export async function copyPublic(srcDir: string, outDir: string) {
   const inPath = resolve(srcDir, 'public');
   const outPath = resolve(outDir);
-  if ((await pathExists(inPath)) && (await pathExists(outPath))) {
+  if ((await exists(inPath)) && (await exists(outPath))) {
     await copy(inPath, outPath);
   }
 }
@@ -55,7 +58,7 @@ export async function buildFile(
     stagingPath,
     srcDir
   );
-  const projectConfig = await loadProjectConfig();
+  const {config: tiniConfig} = await getTiniApp();
   // create dir
   await ensureDir(resolve(stagingPath, dirPath));
   // app.html -> index.html
@@ -65,7 +68,7 @@ export async function buildFile(
       await buildIndexHTML(path)
     );
   } else if (fileExt === 'ts') {
-    await outputFile(outFilePath, await buildTS(path, projectConfig));
+    await outputFile(outFilePath, await buildTS(path, tiniConfig));
   } else {
     await copyFile(path, outFilePath);
   }
@@ -75,7 +78,7 @@ function buildIndexHTML(path: string) {
   return readFile(path, 'utf8');
 }
 
-async function buildTS(path: string, projectConfig: ProjectConfig) {
+async function buildTS(path: string, tiniConfig: TiniConfig) {
   const targetEnv = getTargetEnv();
   const isDev = targetEnv === 'development';
   const isMain = isAppEntry(path);
@@ -101,7 +104,7 @@ async function buildTS(path: string, projectConfig: ProjectConfig) {
    * 2. HTML, CSS, Assets
    */
   content = processAssets(content);
-  content = processHTML(content, isDev, projectConfig);
+  content = processHTML(content, isDev, tiniConfig);
   content = await processCSS(content, isDev);
 
   // result
@@ -145,16 +148,12 @@ function injectEnvs(content: string) {
   return content;
 }
 
-function processHTML(
-  content: string,
-  isDev: boolean,
-  projectConfig: ProjectConfig
-) {
+function processHTML(content: string, isDev: boolean, tiniConfig: TiniConfig) {
   const templateMatching = content.match(/(return html`)([\s\S]*?)(`;)/);
   // no return html`...`
   if (!templateMatching) return content;
   // process generic component
-  if (projectConfig.precompileGeneric === 'lite') {
+  if (tiniConfig.precompileGeneric === 'lite') {
     const genericMatchingArr = content.match(
       /<tini-generic(-unscoped)?([\s\S]*?)>/g
     );
@@ -168,7 +167,7 @@ function processHTML(
         genericMatching.replace(`<${tag}`, `<${tag} precomputed="${nanoid(7)}"`)
       );
     });
-  } else if (projectConfig.precompileGeneric === 'full') {
+  } else if (tiniConfig.precompileGeneric === 'full') {
     // TODO: full precompile
   }
   // dev mode
@@ -177,7 +176,7 @@ function processHTML(
   const matchedTemplate = templateMatching[0];
   let minifiedTemplate: string;
   try {
-    if (projectConfig.skipMinifyHTMLLiterals) {
+    if (tiniConfig.skipMinifyHTMLLiterals) {
       minifiedTemplate = matchedTemplate;
     } else {
       const result = minifyHTMLLiterals(matchedTemplate);

@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import {success, errorUncleanGit} from '../helpers/message.js';
 import {
   installPackage,
-  loadModuleConfig,
+  loadModule,
   copyAssets,
   updateScripts,
   initRun,
@@ -23,23 +23,16 @@ export default async function (
   if (!isGitClean()) return errorUncleanGit();
   // install packages
   await installPackage(packageName, commandOptions.tag);
-  // load init instruction
-  const moduleConfig = await loadModuleConfig(packageName);
   // handle init
-  if (moduleConfig.init) {
-    const {copy, scripts, buildCommand, run} = moduleConfig.init;
+  const tiniModule = await loadModule(packageName);
+  if (tiniModule?.init) {
+    const {copy, scripts, buildCommand, run} = tiniModule.init;
     // copy assets
-    if (copy) {
-      await copyAssets(packageName, copy);
-    }
+    if (copy) await copyAssets(packageName, copy);
     // add scripts
-    if (scripts) {
-      await updateScripts(scripts, buildCommand);
-    }
+    if (scripts) await updateScripts(scripts, buildCommand);
     // run
-    if (run) {
-      await initRun(run);
-    }
+    if (run) await initRun(run);
   }
   // done
   success(`Add module ${blueBright(packageName)} successfully.`);

@@ -2,15 +2,15 @@ import {Command} from 'commander';
 import {resolve} from 'pathe';
 import fs from 'fs-extra';
 
-import {loadProjectConfig} from './project.js';
+import {getTiniApp} from './tini.js';
 
 const {exists} = fs;
 
 export type TiniCli = Command;
 
 export async function getExpandedCommands() {
-  const projectConfig = await loadProjectConfig();
-  return projectConfig.cliExtends;
+  const {config: tiniConfig} = await getTiniApp();
+  return tiniConfig.cliExtends;
 }
 
 export async function expandCliApp(tiniCli: TiniCli) {

@@ -1,7 +1,7 @@
 import {resolve} from 'pathe';
 import {camelCase, capitalCase, pascalCase, kebabCase} from 'change-case';
 
-import {loadProjectConfig} from './project.js';
+import {getTiniApp} from './tini.js';
 
 interface Names {
   typeCapital: string;
@@ -52,7 +52,9 @@ export async function generate(
 ) {
   const templates: Template[] = [];
   // process
-  const {componentPrefix, srcDir} = await loadProjectConfig();
+  const {
+    config: {componentPrefix, srcDir},
+  } = await getTiniApp();
   const destSplits = dest.replace(/\\/g, '/').split('/') as string[];
   const name = (destSplits.pop() as string).split('.')[0].toLowerCase();
   const typeCapital = type[0].toUpperCase() + type.substring(1);

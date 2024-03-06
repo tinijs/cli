@@ -9,7 +9,7 @@ import {listDir, removeFiles} from '../helpers/file.js';
 import {isGitClean} from '../helpers/git.js';
 
 const {red, gray, green} = chalk;
-const {pathExists} = fsExtra;
+const {exists} = fsExtra;
 
 const prompt = createPromptModule();
 
@@ -84,7 +84,7 @@ export default async function (commandOptions: CleanCommandOptions) {
     let fileNumber = 0;
     for (let i = 0; i < files.length; i++) {
       const path = resolve(files[i]);
-      if (await pathExists(path)) {
+      if (await exists(path)) {
         await removeFiles([path]);
         fileNumber++;
       }

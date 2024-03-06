@@ -123,10 +123,10 @@ const {version: tiniVersion} = CLI_PACKAGE_JSON;
     .description('Any other command is not supported.')
     .action(async (options, commander) => {
       const command = commander.args[0];
-      const expandableCommands = await getExpandedCommands();
-      if (expandableCommands[command]) {
+      const expandedCommands = await getExpandedCommands();
+      if (expandedCommands[command]) {
         error(
-          `The expanded command "${command}" is not found at ${expandableCommands[command]}.`
+          `The expanded command "${command}" is not available at ${expandedCommands[command]}.`
         );
       } else {
         error(`Unknown command "${command}"`);

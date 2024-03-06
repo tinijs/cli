@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
 import {log} from '../helpers/message.js';
-import {ProjectConfig, loadProjectConfig} from '../helpers/project.js';
+import {TiniConfig, getTiniApp} from '../helpers/tini.js';
 import {
   getAppStagingDirPath,
   buildFile,
@@ -15,15 +15,15 @@ import {
 } from '../helpers/build.js';
 
 const {blueBright, bold} = chalk;
-const {pathExists} = fsExtra;
+const {exists} = fsExtra;
 
 interface DevCommandOptions {
   watch?: boolean;
 }
 
 export default async function (commandOptions: DevCommandOptions) {
-  const projectConfig = await loadProjectConfig();
-  const {srcDir, outDir, stagingDir} = projectConfig;
+  const {config: tiniConfig} = await getTiniApp();
+  const {srcDir, outDir, stagingDir} = tiniConfig;
   const stagingPath = getAppStagingDirPath(stagingDir);
   // watch mode
   if (commandOptions.watch) {
@@ -42,7 +42,7 @@ export default async function (commandOptions: DevCommandOptions) {
       {command: 'tini dev --watch'},
     ]);
     // other assets
-    buildOthers(projectConfig);
+    buildOthers(tiniConfig);
     // running
     setTimeout(
       () => log(bold(blueBright('Server running at http://localhost:3000'))),
@@ -51,14 +51,14 @@ export default async function (commandOptions: DevCommandOptions) {
   }
 }
 
-function buildOthers(projectConfig: ProjectConfig) {
+function buildOthers(tiniConfig: TiniConfig) {
   setTimeout(async () => {
-    const {srcDir, outDir} = projectConfig;
-    if (await pathExists(resolve(outDir))) {
+    const {srcDir, outDir} = tiniConfig;
+    if (await exists(resolve(outDir))) {
       // copy public dir
       await copyPublic(srcDir, outDir);
     } else {
-      buildOthers(projectConfig);
+      buildOthers(tiniConfig);
     }
   }, 2000);
 }

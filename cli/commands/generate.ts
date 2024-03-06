@@ -5,7 +5,7 @@ import {error, success} from '../helpers/message.js';
 import {DEFAULT_FOLDERS, generate} from '../helpers/generate.js';
 
 const {red, green, yellow} = chalk;
-const {pathExists, outputFile} = fsExtra;
+const {exists, outputFile} = fsExtra;
 
 interface GenerateCommandOptions {
   typePrefixed?: boolean;
@@ -32,7 +32,7 @@ export default async function (
     commandOptions.nested
   );
   const {path: mainPath, fullPath: mainFullPath} = templates[0];
-  if (await pathExists(mainFullPath)) {
+  if (await exists(mainFullPath)) {
     return error(`A ${yellow(type)} already available at ${green(mainPath)}.`);
   }
   // save files

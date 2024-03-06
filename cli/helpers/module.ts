@@ -1,16 +1,14 @@
 import {resolve} from 'pathe';
-import {loadConfig} from 'c12';
 import fsExtra from 'fs-extra';
 import {execaCommand} from 'execa';
 
+import {TiniApp} from './tini.js';
 import {modifyProjectPackageJson} from './project.js';
 
-const {stat, pathExists, copy: copyDir, copyFile} = fsExtra;
+const {stat, exists, copy: copyDir, copyFile} = fsExtra;
 
-export interface ModuleConfig {
-  init?: ModuleInit;
-  defaults?: Record<string, any>;
-  build?: (options: any) => void | Promise<void>;
+export interface ModuleMeta {
+  name: string;
 }
 
 export interface ModuleInit {
@@ -20,7 +18,16 @@ export interface ModuleInit {
   run?: string | (() => void | Promise<void>);
 }
 
-export function defineTiniModule(config: ModuleConfig) {
+export interface ModuleConfig<ModuleOptions> {
+  meta: ModuleMeta;
+  init?: ModuleInit;
+  defaults?: ModuleOptions;
+  setup?: (options: ModuleOptions, tini: TiniApp) => void | Promise<void>;
+}
+
+export function defineTiniModule<ModuleOptions>(
+  config: ModuleConfig<ModuleOptions>
+) {
   return config;
 }
 
@@ -30,16 +37,13 @@ export async function installPackage(packageName: string, tag?: string) {
   );
 }
 
-export async function loadModuleConfig(
-  packageName: string,
-  customDir?: string
-) {
-  const loadResult = await loadConfig({
-    cwd: customDir ? resolve(customDir) : resolve('node_modules', packageName),
-    configFile: 'tini.module',
-    rcFile: false,
-  });
-  return loadResult.config as ModuleConfig;
+export async function loadModule(packageName: string, customDir?: string) {
+  const moduleEntryFilePath = customDir
+    ? resolve(customDir)
+    : resolve('node_modules', packageName, 'module', 'index.js');
+  if (!(await exists(moduleEntryFilePath))) return null;
+  const {default: config} = await import(moduleEntryFilePath);
+  return config as ModuleConfig<any>;
 }
 
 export async function copyAssets(
@@ -49,7 +53,7 @@ export async function copyAssets(
   for (const from in copy) {
     const fromPath = resolve('node_modules', packageName, from);
     const toPath = resolve(copy[from]);
-    if ((await pathExists(fromPath)) && !(await pathExists(toPath))) {
+    if ((await exists(fromPath)) && !(await exists(toPath))) {
       const stats = await stat(fromPath);
       if (stats.isFile()) {
         await copyFile(fromPath, toPath);
