@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import {Command} from 'commander';
 
-import {error} from '../lib/helpers/message.js';
-import {CLI_PACKAGE_JSON} from '../lib/helpers/project.js';
-import {extendTiniCLI, getExtendableCommands} from '../lib/helpers/extend.js';
+import {error} from './helpers/message.js';
+import {CLI_PACKAGE_JSON} from './helpers/project.js';
+import {extendTiniCLI, getExtendableCommands} from './helpers/extend.js';
 
 import docsCommand from './commands/docs.js';
 import newCommand from './commands/new.js';

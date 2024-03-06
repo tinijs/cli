@@ -2,12 +2,12 @@ import fsExtra from 'fs-extra';
 import {resolve} from 'pathe';
 import {execaCommand} from 'execa';
 
-import {loadProjectConfig} from '../../lib/helpers/project.js';
+import {loadProjectConfig} from '../helpers/project.js';
 import {
   getAppStagingDirPath,
   buildStaging,
   copyPublic,
-} from '../../lib/helpers/build.js';
+} from '../helpers/build.js';
 
 const {remove} = fsExtra;
 

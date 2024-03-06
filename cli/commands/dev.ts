@@ -4,15 +4,15 @@ import {resolve} from 'pathe';
 import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
-import {log} from '../../lib/helpers/message.js';
-import {ProjectConfig, loadProjectConfig} from '../../lib/helpers/project.js';
+import {log} from '../helpers/message.js';
+import {ProjectConfig, loadProjectConfig} from '../helpers/project.js';
 import {
   getAppStagingDirPath,
   buildFile,
   removeFile,
   buildStaging,
   copyPublic,
-} from '../../lib/helpers/build.js';
+} from '../helpers/build.js';
 
 const {blueBright, bold} = chalk;
 const {pathExists} = fsExtra;

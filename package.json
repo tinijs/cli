@@ -18,8 +18,8 @@
     "tini": "./cli/index.js"
   },
   "files": [
-    "lib",
     "cli",
+    "kit",
     "public-api.*",
     "!**/*.ts",
     "**/*.d.ts",

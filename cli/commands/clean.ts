@@ -4,9 +4,9 @@ import {createPromptModule} from 'inquirer';
 import picomatch from 'picomatch';
 import fsExtra from 'fs-extra';
 
-import {errorUncleanGit} from '../../lib/helpers/message.js';
-import {listDir, removeFiles} from '../../lib/helpers/file.js';
-import {isGitClean} from '../../lib/helpers/git.js';
+import {errorUncleanGit} from '../helpers/message.js';
+import {listDir, removeFiles} from '../helpers/file.js';
+import {isGitClean} from '../helpers/git.js';
 
 const {red, gray, green} = chalk;
 const {pathExists} = fsExtra;

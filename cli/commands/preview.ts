@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import superstatic from 'superstatic';
 
-import {info} from '../../lib/helpers/message.js';
-import {loadProjectConfig} from '../../lib/helpers/project.js';
+import {info} from '../helpers/message.js';
+import {loadProjectConfig} from '../helpers/project.js';
 
 const {blueBright, bold} = chalk;
 

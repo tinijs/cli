@@ -1,13 +1,8 @@
 {
   "files.exclude": {
-    ".deploy/": true,
-    ".nyc_output/": true,
     ".vscode/": true,
     "docs/": true,
-    "lib/**/*.js": true,
-    "cli/**/*.js": true,
-    "test/**/*.js": true,
-    "public-api.js": true,
+    "**/*.js": true,
     "**/*.d.ts": true,
     "**/*.map": true
   }

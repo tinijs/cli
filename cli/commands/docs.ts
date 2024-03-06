@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import open from 'open';
 
-import {info} from '../../lib/helpers/message.js';
+import {info} from '../helpers/message.js';
 
 const {blueBright, bold} = chalk;
 

@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
-import {error, success} from '../../lib/helpers/message.js';
-import {DEFAULT_FOLDERS, generate} from '../../lib/helpers/generate.js';
+import {error, success} from '../helpers/message.js';
+import {DEFAULT_FOLDERS, generate} from '../helpers/generate.js';
 
 const {red, green, yellow} = chalk;
 const {pathExists, outputFile} = fsExtra;

@@ -3,7 +3,7 @@ import {loadConfig} from 'c12';
 import fsExtra from 'fs-extra';
 import {execaCommand} from 'execa';
 
-import {modifyProjectPackageJson} from '../../lib/helpers/project.js';
+import {modifyProjectPackageJson} from './project.js';
 
 const {stat, pathExists, copy: copyDir, copyFile} = fsExtra;
 

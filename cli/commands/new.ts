@@ -3,9 +3,9 @@ import {resolve} from 'pathe';
 import chalk from 'chalk';
 import fsExtra from 'fs-extra';
 
-import {info, error} from '../../lib/helpers/message.js';
-import {downloadAndUnzip} from '../../lib/helpers/download.js';
-import {CLI_PACKAGE_JSON} from '../../lib/helpers/project.js';
+import {info, error} from '../helpers/message.js';
+import {downloadAndUnzip} from '../helpers/download.js';
+import {CLI_PACKAGE_JSON} from '../helpers/project.js';
 
 const {gray, green, cyan} = chalk;
 const {pathExists} = fsExtra;
