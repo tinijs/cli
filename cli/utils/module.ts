@@ -1,11 +1,11 @@
 import {resolve} from 'pathe';
-import fsExtra from 'fs-extra';
+import {existsSync} from 'node:fs';
+import {copy as copyFileOrDir} from 'fs-extra/esm';
 import {execaCommand} from 'execa';
 
-import {ModuleInit} from '../../lib/utils/module.js';
-import {modifyProjectPackageJson} from './project.js';
+import {ModuleInit} from 'tinijs';
 
-const {stat, exists, copy: copyDir, copyFile} = fsExtra;
+import {modifyProjectPackageJson} from './project.js';
 
 export async function installPackage(packageName: string, tag?: string) {
   return execaCommand(
@@ -20,13 +20,8 @@ export async function copyAssets(
   for (const from in copy) {
     const fromPath = resolve('node_modules', packageName, from);
     const toPath = resolve(copy[from]);
-    if ((await exists(fromPath)) && !(await exists(toPath))) {
-      const stats = await stat(fromPath);
-      if (stats.isFile()) {
-        await copyFile(fromPath, toPath);
-      } else if (stats.isDirectory()) {
-        await copyDir(fromPath, toPath);
-      }
+    if (existsSync(fromPath) && !existsSync(toPath)) {
+      await copyFileOrDir(fromPath, toPath);
     }
   }
 }

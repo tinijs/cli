@@ -1,30 +1,17 @@
 import {resolve} from 'pathe';
-import {CommandDef, ArgsDef, defineCommand} from 'citty';
+import {CommandDef, ArgsDef, defineCommand, SubCommandsDef} from 'citty';
 import {Promisable} from 'type-fest';
-import fs from 'fs-extra';
+import {existsSync} from 'node:fs';
 
-import {
-  TiniConfigCli,
-  CliExpandOptions,
-  CliExpandCommandOptions,
-  getTiniApp,
-} from '../../lib/classes/tini-app.js';
-import {
-  TINIJS_INSTALL_DIR_PATH,
-} from './project.js';
+import {TiniConfigCli, getTiniApp} from 'tinijs';
 
-const {exists} = fs;
+import {TINIJS_INSTALL_DIR_PATH} from './project.js';
 
-export const OFFICIAL_EXPANDED_COMMANDS: NonNullable<TiniConfigCli['expand']> = [
+export const OFFICIAL_EXPANDED_COMMANDS: NonNullable<TiniConfigCli['expand']> =
   [
     resolve(TINIJS_INSTALL_DIR_PATH, 'ui', 'cli', 'expand.js'),
-    {commands: {ui: {}}},
-  ],
-  [
     resolve(TINIJS_INSTALL_DIR_PATH, 'content', 'cli', 'expand.js'),
-    {commands: {content: {}}},
-  ],
-];
+  ];
 
 export function resolveCommand(m: any) {
   return m.default.def as Promise<CommandDef>;
@@ -107,47 +94,17 @@ export function defineTiniCommand<
     >,
 >(
   def: CommandDef<T>,
-  callbacks: Callbacks,
-  handler: (args: CustomParsedArgs, callbacks?: Callbacks) => Promisable<void>
+  handler?: (args: CustomParsedArgs, callbacks?: Callbacks) => Promisable<void>,
+  callbacks?: Callbacks
 ) {
-  (handler as any).def = defineCommand({
-    ...def,
-    run({args}) {
+  if (handler) {
+    def.run = function ({args}) {
       return handler(args as any, callbacks);
-    },
-  });
-  return handler;
-}
-
-export async function getNamedExpandedCommands() {
-  const {config: tiniConfig} = await getTiniApp();
-  return [
-    ...(tiniConfig.cli?.expand || []),
-    ...OFFICIAL_EXPANDED_COMMANDS,
-  ].reduce(
-    (result, item) => {
-      const [entryFilePath, expandOptions = {}] =
-        typeof item === 'string' ? [item] : item;
-      for (const [command, commandOptions] of Object.entries(
-        expandOptions.commands || {}
-      )) {
-        result[command] = {
-          entryFilePath,
-          expandOptions,
-          commandOptions,
-        };
-      }
-      return result;
-    },
-    {} as Record<
-      string,
-      {
-        entryFilePath: string;
-        expandOptions: Omit<CliExpandOptions, 'commands'>;
-        commandOptions: CliExpandCommandOptions;
-      }
-    >
-  );
+    };
+  }
+  const command = (handler || function () {}) as NonNullable<typeof handler>;
+  (command as any).def = defineCommand(def);
+  return command;
 }
 
 export async function getExpandedCommands() {
@@ -156,14 +113,18 @@ export async function getExpandedCommands() {
     ...(tiniConfig.cli?.expand || []),
     ...OFFICIAL_EXPANDED_COMMANDS,
   ];
-  let expandedCommands = {};
+  const expandedCommands: SubCommandsDef = {};
   for (const item of cliExpand) {
-    const expandFilePath = resolve(typeof item === 'string' ? item : item[0]);
-    if (!(await exists(expandFilePath))) continue;
+    const [filePath] = typeof item === 'string' ? [item] : item;
+    const expandFilePath = resolve(filePath);
+    if (!existsSync(expandFilePath)) continue;
     const {default: expand} = await import(expandFilePath);
     if (!(expand instanceof Function)) continue;
-    const commands = await expand();
-    expandedCommands = {...expandedCommands, ...commands};
+    const commands = (await expand()) as SubCommandsDef;
+    for (const [key, value] of Object.entries(commands)) {
+      if (expandedCommands[key]) continue;
+      expandedCommands[key] = value;
+    }
   }
   return expandedCommands;
 }

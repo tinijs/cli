@@ -1,10 +1,9 @@
 import {resolve} from 'pathe';
 import {createRequire} from 'node:module';
 import recursiveReaddir from 'recursive-readdir';
-import fsExtra from 'fs-extra';
+import {readFile} from 'node:fs/promises';
+import {ensureDir, remove, outputFile, readJson, writeJson} from 'fs-extra/esm';
 import {Promisable} from 'type-fest';
-
-const {ensureDir, remove, readFile, outputFile, readJson, writeJson} = fsExtra;
 
 export const requireModule = createRequire(import.meta.url);
 

@@ -1,17 +1,8 @@
 import {resolve, parse} from 'pathe';
 import axios from 'axios';
-import fsExtra from 'fs-extra';
+import {readdir, lstatSync, createWriteStream} from 'node:fs';
+import {ensureDir, copy, remove, outputFile} from 'fs-extra/esm';
 import zipper from 'adm-zip';
-
-const {
-  ensureDir,
-  copy,
-  remove,
-  readdir,
-  outputFile,
-  lstatSync,
-  createWriteStream,
-} = fsExtra;
 
 export async function downloadAndUnzip(url: string, filePath: string) {
   // copy

@@ -1,59 +1,99 @@
-import chalk from 'chalk';
-import fsExtra from 'fs-extra';
+import {red, green, yellow} from 'colorette';
+import {consola} from 'consola';
+import {existsSync} from 'node:fs';
+import {outputFile} from 'fs-extra/esm';
 
-import {error, success} from '../utils/message.js';
-import {getTiniApp} from '../../lib/classes/tini-app.js';
-import {BUILTIN_GENERATORS, TemplateGenerator} from '../utils/generate.js';
+import {getTiniApp} from 'tinijs';
 
-const {red, green, yellow} = chalk;
-const {exists, outputFile} = fsExtra;
+import {
+  BUILTIN_GENERATORS,
+  GeneratedTemplate,
+  TemplateGenerator,
+} from '../utils/generate.js';
+import {defineTiniCommand} from '../utils/cli.js';
 
-interface GenerateCommandOptions {
-  dir?: string;
-  typePrefixed?: boolean;
-  nested?: boolean;
-}
-
-export default async function (
-  type: string,
-  dest: string,
-  commandOptions: GenerateCommandOptions
-) {
-  const {
-    config: {srcDir, cli},
-  } = await getTiniApp();
-  const availableGenerators: Record<string, TemplateGenerator> = {
-    ...BUILTIN_GENERATORS,
-    ...(cli?.generate || {}).generators,
-  };
-  const generator = availableGenerators[type];
-  if (!generator) {
-    return error(
-      `Invalid type "${red(type)}", please try: ${Object.keys(
-        availableGenerators
-      )
-        .map(item => green(item))
-        .join(', ')}.`
-    );
+export const generateCommand = defineTiniCommand(
+  {
+    meta: {
+      name: 'generate',
+      description: 'Generate a resource.',
+    },
+    args: {
+      type: {
+        type: 'positional',
+        description: 'Type of resource to generate.',
+      },
+      dest: {
+        type: 'positional',
+        description: 'Destination directory.',
+      },
+      dir: {
+        alias: 'd',
+        type: 'string',
+        description: 'Custom srcDir.',
+      },
+      typePrefixed: {
+        alias: 't',
+        type: 'boolean',
+        description: 'Use the format "name.type.ext".',
+      },
+      nested: {
+        alias: 'n',
+        type: 'boolean',
+        description: 'Nested under a folder.',
+      },
+    },
+  },
+  async (args, callbacks) => {
+    const {
+      config: {srcDir, cli},
+    } = await getTiniApp();
+    const availableGenerators: Record<string, TemplateGenerator> = {
+      ...BUILTIN_GENERATORS,
+      ...(cli?.generate || {}).generators,
+    };
+    const generator = availableGenerators[args.type];
+    if (!generator) {
+      return callbacks?.onInvalid(args.type, availableGenerators);
+    }
+    const templates = await generator({
+      type: args.type,
+      dest: args.dest,
+      srcDir: args.dir || srcDir,
+      typePrefixed: args.typePrefixed || false,
+      nested: args.nested || false,
+      componentPrefix: (cli?.generate || {}).componentPrefix || 'app',
+    });
+    const {fullPath: mainFullPath} = templates[0];
+    if (existsSync(mainFullPath)) {
+      return callbacks?.onExists(args.type, templates[0]);
+    }
+    // save files
+    for (let i = 0; i < templates.length; i++) {
+      const {fullPath, content} = templates[i];
+      await outputFile(fullPath, content);
+      callbacks?.onOutput(templates[i]);
+    }
+  },
+  {
+    onInvalid: (
+      type: string,
+      availableGenerators: Record<string, TemplateGenerator>
+    ) =>
+      consola.error(
+        `Invalid type "${red(type)}", please try: ${Object.keys(
+          availableGenerators
+        )
+          .map(item => green(item))
+          .join(', ')}.`
+      ),
+    onExists: (type: string, {shortPath}: GeneratedTemplate) =>
+      consola.error(
+        `A ${yellow(type)} already available at ${green(shortPath)}.`
+      ),
+    onOutput: ({shortPath}: GeneratedTemplate) =>
+      consola.success(`CREATE ${green(shortPath)}.`),
   }
-  const templates = await generator({
-    type,
-    dest,
-    srcDir: commandOptions.dir || srcDir,
-    typePrefixed: commandOptions.typePrefixed || false,
-    nested: commandOptions.nested || false,
-    componentPrefix: (cli?.generate || {}).componentPrefix || 'app',
-  });
-  const {shortPath: mainShortPath, fullPath: mainFullPath} = templates[0];
-  if (await exists(mainFullPath)) {
-    return error(
-      `A ${yellow(type)} already available at ${green(mainShortPath)}.`
-    );
-  }
-  // save files
-  for (let i = 0; i < templates.length; i++) {
-    const {shortPath, fullPath, content} = templates[i];
-    await outputFile(fullPath, content);
-    success(`CREATE ${green(shortPath)}.`);
-  }
-}
+);
+
+export default generateCommand;

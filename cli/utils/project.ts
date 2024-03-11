@@ -1,10 +1,8 @@
 import {resolve} from 'pathe';
 import {PackageJson} from 'type-fest';
-import fsExtra from 'fs-extra';
+import {readJson} from 'fs-extra/esm';
 
 import {requireModule, modifyJsonFile} from './file.js';
-
-const {readJson} = fsExtra;
 
 export const TINIJS_INSTALL_DIR_PATH = resolve('node_modules', '@tinijs');
 

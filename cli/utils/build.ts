@@ -1,15 +1,16 @@
-import fsExtra from 'fs-extra';
+import {existsSync} from 'node:fs';
+import {readFile} from 'node:fs/promises';
+import {remove, ensureDir, copy, outputFile} from 'fs-extra/esm';
 import {resolve} from 'pathe';
 import {minifyHTMLLiterals} from 'minify-html-literals';
-import * as sass from 'sass';
 import {nanoid} from 'nanoid';
+import * as sass from 'sass';
 
-import {TiniConfig, getTiniApp} from '../../lib/classes/tini-app.js';
+import {TiniConfig, getTiniApp} from 'tinijs';
+
 import {cleanDir, listDir} from './file.js';
 import {getTargetEnv} from './project.js';
 
-const {remove, exists, ensureDir, copy, copyFile, readFile, outputFile} =
-  fsExtra;
 const {compileStringAsync} = sass;
 
 export function getAppStagingDirPath(tempDir: string) {
@@ -33,7 +34,7 @@ export async function buildStaging() {
 export async function copyPublic(srcDir: string, outDir: string) {
   const inPath = resolve(srcDir, 'public');
   const outPath = resolve(outDir);
-  if ((await exists(inPath)) && (await exists(outPath))) {
+  if (existsSync(inPath) && existsSync(outPath)) {
     await copy(inPath, outPath);
   }
 }
@@ -70,7 +71,7 @@ export async function buildFile(
   } else if (fileExt === 'ts') {
     await outputFile(outFilePath, await buildTS(path, tiniConfig));
   } else {
-    await copyFile(path, outFilePath);
+    await copy(path, outFilePath);
   }
 }
 

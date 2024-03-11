@@ -1,75 +1,110 @@
-import {execSync} from 'child_process';
+import {execaCommand} from 'execa';
 import {resolve} from 'pathe';
-import chalk from 'chalk';
-import fsExtra from 'fs-extra';
+import {gray, green, cyan} from 'colorette';
+import {consola} from 'consola';
+import {existsSync} from 'node:fs';
 
-import {info, error} from '../utils/message.js';
 import {downloadAndUnzip} from '../utils/download.js';
 import {loadCliPackageJson} from '../utils/project.js';
+import {defineTiniCommand} from '../utils/cli.js';
 
-const {gray, green, cyan} = chalk;
-const {exists} = fsExtra;
-
-interface NewCommandOptions {
-  latest?: boolean;
-  source?: string;
-  tag?: string;
-  skipUi?: boolean;
-  skipGit?: boolean;
-}
-
-export default async function (
-  projectName: string,
-  commandOptions: NewCommandOptions
-) {
-  const {version: tiniVersion} = await loadCliPackageJson();
-  const source = commandOptions.source || 'tinijs/skeleton';
-  const tag = commandOptions.latest
-    ? 'latest'
-    : commandOptions.tag || `v${tiniVersion}`;
-  const resourceUrl = `https://github.com/${source}/archive/refs/tags/${tag}.zip`;
-  const validProjectName = projectName
-    .toLowerCase()
-    .replace(/[^a-zA-Z0-9-]/g, ' ')
-    .replace(/ /g, '-');
-  const projectPath = resolve(validProjectName);
-  // exist
-  if (await exists(projectPath)) {
-    return error(
-      `A project with the name "${green(validProjectName)}" is already exist!`
-    );
-  }
-  // create
-  await downloadAndUnzip(resourceUrl, projectPath + '/download.zip');
-  // info
-  info(`\nCreate a new TiniJS project: ${green(validProjectName)}`, true);
-  info(`From: ${gray(resourceUrl)}\n`, true);
-  // install dependencies
-  execSync('npm i --loglevel=error', {
-    stdio: 'inherit',
-    cwd: projectPath,
-  });
-  // tini ui use
-  if (!commandOptions.skipUi) {
-    execSync('tini ui use --build-only --skip-help', {
+export const newCommand = defineTiniCommand(
+  {
+    meta: {
+      name: 'new',
+      description: 'Create a new project.',
+    },
+    args: {
+      projectName: {
+        type: 'positional',
+        description: 'Project name.',
+      },
+      latest: {
+        alias: 'l',
+        type: 'boolean',
+        description: 'Install the latest template.',
+      },
+      source: {
+        alias: 's',
+        type: 'string',
+        description: 'Use a custom template instead the official.',
+      },
+      tag: {
+        alias: 't',
+        type: 'string',
+        description: 'Use a custom version of the tempalte.',
+      },
+      skipGit: {
+        alias: 'g',
+        type: 'boolean',
+        description: 'Do not initialize a git repository.',
+      },
+      skipUi: {
+        alias: 'u',
+        type: 'boolean',
+        description: 'Do not run: "tini ui use".',
+      },
+    },
+  },
+  async (args, callbacks) => {
+    const {version: tiniVersion} = await loadCliPackageJson();
+    const source = args.source || 'tinijs/skeleton';
+    const tag = args.latest ? 'latest' : args.tag || `v${tiniVersion}`;
+    const resourceUrl = `https://github.com/${source}/archive/refs/tags/${tag}.zip`;
+    const projectName = args.projectName
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9-]/g, ' ')
+      .replace(/ /g, '-');
+    const projectPath = resolve(projectName);
+    // exists
+    if (existsSync(projectPath)) {
+      return callbacks?.onProjectExists(projectName);
+    }
+    callbacks?.onBeforeCreate(projectName, resourceUrl);
+    // download
+    await downloadAndUnzip(resourceUrl, projectPath + '/download.zip');
+    const execaOptions = {
       stdio: 'inherit',
       cwd: projectPath,
-    });
-  }
-  // init git
-  if (!commandOptions.skipGit) {
-    execSync('git init', {stdio: 'inherit', cwd: projectPath});
-  }
-  // instruction
-  console.log(`
+    } as const;
+    // install dependencies
+    await execaCommand('npm i --loglevel=error', execaOptions);
+    // tini ui use
+    if (!args.skipUi) {
+      await execaCommand('tini ui use --build-only --skip-help', execaOptions);
+    }
+    // init git
+    if (!args.skipGit) {
+      await execaCommand('git init', execaOptions);
+    }
+    // instruction
+    callbacks?.onEnd(projectName, tiniVersion as string);
+  },
+  {
+    onProjectExists: (projectName: string) =>
+      consola.error(
+        `A project with the name "${green(projectName)}" is already exist!`
+      ),
+    onBeforeCreate: (projectName: string, resourceUrl: string) => {
+      consola.info(
+        `\nCreate a new TiniJS project: ${green(projectName)}`,
+        true
+      );
+      consola.info(`From: ${gray(resourceUrl)}\n`, true);
+    },
+    onEnd: (projectName: string, tiniVersion: string) =>
+      consola.log(`
 ${gray('TiniJS ' + tiniVersion)}
 ✨ Thank you for using TiniJS! ✨
 
 What's next?
-› ${cyan('cd ' + validProjectName)}
+› ${cyan('cd ' + projectName)}
 › Start development: ${cyan('npm run dev')}
 › Build production: ${cyan('npm run build')}
 › Preview production: ${cyan('npm run preview')}
 › For more, please visit: ${cyan('https://tinijs.dev')}
-  `);
-}
+    `),
+  }
+);
+
+export default newCommand;

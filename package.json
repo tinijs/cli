@@ -1,7 +1,7 @@
 {
   "name": "@tinijs/cli",
   "version": "0.16.0",
-  "description": "The CLI for the TiniJS framework.",
+  "description": "The CLI for the TiniJS framework and beyond.",
   "author": "Lam Nhan",
   "homepage": "https://tinijs.dev",
   "license": "MIT",
@@ -56,6 +56,7 @@
     "change-case": "^5.4.3",
     "chokidar": "^3.6.0",
     "citty": "^0.1.6",
+    "colorette": "^2.0.20",
     "commander": "^12.0.0",
     "concurrently": "^8.2.2",
     "consola": "^3.2.3",
@@ -76,6 +77,7 @@
     "sass": "^1.71.1",
     "sharp": "^0.33.2",
     "superstatic": "^9.0.3",
+    "tinijs": "file:../tinijs/tinijs-0.16.0.tgz",
     "typescript": "~5.3.3"
   },
   "devDependencies": {

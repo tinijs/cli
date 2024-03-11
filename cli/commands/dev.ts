@@ -1,11 +1,12 @@
 import {concurrently} from 'concurrently';
 import {watch} from 'chokidar';
 import {resolve} from 'pathe';
-import chalk from 'chalk';
-import fsExtra from 'fs-extra';
+import {consola} from 'consola';
+import {blueBright, bold} from 'colorette';
+import {existsSync} from 'node:fs';
 
-import {log} from '../utils/message.js';
-import {TiniConfig, getTiniApp} from '../../lib/classes/tini-app.js';
+import {TiniConfig, getTiniApp} from 'tinijs';
+
 import {
   getAppStagingDirPath,
   buildFile,
@@ -13,48 +14,12 @@ import {
   buildStaging,
   copyPublic,
 } from '../utils/build.js';
-
-const {blueBright, bold} = chalk;
-const {exists} = fsExtra;
-
-interface DevCommandOptions {
-  watch?: boolean;
-}
-
-export default async function (commandOptions: DevCommandOptions) {
-  const {config: tiniConfig} = await getTiniApp();
-  const {srcDir, outDir, tempDir} = tiniConfig;
-  const stagingPath = getAppStagingDirPath(tempDir);
-  // watch mode
-  if (commandOptions.watch) {
-    watch(srcDir, {ignoreInitial: true})
-      .on('add', path => buildFile(path, stagingPath, srcDir))
-      .on('change', path => buildFile(path, stagingPath, srcDir))
-      .on('unlink', path => removeFile(path, stagingPath, srcDir));
-  } else {
-    // build staging
-    await buildStaging();
-    // start dev server
-    concurrently([
-      {
-        command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
-      },
-      {command: 'tini dev --watch'},
-    ]);
-    // other assets
-    buildOthers(tiniConfig);
-    // running
-    setTimeout(
-      () => log(bold(blueBright('Server running at http://localhost:3000'))),
-      2000
-    );
-  }
-}
+import {defineTiniCommand} from '../utils/cli.js';
 
 function buildOthers(tiniConfig: TiniConfig) {
   setTimeout(async () => {
     const {srcDir, outDir} = tiniConfig;
-    if (await exists(resolve(outDir))) {
+    if (existsSync(resolve(outDir))) {
       // copy public dir
       await copyPublic(srcDir, outDir);
     } else {
@@ -62,3 +27,51 @@ function buildOthers(tiniConfig: TiniConfig) {
     }
   }, 2000);
 }
+
+export const devCommand = defineTiniCommand(
+  {
+    meta: {
+      name: 'dev',
+      description: 'Start the dev server.',
+    },
+    args: {
+      watch: {
+        alias: 'w',
+        type: 'boolean',
+        description: 'Watch mode only.',
+      },
+    },
+  },
+  async (args, callbacks) => {
+    const {config: tiniConfig} = await getTiniApp();
+    const {srcDir, outDir, tempDir} = tiniConfig;
+    const stagingPath = getAppStagingDirPath(tempDir);
+    // watch mode
+    if (args.watch) {
+      watch(srcDir, {ignoreInitial: true})
+        .on('add', path => buildFile(path, stagingPath, srcDir))
+        .on('change', path => buildFile(path, stagingPath, srcDir))
+        .on('unlink', path => removeFile(path, stagingPath, srcDir));
+    } else {
+      // build staging
+      await buildStaging();
+      // start dev server
+      concurrently([
+        {
+          command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
+        },
+        {command: 'tini dev --watch'},
+      ]);
+      // other assets
+      buildOthers(tiniConfig);
+      // running
+      setTimeout(() => callbacks?.onServerStart(), 2000);
+    }
+  },
+  {
+    onServerStart: () =>
+      consola.log(bold(blueBright('Server running at http://localhost:3000'))),
+  }
+);
+
+export default devCommand;

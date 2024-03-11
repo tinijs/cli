@@ -1,22 +1,25 @@
 import {consola} from 'consola';
-import chalk from 'chalk';
+import {bold, blueBright} from 'colorette';
 import open from 'open';
 
 import {defineTiniCommand} from '../utils/cli.js';
 
-const {blueBright, bold} = chalk;
-
-export default defineTiniCommand(
+export const docsCommand = defineTiniCommand(
   {
     meta: {
       name: 'docs',
       description: 'Open documentation.',
     },
   },
-  {},
-  () => {
+  (args, callbacks) => {
     const HOME_URL = 'https://tinijs.dev';
-    consola.info(`Documetation link: ${bold(blueBright(HOME_URL))}`);
+    callbacks?.onOpen(HOME_URL);
     open(HOME_URL);
+  },
+  {
+    onOpen: (url: string) =>
+      consola.info(`Documetation link: ${bold(blueBright(url))}`),
   }
 );
+
+export default docsCommand;

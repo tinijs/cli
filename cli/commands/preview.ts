@@ -1,17 +1,16 @@
-import chalk from 'chalk';
+import {blueBright, bold} from 'colorette';
+import {consola} from 'consola';
 import superstatic from 'superstatic';
 
-import {info} from '../utils/message.js';
-import {getTiniApp} from '../../lib/classes/tini-app.js';
+import {getTiniApp} from 'tinijs';
+
 import {defineTiniCommand} from '../utils/cli.js';
 
-const {blueBright, bold} = chalk;
-
-export default defineTiniCommand(
+export const previewCommand = defineTiniCommand(
   {
     meta: {
-      name: 'docs',
-      description: 'Open documentation.',
+      name: 'preview',
+      description: 'Preview the app.',
     },
     args: {
       port: {
@@ -31,8 +30,7 @@ export default defineTiniCommand(
       },
     },
   },
-  {},
-  async args => {
+  async (args, callbacks) => {
     const {
       config: {outDir: cwd},
     } = await getTiniApp();
@@ -54,8 +52,14 @@ export default defineTiniCommand(
         config,
         debug: false,
       })
-      .listen(() =>
-        info(`Preview your app at: ${bold(blueBright(`${hostname}:${port}`))}`)
-      );
+      .listen(() => callbacks?.onServerStart(hostname, port));
+  },
+  {
+    onServerStart: (hostname: string, port: number) =>
+      consola.info(
+        `Preview your app at: ${bold(blueBright(`${hostname}:${port}`))}`
+      ),
   }
 );
+
+export default previewCommand;

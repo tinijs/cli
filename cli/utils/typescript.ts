@@ -1,8 +1,7 @@
 import {resolve} from 'pathe';
 import typescript, {CompilerOptions} from 'typescript';
-import fsExtra from 'fs-extra';
+import {outputFile} from 'fs-extra/esm';
 
-const {outputFile} = fsExtra;
 const {createCompilerHost, createProgram} = typescript;
 
 export function transpileFiles(filePaths: string[], options: CompilerOptions) {
