@@ -2,28 +2,22 @@ import {concurrently} from 'concurrently';
 import {watch} from 'chokidar';
 import {resolve} from 'pathe';
 import {consola} from 'consola';
-import {blueBright, bold} from 'colorette';
+import {execaCommand} from 'execa';
+import {blueBright} from 'colorette';
 import {existsSync} from 'node:fs';
+import {remove} from 'fs-extra/esm';
 
 import {TiniConfig, getTiniApp} from 'tinijs';
 
-import {
-  getAppStagingDirPath,
-  buildFile,
-  removeFile,
-  buildStaging,
-  copyPublic,
-} from '../utils/build.js';
+import {loadPrebuilder, loadBuilder, buildPublic} from '../utils/build.js';
 import {defineTiniCommand} from '../utils/cli.js';
 
-function buildOthers(tiniConfig: TiniConfig) {
+function checkAndbuildPublic(tiniConfig: TiniConfig) {
   setTimeout(async () => {
-    const {srcDir, outDir} = tiniConfig;
-    if (existsSync(resolve(outDir))) {
-      // copy public dir
-      await copyPublic(srcDir, outDir);
+    if (existsSync(resolve(tiniConfig.outDir))) {
+      await buildPublic(tiniConfig);
     } else {
-      buildOthers(tiniConfig);
+      checkAndbuildPublic(tiniConfig);
     }
   }, 2000);
 }
@@ -43,34 +37,58 @@ export const devCommand = defineTiniCommand(
     },
   },
   async (args, callbacks) => {
-    const {config: tiniConfig} = await getTiniApp();
-    const {srcDir, outDir, tempDir} = tiniConfig;
-    const stagingPath = getAppStagingDirPath(tempDir);
+    const tiniApp = await getTiniApp();
+    const {config: tiniConfig} = tiniApp;
+    const prebuilder = await loadPrebuilder(tiniApp);
     // watch mode
     if (args.watch) {
-      watch(srcDir, {ignoreInitial: true})
-        .on('add', path => buildFile(path, stagingPath, srcDir))
-        .on('change', path => buildFile(path, stagingPath, srcDir))
-        .on('unlink', path => removeFile(path, stagingPath, srcDir));
+      if (prebuilder) {
+        watch(tiniConfig.srcDir, {ignoreInitial: true})
+          .on('add', path => prebuilder.buildFile(path))
+          .on('change', path => prebuilder.buildFile(path))
+          .on('unlink', path =>
+            remove(
+              resolve(
+                tiniConfig.tempDir,
+                path.split(`/${tiniConfig.srcDir}/`).pop() as string
+              )
+            )
+          );
+      } else {
+        callbacks?.onUselessWatch?.();
+      }
     } else {
-      // build staging
-      await buildStaging();
+      const builder = await loadBuilder(tiniApp);
+      // prebuild
+      await prebuilder?.build();
       // start dev server
-      concurrently([
-        {
-          command: `parcel "${stagingPath}/index.html" --dist-dir ${outDir} --port 3000 --no-cache --log-level none`,
-        },
-        {command: 'tini dev --watch'},
-      ]);
-      // other assets
-      buildOthers(tiniConfig);
-      // running
-      setTimeout(() => callbacks?.onServerStart(), 2000);
+      if (builder.dev instanceof Function) {
+        await builder.dev();
+      } else {
+        if (prebuilder) {
+          concurrently([
+            {command: builder.dev.command},
+            {command: 'tini dev --watch'},
+          ]);
+        } else {
+          await execaCommand(builder.dev.command, {stdio: 'inherit'});
+        }
+        const customOnServerStart = builder.dev.onServerStart;
+        setTimeout(() => callbacks?.onServerStart(customOnServerStart), 2000);
+      }
+      // public
+      checkAndbuildPublic(tiniConfig);
     }
   },
   {
-    onServerStart: () =>
-      consola.log(bold(blueBright('Server running at http://localhost:3000'))),
+    onUselessWatch: () =>
+      consola.warn('The --watch option is useless while prebuild is disabled.'),
+    onServerStart: (customCallback?: () => void) =>
+      customCallback
+        ? customCallback()
+        : consola.info(
+            `Server running at: ${blueBright('http://localhost:3000')}`
+          ),
   }
 );
 

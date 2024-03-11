@@ -48,10 +48,10 @@ async function runApp() {
         description,
       },
       setup() {
-        tiniApp.hooks.callHook('cli:setup', tiniApp);
+        tiniApp.hooks.callHook('cli:setup');
       },
       cleanup() {
-        tiniApp.hooks.callHook('cli:cleanup', tiniApp);
+        tiniApp.hooks.callHook('cli:cleanup');
       },
       subCommands: await getCommands(tiniApp.config),
     })

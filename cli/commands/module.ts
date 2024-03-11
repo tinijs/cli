@@ -1,7 +1,7 @@
 import {blueBright} from 'colorette';
 import {consola} from 'consola';
 
-import {loadModule} from 'tinijs';
+import {getTiniApp, loadModule} from 'tinijs';
 
 import {errorUncleanGit} from '../utils/message.js';
 import {
@@ -33,22 +33,22 @@ export const moduleCommand = defineTiniCommand(
   },
   async (args, callbacks) => {
     if (!isGitClean()) return errorUncleanGit();
-    const {packageName} = args;
+    const {config: tiniConfig} = await getTiniApp();
     // install packages
-    await installPackage(packageName, args.tag);
+    await installPackage(args.packageName, args.tag);
     // handle init
-    const tiniModule = await loadModule(packageName);
+    const tiniModule = await loadModule(args.packageName);
     if (tiniModule?.init) {
-      const {copy, scripts, buildCommand, run} = tiniModule.init;
+      const {copy, scripts, buildCommand, run} = tiniModule.init(tiniConfig);
       // copy assets
-      if (copy) await copyAssets(packageName, copy);
+      if (copy) await copyAssets(args.packageName, copy);
       // add scripts
       if (scripts) await updateScripts(scripts, buildCommand);
       // run
       if (run) await initRun(run);
     }
     // done
-    callbacks?.onEnd(packageName);
+    callbacks?.onEnd(args.packageName);
   },
   {
     onEnd: (packageName: string) =>
