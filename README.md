@@ -8,26 +8,13 @@
 
 <section id="tocx" data-note="AUTO-GENERATED CONTENT, DO NOT EDIT DIRECTLY!">
 
-- [Install](#install)
-- [Development](#development)
-  - [The structure](#the-structure)
-  - [Add new command](#add-new-command)
-- [Command overview](#cli-command-overview)
-- [Command reference](#cli-command-reference)
-  - [`build`](#command-build)
-  - [`clean`](#command-clean)
-  - [`dev`](#command-dev)
-  - [`docs`](#command-docs)
-  - [`generate`](#command-generate)
-  - [`new`](#command-new)
-  - [`preview`](#command-preview)
-  - [`pwa`](#command-pwa)
-  - [`test`](#command-test)
-  - [`ui`](#command-ui)
-  - [`help`](#command-help)
-  - [`*`](#command-*)
-- [Detail API reference](https://cli-api.tinijs.dev)
-
+- [@tinijs/cli](#tinijscli)
+  - [Install](#install)
+  - [Development](#development)
+    - [The structure](#the-structure)
+    - [Add a new command](#add-a-new-command)
+    - [Add a new util](#add-a-new-util)
+  - [License](#license)
 
 </section>
 
@@ -56,29 +43,30 @@ For more, please visit: <https://tinijs.dev>
 
 ### The structure
 
-This project uses a design pattern called `seminjecto` (it's a term which I invented some years ago).
-
 The source of the package resides in the `src` folder:
 
 - `public-api.ts`: the public interface of the package
-- `bin.ts`: the entry of the CLI
-- `lib/index.ts`: the container for all shared features
-- `lib/services/...`: all the reusable services
-- `cli/index.ts`: the container of the CLI app
+- `cli/index.ts`: the entry of the CLI
 - `cli/commands/...`: all the commands of the CLI app
+- `cli/utils/...`: all the reusable functions
 
 The test specs are in the `test` folder:
 
 - No unit test has been written yet (please help if you can, thank you!)
 
-### Add new command
+### Add a new command
 
-- Install the `@lamnhan/seminjecto` CLI tool: `npm i -g @lamnhan/seminjecto` (the tool is quite outdated but it is still working :), I will update it when I have more time).
-- Run: `semidi g command commands/<name>`
+Add a file in `src/cli/commands/<name>.ts`, for example:
 
-A file will be create in `src/cli/commands/<name>.command.ts`.
+```ts
+export async function <name>Command() {
+  // command logic here
+}
+```
 
-Beside, the command definition code will be injected into `src/cli/index.ts`.
+### Add a new util
+
+Similar to adding a new command, add a new file: `src/lib/utils/<name>.ts`
 
 </section>
 
@@ -89,21 +77,41 @@ Beside, the command definition code will be injected into `src/cli/index.ts`.
 
 The CLI for the TiniJS framework.
 
+- [`tini add|module <packageName> --tag [value]`](#command-add)
 - [`tini build --target [value]`](#command-build)
 - [`tini clean|c --includes [value] --excludes [value]`](#command-clean)
 - [`tini dev|serve --watch`](#command-dev)
 - [`tini docs|home`](#command-docs)
 - [`tini generate|create|g <type> <dest> --type-prefixed --nested`](#command-generate)
-- [`tini new|start <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git`](#command-new)
+- [`tini new|start <projectName> --latest --tag [value] --skip-git --skip-ui`](#command-new)
 - [`tini preview --port [value] --host [value] --i18n`](#command-preview)
-- [`tini pwa <subCommand> --tag [value]`](#command-pwa)
 - [`tini test`](#command-test)
-- [`tini ui <subCommand> [params...] --build-only --skip-help`](#command-ui)
+- [`tini ui <subCommand> [params...] --build-only --skip-help --hook [path] --output [path] --react`](#command-ui)
 - [`tini help`](#command-help)
 - [`tini *`](#command-*)
 
 <h2><a name="cli-command-reference"><p>Command reference</p>
 </a></h2>
+
+<h3><a name="command-add"><p><code>add</code></p>
+</a></h3>
+
+Add a module to the current project.
+
+**Usage:**
+
+```sh
+tini add <packageName> --tag [value]
+tini module <packageName> --tag [value]
+```
+
+**Parameters:**
+
+- `<packageName>`: The module package name.
+
+**Options:**
+
+- `-t, --tag [value]`: Use the custom version of the package.
 
 <h3><a name="command-build"><p><code>build</code></p>
 </a></h3>
@@ -196,8 +204,8 @@ Create a new project.
 **Usage:**
 
 ```sh
-tini new <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git
-tini start <projectName> --latest --tag [value] --skip-install --skip-ui --skip-git
+tini new <projectName> --latest --tag [value] --skip-git --skip-ui
+tini start <projectName> --latest --tag [value] --skip-git --skip-ui
 ```
 
 **Parameters:**
@@ -208,9 +216,8 @@ tini start <projectName> --latest --tag [value] --skip-install --skip-ui --skip-
 
 - `-l, --latest`: Install the latest @tinijs/skeleton.
 - `-t, --tag [value]`: Use the custom version of the @tinijs/skeleton.
-- `-i, --skip-install`: Do not install dependency packages.
-- `-u, --skip-ui`: Do not run tini ui use.
 - `-g, --skip-git`: Do not initialize a git repository.
+- `-u, --skip-ui`: Do not run: tini ui use.
 
 <h3><a name="command-preview"><p><code>preview</code></p>
 </a></h3>
@@ -229,25 +236,6 @@ tini preview --port [value] --host [value] --i18n
 - `-h, --host [value]`: Custom host.
 - `-i, --i18n`: Enable superstatic i18n.
 
-<h3><a name="command-pwa"><p><code>pwa</code></p>
-</a></h3>
-
-Working with PWA apps.
-
-**Usage:**
-
-```sh
-tini pwa <subCommand> --tag [value]
-```
-
-**Parameters:**
-
-- `<subCommand>`: The `<subCommand>` parameter.
-
-**Options:**
-
-- `-t, --tag [value]`: Use the custom version of @tinijs/pwa.
-
 <h3><a name="command-test"><p><code>test</code></p>
 </a></h3>
 
@@ -262,12 +250,12 @@ tini test
 <h3><a name="command-ui"><p><code>ui</code></p>
 </a></h3>
 
-Tools for developing and using Tini.
+Tools for developing and using Tini UI.
 
 **Usage:**
 
 ```sh
-tini ui <subCommand> [params...] --build-only --skip-help
+tini ui <subCommand> [params...] --build-only --skip-help --hook [path] --output [path] --react
 ```
 
 **Parameters:**
@@ -279,6 +267,9 @@ tini ui <subCommand> [params...] --build-only --skip-help
 
 - `-b, --build-only`: Build mode only of the use command.
 - `-i, --skip-help`: Skip instruction of the use command.
+- `-h, --hook [path]`: Path to a hook file.
+- `-o, --output [path]`: Custom output folder.
+- `-r, --react`: Build for React.
 
 <h3><a name="command-help"><p><code>help</code></p>
 </a></h3>
