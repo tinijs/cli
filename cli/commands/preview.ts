@@ -2,7 +2,7 @@ import {blueBright, bold} from 'colorette';
 import {consola} from 'consola';
 import superstatic from 'superstatic';
 
-import {getTiniApp} from 'tinijs';
+import {getTiniApp} from '@tinijs/core';
 
 import {defineTiniCommand} from '../utils/cli.js';
 

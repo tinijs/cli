@@ -3,7 +3,7 @@ import {existsSync} from 'node:fs';
 import {copy as copyFileOrDir} from 'fs-extra/esm';
 import {execaCommand} from 'execa';
 
-import {ModuleInit} from 'tinijs';
+import {ModuleInit} from '@tinijs/core';
 
 import {modifyProjectPackageJson} from './project.js';
 

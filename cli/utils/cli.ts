@@ -3,7 +3,7 @@ import {CommandDef, ArgsDef, defineCommand, SubCommandsDef} from 'citty';
 import {Promisable} from 'type-fest';
 import {existsSync} from 'node:fs';
 
-import {TiniConfigCli, getTiniApp} from 'tinijs';
+import {TiniConfigCli, getTiniApp} from '@tinijs/core';
 
 import {TINIJS_INSTALL_DIR_PATH} from './project.js';
 

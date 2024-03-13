@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {SubCommandsDef, defineCommand, runMain} from 'citty';
 
-import {TiniConfig, getTiniApp} from 'tinijs';
+import {TiniConfig, getTiniApp} from '@tinijs/core';
 
 import {loadCliPackageJson} from './utils/project.js';
 import {resolveCommand, getExpandedCommands} from './utils/cli.js';

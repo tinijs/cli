@@ -1,7 +1,7 @@
 import {blueBright} from 'colorette';
 import {consola} from 'consola';
 
-import {getTiniApp, loadModule} from 'tinijs';
+import {getTiniApp, loadModule} from '@tinijs/core';
 
 import {errorUncleanGit} from '../utils/message.js';
 import {

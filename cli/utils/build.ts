@@ -10,7 +10,7 @@ import {
   Prebuilder,
   OfficialBuilders,
   Builder,
-} from 'tinijs';
+} from '@tinijs/core';
 
 import {TINIJS_INSTALL_DIR_PATH} from '../utils/project.js';
 

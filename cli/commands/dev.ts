@@ -7,7 +7,7 @@ import {blueBright} from 'colorette';
 import {existsSync} from 'node:fs';
 import {remove} from 'fs-extra/esm';
 
-import {TiniConfig, getTiniApp} from 'tinijs';
+import {TiniConfig, getTiniApp} from '@tinijs/core';
 
 import {loadPrebuilder, loadBuilder, buildPublic} from '../utils/build.js';
 import {defineTiniCommand} from '../utils/cli.js';

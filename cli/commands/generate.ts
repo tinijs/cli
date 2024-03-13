@@ -3,7 +3,7 @@ import {consola} from 'consola';
 import {existsSync} from 'node:fs';
 import {outputFile} from 'fs-extra/esm';
 
-import {getTiniApp} from 'tinijs';
+import {getTiniApp} from '@tinijs/core';
 
 import {
   BUILTIN_GENERATORS,

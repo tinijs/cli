@@ -2,7 +2,7 @@ import {resolve} from 'pathe';
 import {execaCommand} from 'execa';
 import {remove} from 'fs-extra/esm';
 
-import {getTiniApp} from 'tinijs';
+import {getTiniApp} from '@tinijs/core';
 
 import {loadPrebuilder, loadBuilder, buildPublic} from '../utils/build.js';
 import {defineTiniCommand} from '../utils/cli.js';
