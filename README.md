@@ -66,9 +66,9 @@ The test specs are in the `test` folder:
 Add a file in `cli/commands/<name>.ts`, for example:
 
 ```ts
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const xxxCommand = defineTiniCommand(
+export const xxxCommand = defineCliCommand(
   { /* command definition */ },
   async (args, callbacks) => {
     // run logic

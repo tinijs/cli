@@ -1,5 +1,4 @@
-import {existsSync} from 'node:fs';
-import {copy} from 'fs-extra/esm';
+import {copy, pathExistsSync} from 'fs-extra/esm';
 import {resolve} from 'pathe';
 import {execaCommand} from 'execa';
 
@@ -51,7 +50,7 @@ export async function buildPublic({srcDir, outDir, dirs}: TiniConfig) {
   const dirName = dirs?.public || 'public';
   const inPath = resolve(srcDir, dirName);
   const outPath = resolve(outDir);
-  if (!existsSync(inPath)) return;
+  if (!pathExistsSync(inPath)) return;
   return copy(inPath, outPath);
 }
 
@@ -66,7 +65,7 @@ async function loadPrebuilderOrBuilder<Type>(
     'lib',
     'index.js'
   );
-  if (!existsSync(entryFilePath)) {
+  if (!pathExistsSync(entryFilePath)) {
     await execaCommand(`npm i @tinijs/${packageName}`, {stdio: 'ignore'});
   }
   const {default: create} = await import(entryFilePath);

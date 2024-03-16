@@ -2,13 +2,13 @@ import {execaCommand} from 'execa';
 import {resolve} from 'pathe';
 import {gray, green, cyan} from 'colorette';
 import {consola} from 'consola';
-import {existsSync} from 'node:fs';
+import {pathExistsSync} from 'fs-extra/esm';
 
 import {downloadAndUnzip} from '../utils/download.js';
 import {loadCliPackageJson} from '../utils/project.js';
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const newCommand = defineTiniCommand(
+export const newCommand = defineCliCommand(
   {
     meta: {
       name: 'new',
@@ -57,7 +57,7 @@ export const newCommand = defineTiniCommand(
       .replace(/ /g, '-');
     const projectPath = resolve(projectName);
     // exists
-    if (existsSync(projectPath)) {
+    if (pathExistsSync(projectPath)) {
       return callbacks?.onProjectExists(projectName);
     }
     callbacks?.onBeforeCreate(projectName, resourceUrl);

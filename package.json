@@ -5,30 +5,27 @@
   "author": "Lam Nhan",
   "homepage": "https://tinijs.dev",
   "license": "MIT",
-  "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "exports": "./public-api.js",
-  "types": "./public-api.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./dist/public-api.js"
+  },
   "bin": {
-    "tini": "./cli/index.js"
+    "tini": "./dist/cli/index.js"
   },
   "files": [
-    "cli",
-    "public-api.*",
-    "!**/*.ts",
-    "**/*.d.ts",
-    "!docs",
-    "!test"
+    "dist",
+    "!**/*.spec.*"
   ],
   "scripts": {
-    "compile": "tsc",
-    "build": "npm run compile && npm i -g",
+    "build": "rimraf ./dist && tsc && npm i -g",
     "deploy": "npm run build && npm publish",
+    "test": "vitest run",
     "lint": "gts lint",
     "fix": "gts fix"
   },
@@ -54,8 +51,10 @@
     "colorette": "^2.0.20",
     "concurrently": "^8.2.2",
     "consola": "^3.2.3",
+    "defu": "^6.1.4",
     "execa": "^8.0.1",
     "fs-extra": "^11.2.0",
+    "jiti": "^1.21.0",
     "open": "^10.0.4",
     "pathe": "^1.1.2",
     "picomatch": "^4.0.1",
@@ -70,6 +69,8 @@
     "@types/picomatch": "^2.3.3",
     "@types/recursive-readdir": "^2.2.4",
     "gts": "^5.2.0",
-    "type-fest": "^4.11.1"
+    "rimraf": "^5.0.5",
+    "type-fest": "^4.11.1",
+    "vitest": "^1.4.0"
   }
 }

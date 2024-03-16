@@ -1,34 +1,33 @@
 #!/usr/bin/env node
 import {SubCommandsDef, defineCommand, runMain} from 'citty';
 
-import {TiniConfig, getTiniApp} from '@tinijs/core';
+import {TiniApp, getTiniApp} from '@tinijs/core';
 
 import {loadCliPackageJson} from './utils/project.js';
-import {resolveCommand, getExpandedCommands} from './utils/cli.js';
+import {resolveCommand, setupCliExpansion} from './utils/cli.js';
 
-async function getCommands({cli}: TiniConfig) {
+async function getCommands(tiniApp: TiniApp) {
+  const cliConfig = tiniApp.config.cli;
   const commands: SubCommandsDef = {};
   // built-in commands
-  if (cli?.docs !== false)
+  if (cliConfig?.docs !== false)
     commands.docs = () => import('./commands/docs.js').then(resolveCommand);
-  if (cli?.new !== false)
+  if (cliConfig?.new !== false)
     commands.new = () => import('./commands/new.js').then(resolveCommand);
-  if (cli?.dev !== false)
+  if (cliConfig?.dev !== false)
     commands.dev = () => import('./commands/dev.js').then(resolveCommand);
-  if (cli?.build !== false)
+  if (cliConfig?.build !== false)
     commands.build = () => import('./commands/build.js').then(resolveCommand);
-  if (cli?.preview !== false)
+  if (cliConfig?.preview !== false)
     commands.preview = () =>
       import('./commands/preview.js').then(resolveCommand);
-  if (cli?.module !== false)
+  if (cliConfig?.module !== false)
     commands.module = () => import('./commands/module.js').then(resolveCommand);
-  if (cli?.generate !== false)
+  if (cliConfig?.generate !== false)
     commands.generate = () =>
       import('./commands/generate.js').then(resolveCommand);
-  if (cli?.clean !== false)
-    commands.clean = () => import('./commands/clean.js').then(resolveCommand);
   // expanded commands
-  const expandedCommands = await getExpandedCommands();
+  const expandedCommands = await setupCliExpansion(tiniApp);
   for (const [key, value] of Object.entries(expandedCommands)) {
     if (commands[key]) continue;
     commands[key] = value;
@@ -53,7 +52,7 @@ async function runApp() {
       cleanup() {
         tiniApp.hooks.callHook('cli:cleanup');
       },
-      subCommands: await getCommands(tiniApp.config),
+      subCommands: await getCommands(tiniApp),
     })
   );
 }

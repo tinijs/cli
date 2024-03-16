@@ -5,9 +5,9 @@ import {remove} from 'fs-extra/esm';
 import {getTiniApp} from '@tinijs/core';
 
 import {loadPrebuilder, loadBuilder, buildPublic} from '../utils/build.js';
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const buildCommand = defineTiniCommand(
+export const buildCommand = defineCliCommand(
   {
     meta: {
       name: 'build',

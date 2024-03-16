@@ -1,6 +1,5 @@
 import {resolve} from 'pathe';
-import {existsSync} from 'node:fs';
-import {copy as copyFileOrDir} from 'fs-extra/esm';
+import {copy as copyFileOrDir, pathExistsSync} from 'fs-extra/esm';
 import {execaCommand} from 'execa';
 
 import {ModuleInit} from '@tinijs/core';
@@ -20,7 +19,7 @@ export async function copyAssets(
   for (const from in copy) {
     const fromPath = resolve('node_modules', packageName, from);
     const toPath = resolve(copy[from]);
-    if (existsSync(fromPath) && !existsSync(toPath)) {
+    if (pathExistsSync(fromPath) && !pathExistsSync(toPath)) {
       await copyFileOrDir(fromPath, toPath);
     }
   }

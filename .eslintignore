@@ -1,4 +1,1 @@
-docs/
-**/*.js
-**/*.d.ts
-**/*.map
+dist/

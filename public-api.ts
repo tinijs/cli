@@ -1,5 +1,4 @@
 export * from './cli/commands/build.js';
-export * from './cli/commands/clean.js';
 export * from './cli/commands/dev.js';
 export * from './cli/commands/docs.js';
 export * from './cli/commands/generate.js';

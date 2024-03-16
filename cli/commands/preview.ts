@@ -4,9 +4,9 @@ import superstatic from 'superstatic';
 
 import {getTiniApp} from '@tinijs/core';
 
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const previewCommand = defineTiniCommand(
+export const previewCommand = defineCliCommand(
   {
     meta: {
       name: 'preview',

@@ -4,17 +4,16 @@ import {resolve} from 'pathe';
 import {consola} from 'consola';
 import {execaCommand} from 'execa';
 import {blueBright} from 'colorette';
-import {existsSync} from 'node:fs';
-import {remove} from 'fs-extra/esm';
+import {remove, pathExistsSync} from 'fs-extra/esm';
 
 import {TiniConfig, getTiniApp} from '@tinijs/core';
 
 import {loadPrebuilder, loadBuilder, buildPublic} from '../utils/build.js';
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
 function checkAndbuildPublic(tiniConfig: TiniConfig) {
   setTimeout(async () => {
-    if (existsSync(resolve(tiniConfig.outDir))) {
+    if (pathExistsSync(resolve(tiniConfig.outDir))) {
       await buildPublic(tiniConfig);
     } else {
       checkAndbuildPublic(tiniConfig);
@@ -22,7 +21,7 @@ function checkAndbuildPublic(tiniConfig: TiniConfig) {
   }, 2000);
 }
 
-export const devCommand = defineTiniCommand(
+export const devCommand = defineCliCommand(
   {
     meta: {
       name: 'dev',

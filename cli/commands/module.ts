@@ -1,7 +1,7 @@
 import {blueBright} from 'colorette';
 import {consola} from 'consola';
 
-import {getTiniApp, loadModule} from '@tinijs/core';
+import {getTiniApp, loadVendorModule} from '@tinijs/core';
 
 import {errorUncleanGit} from '../utils/message.js';
 import {
@@ -11,9 +11,9 @@ import {
   initRun,
 } from '../utils/module.js';
 import {isGitClean} from '../utils/git.js';
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const moduleCommand = defineTiniCommand(
+export const moduleCommand = defineCliCommand(
   {
     meta: {
       name: 'module',
@@ -37,9 +37,9 @@ export const moduleCommand = defineTiniCommand(
     // install packages
     await installPackage(args.packageName, args.tag);
     // handle init
-    const tiniModule = await loadModule(args.packageName);
-    if (tiniModule?.init) {
-      const {copy, scripts, buildCommand, run} = tiniModule.init(tiniConfig);
+    const moduleConfig = await loadVendorModule(args.packageName);
+    if (moduleConfig?.init) {
+      const {copy, scripts, buildCommand, run} = moduleConfig.init(tiniConfig);
       // copy assets
       if (copy) await copyAssets(args.packageName, copy);
       // add scripts

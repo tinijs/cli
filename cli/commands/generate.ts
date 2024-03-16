@@ -1,7 +1,6 @@
 import {red, green, yellow} from 'colorette';
 import {consola} from 'consola';
-import {existsSync} from 'node:fs';
-import {outputFile} from 'fs-extra/esm';
+import {outputFile, pathExistsSync} from 'fs-extra/esm';
 
 import {getTiniApp} from '@tinijs/core';
 
@@ -10,9 +9,9 @@ import {
   GeneratedTemplate,
   TemplateGenerator,
 } from '../utils/generate.js';
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const generateCommand = defineTiniCommand(
+export const generateCommand = defineCliCommand(
   {
     meta: {
       name: 'generate',
@@ -65,7 +64,7 @@ export const generateCommand = defineTiniCommand(
       componentPrefix: (cli?.generate || {}).componentPrefix || 'app',
     });
     const {fullPath: mainFullPath} = templates[0];
-    if (existsSync(mainFullPath)) {
+    if (pathExistsSync(mainFullPath)) {
       return callbacks?.onExists(args.type, templates[0]);
     }
     // save files

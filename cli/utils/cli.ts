@@ -1,23 +1,27 @@
 import {resolve} from 'pathe';
 import {CommandDef, ArgsDef, defineCommand, SubCommandsDef} from 'citty';
 import {Promisable} from 'type-fest';
-import {existsSync} from 'node:fs';
+import {pathExistsSync} from 'fs-extra/esm';
+import {defu} from 'defu';
 
-import {TiniConfigCli, getTiniApp} from '@tinijs/core';
-
-import {TINIJS_INSTALL_DIR_PATH} from './project.js';
-
-export const OFFICIAL_EXPANDED_COMMANDS: NonNullable<TiniConfigCli['expand']> =
-  [
-    resolve(TINIJS_INSTALL_DIR_PATH, 'ui', 'cli', 'expand.js'),
-    resolve(TINIJS_INSTALL_DIR_PATH, 'content', 'cli', 'expand.js'),
-  ];
+import {TiniApp, CliExpansionConfig} from '@tinijs/core';
 
 export function resolveCommand(m: any) {
   return m.default.def as Promise<CommandDef>;
 }
 
-export function defineTiniCommand<
+export function defineCliExpansion<Options extends Record<string, unknown>>(
+  config: CliExpansionConfig<Options>
+) {
+  return config as CliExpansionConfig<Options> & {
+    context: {
+      options: Options;
+      tiniApp: TiniApp;
+    };
+  };
+}
+
+export function defineCliCommand<
   T extends ArgsDef = ArgsDef,
   Callbacks = Record<string, () => Promisable<any>>,
   CustomParsedArgs = Record<
@@ -107,24 +111,45 @@ export function defineTiniCommand<
   return command;
 }
 
-export async function getExpandedCommands() {
-  const {config: tiniConfig} = await getTiniApp();
-  const cliExpand = [
-    ...(tiniConfig.cli?.expand || []),
-    ...OFFICIAL_EXPANDED_COMMANDS,
-  ];
+export async function setupCliExpansion<
+  Options extends Record<string, unknown> = {},
+>(tiniApp: TiniApp) {
+  const cliExpand = tiniApp.config.cli?.expand || [];
   const expandedCommands: SubCommandsDef = {};
   for (const item of cliExpand) {
-    const [filePath] = typeof item === 'string' ? [item] : item;
-    const expandFilePath = resolve(filePath);
-    if (!existsSync(expandFilePath)) continue;
-    const {default: expand} = await import(expandFilePath);
-    if (!(expand instanceof Function)) continue;
-    const commands = (await expand()) as SubCommandsDef;
+    const [localOrVendor, options = {}] = item instanceof Array ? item : [item];
+    // process expanded commands
+    const expansionConfig =
+      localOrVendor instanceof Object
+        ? localOrVendor
+        : await loadVendorCliExpansion<Options>(localOrVendor);
+    if (expansionConfig) {
+      (expansionConfig as any).context = {
+        options,
+        tiniApp,
+      };
+    }
+    const commands: SubCommandsDef = !expansionConfig
+      ? {}
+      : await expansionConfig.setup(
+          defu(expansionConfig.defaults, options),
+          tiniApp
+        );
+    // merge commands
     for (const [key, value] of Object.entries(commands)) {
       if (expandedCommands[key]) continue;
       expandedCommands[key] = value;
     }
   }
   return expandedCommands;
+}
+
+export async function loadVendorCliExpansion<
+  Options extends Record<string, unknown> = {},
+>(packageName: string) {
+  const entryPath = resolve('node_modules', packageName, 'dist', 'cli', 'expand.js');
+  if (!pathExistsSync(entryPath)) return null;
+  const {default: defaulExport} = await import(entryPath);
+  if (!defaulExport?.meta || !defaulExport?.setup) return null;
+  return defaulExport as CliExpansionConfig<Options>;
 }

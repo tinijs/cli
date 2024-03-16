@@ -2,9 +2,9 @@ import {consola} from 'consola';
 import {bold, blueBright} from 'colorette';
 import open from 'open';
 
-import {defineTiniCommand} from '../utils/cli.js';
+import {defineCliCommand} from '../utils/cli.js';
 
-export const docsCommand = defineTiniCommand(
+export const docsCommand = defineCliCommand(
   {
     meta: {
       name: 'docs',

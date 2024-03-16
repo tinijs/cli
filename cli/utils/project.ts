@@ -2,7 +2,8 @@ import {resolve} from 'pathe';
 import {PackageJson} from 'type-fest';
 import {readJson} from 'fs-extra/esm';
 
-import {requireModule, modifyJsonFile} from './file.js';
+import {modifyJsonFile} from './file.js';
+import cliPackageJson = require('../../package.json');
 
 export const TINIJS_INSTALL_DIR_PATH = resolve('node_modules', '@tinijs');
 
@@ -11,7 +12,7 @@ export function getTargetEnv() {
 }
 
 export async function loadCliPackageJson() {
-  return requireModule('../../package.json') as PackageJson;
+  return cliPackageJson as PackageJson;
 }
 
 export async function loadProjectPackageJson() {
