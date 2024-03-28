@@ -2,6 +2,11 @@
 
 # @tinijs/cli
 
+> [!IMPORTANT]
+> This previously experiment is wrapped up, moving forward the development will happen at <https://github.com/tinijs/tinijs/tree/main/packages/cli>.
+>
+> If you want to use the experimental version still, please use the version `0.16.0`.
+
 **The CLI for the TiniJS framework.**
 
 </section>
@@ -37,11 +42,11 @@
 
 - Create a TiniJS app:
 
-`npx @tinijs/cli new my-app --latest`
+`npx @tinijs/cli@0.16.0 new my-app --latest`
 
 - Or, install it globally:
 
-`npm i -g @tinijs/cli`
+`npm i -g @tinijs/cli@0.16.0`
 
 For more, please visit: <https://tinijs.dev>
 
